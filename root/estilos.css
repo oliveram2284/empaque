@@ -1,0 +1,297 @@
+﻿/* CSS Document */
+
+<style type="text/css">
+<!-- 
+/*.Estilo32 {
+font-weight: bold;
+background-color:#990000
+}
+
+.Estilo42 {color: #666666}
+.Estilo2 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.Estilo4 {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.Estilo3 {
+	color: #FFFFFF;
+	font-weight: bold;
+	}
+
+.fondoh {
+	color: #000000;
+	
+}
+*/
+.colorstandar {
+	color: #A98A5E;
+	
+}
+.botonmarron {
+ 
+background-color: #E67817;
+background-position: left;
+border-color: #E67817;
+border-style: solid;
+color: white;
+float: none;
+font-family: "Berlin Sans FB";
+height: 25px;
+width: 120px;
+font-size:15px;
+
+}
+.mes_pasado
+	{
+	 background-color: #333333;
+	}
+.mes_actual
+	{
+	 background-color: #FFFFCC;
+	}
+.hoy
+	{
+	 background-color: #009966;
+	}
+
+.tituloformulario {
+ color: #FFFFFF; 
+ background-color: #E67817 ;
+}
+.fondo2{
+background-color: #838280;
+}
+.select{width:100%;}
+
+.izquierda{text-align:right;}
+
+.sub_titulo{background-color: #D2D5D3}
+.formularioabm {
+  font:Arial, Helvetica, sans-serif;
+ font-size:10px;
+ text-align:center;
+ font-weight:bold;
+ border: 0px groove #0066CC; 
+}
+
+
+.Estilo10 {
+font:Arial, Helvetica, sans-serif;
+ font-size:11px;
+ text-align:center;
+ font-weight:bold;
+ border: 0px groove #FF0000;
+color: #000000;}
+
+
+.texto {
+font:Arial, Helvetica, sans-serif;
+ font-size:11px;
+ text-align:center;
+ font-weight:bold;
+ border: 0px groove #FF0000;
+color: #0066CC
+}
+.color{
+     color: #E67817;
+}
+.body {
+	font-family: "Berlin Sans FB";
+	color: black;
+	
+      }
+	 .borde_tabla{
+	 border-style: solid;
+	border-color: #E67817;
+	border-width: 3px;
+	 }
+.body_adentro {
+         color : "#A9CFDA";
+		}
+-->
+ul#menu {
+  text-align:left;
+  margin:1 px;
+  border: 1 px;
+  padding: 0px;
+  width:100%;
+  list-style: none;
+  height: 24px;
+  border:1px solid #62C000;
+  padding-bottom:10px;
+  background: #62C05B; 
+}
+
+ul#menu li {
+text-align:left;
+  margin: 1 px;
+  border: 1 px;
+  padding: 0 px;
+  float: left; 
+  display: inline;
+  list-style: none;
+  position: relative;
+  height: 24 px;
+}
+ul#menu li{
+text-align:left;
+	padding-bottom: 0px;
+}
+ul#menu li:hover{
+	background:#999; /*opcion seleccionada en la pesta�a del menu principal*/
+}
+
+ul#menu  ul {
+  margin: 1 px;
+  border: 1 px;
+  padding: 5 px;
+  width: 200px;
+  list-style: none;
+  display: none;
+  position: absolute;
+  top: 35px;
+  left: 0 px;
+  background: #62C05B; /*fondo de las opciones de las pesta�as que se despliegan*/ 
+  border: 1px groove #333366; /*borde de las opciones de las pesta�as que se despliegan*/
+	
+  
+}
+
+ul#menu ul:after /*From IE 7 lack of compliance*/{
+  clear: both;
+  display: block;
+  font: Arial, Helvetica, sans-serif;
+  content: ".";
+  height: 10 px;
+  visibility: hidden;
+}
+
+ul#menu ul li {
+  width: 200px;
+  float: left; /*For IE 7 lack of compliance*/
+  display: block !important;
+  display: inline; /*For IE*/
+}
+
+/* Root Menu */
+ul#menu a {
+  padding: 0px 30px 2px; /* tama�o del menu*/
+  float: none !important; /*For Opera*/
+  float: left; /*For IE*/
+  display: block;
+  color: #000; /*color de fuente de las pesta�as principales*/
+  text-decoration: none;
+  /*font-weight: bold;*/
+  font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size:15px;
+  /*font-weight:bold;
+  border-right:1px solid #818181;*/
+  text-decoration: none;
+  height: auto !important;
+  height: 1%; /*For IE*/
+}
+
+/* Root Menu Hover Persistence */
+ul#menu a:hover,
+ul#menu li:hover a,
+ul#menu li.iehover a {
+color: #111111; /*color de letra de las opciones de las pesta�as*/
+
+}
+
+/* 2nd Menu */
+ul#menu li:hover li a,
+ul#menu li.iehover li a {
+  float: none;
+  border:none;
+}
+
+/* 2nd Menu Hover Persistence */
+ul#menu li:hover li a:hover,
+ul#menu li:hover li:hover a,
+ul#menu li.iehover li a:hover,
+ul#menu li.iehover li.iehover a {
+ background:#999; /*color de la opcion seleccionada*/
+  color: #111;
+}
+
+/* 3rd Menu */
+ul#menu li:hover li:hover li a,
+ul#menu li.iehover li.iehover li a {
+  background: #EEE;
+  color: #666;
+}
+
+/* 3rd Menu Hover Persistence */
+
+ul#menu li:hover li:hover li a:hover,
+ul#menu li:hover li:hover li:hover a,
+ul#menu li.iehover li.iehover li a:hover,
+ul#menu li.iehover li.iehover li.iehover a {
+background:#000;
+  color: #000;
+}
+
+/* 4th Menu */
+ul#menu li:hover li:hover li:hover li a,
+ul#menu li.iehover li.iehover li.iehover li a {
+background:#ddd;
+  color: #666;
+}
+
+/* 4th Menu Hover */
+ul#menu li:hover li:hover li:hover li a:hover,
+ul#menu li.iehover li.iehover li.iehover li a:hover {
+  background: #CCC;
+  color: #000;
+}
+
+ul#menu ul ul,
+ul#menu ul ul ul {
+  display: none;
+  position: absolute;
+  top: 20 px;
+  left: 120px;
+}
+
+/* Do Not Move - Must Come Before display:block for Gecko */
+ul#menu li:hover ul ul,
+ul#menu li:hover ul ul ul,
+ul#menu li.iehover ul ul,
+ul#menu li.iehover ul ul ul {
+  display: none;
+}
+
+ul#menu li:hover ul,
+ul#menu ul li:hover ul,
+ul#menu ul ul li:hover ul,
+ul#menu li.iehover ul,
+ul#menu ul li.iehover ul,
+ul#menu ul ul li.iehover ul {
+  display: block;
+}
+ul#menu .selected{
+	color: #111111;
+}
+
+
+
+.button {
+        font-size:10px;
+        font-family:Verdana,Helvetica;
+        font-weight:bold;
+        color:white;
+        background:#62C05B;
+        border:0px;
+        width:90px;
+        height:19px;
+       }
+
+
+
+</style>
