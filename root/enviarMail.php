@@ -298,6 +298,8 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
     $resu4 = mysql_fetch_array($resu4);
     $formato = $resu4['descripcion'];
 
+    $habilitacion_mat = obtener_habilitacion($idPedido);
+
     if($formato == "Bolsas Wick")
     {
         $body .= '<tr>
@@ -584,17 +586,42 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
 }
 
 function obtenerDato($id,$tabla,$campo,$campoRetorno)
+{
+ if($id != 0)
+    {
+     $consulta = 'Select '.$campoRetorno.' From '.$tabla.' Where '.$campo.' = '.$id;
+     $resu = mysql_query($consulta);
+     $row = mysql_fetch_array($resu);
+     return $row[0];
+     }else
         {
-         if($id != 0)
-            {
-             $consulta = 'Select '.$campoRetorno.' From '.$tabla.' Where '.$campo.' = '.$id;
-             $resu = mysql_query($consulta);
-             $row = mysql_fetch_array($resu);
-             return $row[0];
-             }else
-                {
-                 return '-';
-                }
+         return '-';
         }
+}
 
+
+function obtener_habilitacion($idPedido=0){
+
+    if($idPedido==0){
+        return false;
+    }
+
+    $sql="SELECT pd.Material1 as mat1,pd.Material2 as mat2 FROM materiales as m INNER JOIN pedidosdetalle as pd ON m.idMaterial=pd.Material and pd.idPedido=".$idPedido." ORDER BY pd.idPedido desc";
+
+    if($result = mysql_query($sql)){
+       
+        $row = mysql_fetch_array($result);       
+        $mat1=$row['mat1'];
+        $mat2=$row['mat2'];
+        
+        $sql = "SELECT * FROM materialescombo  WHERE idMaterial1= $mat1 AND idMaterial2 = $mat2 ";
+        $result2 = mysql_query($sql);
+        
+        if(!$row = mysql_fetch_array($result2)){
+            return false;
+        }else{
+            return ($row['habilitacion']!='')?true:false;
+        }
+    }
+}
 ?>
