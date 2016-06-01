@@ -20,10 +20,10 @@ actualiza:1
 det:asdsadasdsad
 */
 $email = "";//$_POST['mail'];
-$id = 13;//$_POST['id'];
-$idEntrega = 330;//$_POST['entId'];
-$observacion = "asdsadasd";//$_POST['observ'];
-$actualiza = 1;//$_POST['actualiza'];
+$id = $_POST['id'];
+$idEntrega = $_POST['entId'];
+$observacion = $_POST['observ'];
+$actualiza = $_POST['actualiza'];
 $obsBody =  "dasdasd";// $_POST['det'];
 
 
