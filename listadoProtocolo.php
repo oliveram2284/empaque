@@ -140,7 +140,7 @@ $vari->conectarse();
                                                          </td>';
                                             		//echo '<td><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20" heigth="20" title="Generar PDF" style="cursor:pointer"></td>';
                                                     echo '<td><img src="./assest/plugins/buttons/icons/door_in.png" width="20px" heigth="20px" title="Cerrar protocolo sin envío" style="cursor:pointer" onClick="DejarListo('.$row['prtId'].')"></td>';
-                                            		echo '<td width="20"><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20px" heigth="20px" title="Preview Protocolo
+                                            		echo '<td width="20"><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20px" heigth="20px" title="Previsualizar Protocolo
                                                     " style="cursor:pointer" class="preview_bt" data-prtid="'.$row['prtId'].'"></td>';
                                             	}
                                             echo '<td>';
@@ -258,6 +258,7 @@ $vari->conectarse();
     <a href="#" class="btn btn-info" onclick="ClosePop('ProtocoloListo')">Cerrar</a>
   </div>
 </div>
+
 
 <input type="hidden" value="" id="prtId_temp">
 <!--------- End Pop Destinos Protocolo -->
@@ -644,8 +645,8 @@ $(function() {
         
         var data_ajax={
             type: 'POST',
-            url: "/empaque/listadoEntregasProtocolo.php",
-            //url: "listadoEntregasProtocolo.php",
+            //url: "/empaque/listadoEntregasProtocolo.php",
+            url: "listadoEntregasProtocolo.php",
             data: { 
                     id: $("#prtId_temp").val()
                 },
@@ -705,10 +706,12 @@ $(function() {
                 });
                 
                 output+="</table>";
+                console.debug("==> output: %o",output);
                 $("#entregasBody2").html(output);
               },
             error: function(){
                 alert('Error');
+                console.debug("asdasd");
                 $('#btnAceptar').removeAttr('disabled');
             },
             dataType: 'json'
@@ -751,10 +754,14 @@ $(function() {
                 det: $('#observacionesBody2').val()
             };
             console.debug("===> params_ajax: %o ",params_ajax);
-            $("#previewModal .modal-content").empty(); 
+            $("#previewModal .modal-content #entregasBody2").empty(); 
             $("#previewModal").modal('hide');
             
-            $.post("/empaque/previewProtocolo.php",params_ajax, function (data) {
+            //$.post("/empaque/previewProtocolo.php",params_ajax, function (data) {
+            $.post("previewProtocolo.php",params_ajax, function (data) {
+
+                $("#idEntregaProtocolo").val(null);
+                $("#prtId_temp").val(null);
                 var win=window.open('about:blank');
                 with(win.document)
                 {
