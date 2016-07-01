@@ -22,9 +22,9 @@ det:asdsadasdsad
 $email = "";//$_POST['mail'];
 $id = $_POST['id'];
 $idEntrega = $_POST['entId'];
-$observacion = $_POST['observ'];
+$observacion =$_POST['observ'];
 $actualiza = $_POST['actualiza'];
-$obsBody =  "dasdasd";// $_POST['det'];
+$obsBody =  $_POST['det'];
 
 
 
@@ -120,7 +120,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
         $cantidad = number_format($cantidad , 0 , "," , "." );
     }
     else
-    {
+    {   
         $cantidad = str_replace(".", ",", $cantidad);
         $cantidad = number_format($cantidad , 2 , "," , "." );
     }
@@ -249,7 +249,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
 
                                     Observaciones: '.($observacion == '' ? "Sin Observacion": $observacion).' <br><br><br>
                                     Aprobado por: <br>
-                                    <img src="imag/firmaprotocolo.png" style="margin-left: 400px;" />
+                                    <img src="imag/firmaprotocolo1.png" style="margin-left: 400px;" />
                                     <br>
                                     <br>
                                     <br>
@@ -309,7 +309,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                             <tr>
                                 <td colspan="4">
                                     Aprobado por: <br>
-                                    <img src="imag/firmaprotocolo.png" style="margin-left: 400px;" />
+                                    <img src="imag/firmaprotocolo1.png" style="margin-left: 400px;" />
                                     <br>
                                     <i>"Es responsabilidad del cliente, realizar sus propios controles de calidad al producto recibido. Cualquier observación respecto a la calidad
                                      del producto debe ser declarada en periodo de hasta 7 días corridos de recepción de la mercadería; no existiendo observación alguna se interpreta 
@@ -350,7 +350,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                                 <td>Regla Metalica</td>
                             </tr>
                             <tr>
-                                <td colspan="4">Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
+                                <td colspan="4" style="padding-top:20px;" >Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
                             </tr>
                             <tr>
                                 <td></td><td style="text-align: right;"><b>'.$resu3['Micronaje'].'µ</b></td>
@@ -359,25 +359,28 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                             </tr>
 
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="padding-top:20px;">
                                 '. ( ($habilitacion_mat)?'INASAL/SENASA:    1 <br>':''  ) .'                                  
                                 </td>
                             </tr>
 
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="padding-top:20px;">
                                 
                                     Observaciones: '.($observacion == '' ? "Sin Observacion": $observacion).' <br>
                                 </td>
                             </tr>
+
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4"  style="padding-top:20px;">
+                                   
+                                
                                     Aprobado por: <br>
                                     <img src="imag/firmaprotocolo.png" style="margin-left: 400px;" />
                                     <br>
                                     <i>"Es responsabilidad del cliente, realizar sus propios controles de calidad al producto recibido. Cualquier observación respecto a la calidad
                                      del producto debe ser declarada en periodo de hasta 7 días corridos de recepción de la mercadería; no existiendo observación alguna se interpreta 
-                                     como aceptación total de la calidad del producto y de conformidad a los requerimientos del cliente."
+                                     como aceptación total de la calidad del producto y de conformidad a los requerimientos del cliente." 
                                 </td>
                             </tr>    
                         </table>
@@ -414,7 +417,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                                 <td>Regla Metalica</td>
                             </tr>
                             <tr>
-                                <td colspan="4">Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
+                                <td colspan="4" style="padding-top:20px;">Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
                             </tr>
                             <tr>
                                 <td></td><td style="text-align: right;"><b>'.$resu3['Micronaje'].' µ</b></td>
@@ -428,12 +431,12 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                             </tr>
 
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="padding-top:20px;">
                                 '. ( ($habilitacion_mat)?'<b>INASAL/SENASA</b><br>':''  ) .'                                  
                                 </td>
                             </tr>                            
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="padding-top:20px;">
                                     Ensayo de Soldabilidad:             <b>Aprobado</b><br>
                                     Observaciones: '.($observacion == '' ? "Sin Observacion": $observacion).' <br>
                                     Aprobado por: <br>
@@ -468,7 +471,7 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                                 <td>Visual</td>
                             </tr>
                             <tr>
-                                <td colspan="4">Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
+                                <td colspan="4" style="padding-top:20px;">Espesor del material (Promedio de 10 mediciones a lo largo de la lamina):</td>
                             </tr>
                             <tr>
                                 <td>Ancho de la Etiqueta: </td><td style="text-align: right;"><b>'.$resu3['Ancho'].' cm</b></td>
@@ -481,12 +484,12 @@ function ArmarCuerpo($id, $idEntrega, $observacion){
                                 <td>Regla Metalica</td>
                             </tr>
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" style="padding-top:20px;">
                                 '. ( ($habilitacion_mat)?'<b>INASAL/SENASA</b><br>':''  ) .'                                  
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" >
                                     Observaciones: '.($observacion == '' ? "Sin Observacion": $observacion).' <br>
                                     Aprobado por: <br>
                                     <img src="imag/firmaprotocolo.png" style="margin-left: 400px;" />

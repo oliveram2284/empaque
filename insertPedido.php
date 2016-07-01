@@ -953,6 +953,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                     //Cancelar protocolo ///////Revisar aca cuando se cancela un pedido
                     $consulta = "Update protocolos Set estado = 'C' Where idPedido=$idPedido";
                     $resu = mysql_query($consulta);
+
                     break;
                 
                 case "AP":

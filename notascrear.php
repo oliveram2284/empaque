@@ -12,9 +12,11 @@ $tipo = $_POST['xtipo'];
 $categoria = $_POST['xcategoria'];
 $usuario = $_POST['xusuario'];
 
-$fecha1 = explode('-', $fecha1);
-$fecha1 = $fecha1[2].'-'.$fecha1[1].'-'.$fecha1[0];
-
+//$fecha1 = explode('-', $fecha1);
+//$fecha1 = $fecha1[2].'-'.$fecha1[1].'-'.$fecha1[0];
+$fecha1= date('Y-m-d',strtotime($fecha1));
+var_dump($fecha1);
+die();
 if($todos == 'false'){
 	
 	if($categoria == 0 && $usuario == 0){

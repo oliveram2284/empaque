@@ -78,6 +78,7 @@ $vari->conectarse();
 			   	$from = $page * 10;
 				$sql = "SELECT  
                                 P.prtId, 
+                                P.idPedido,
                                 P.estado, 
                                 Pe.codigo, 
                                 Pe.descripcion, 
@@ -94,78 +95,81 @@ $vari->conectarse();
 						WHERE P.estado in ('PN','TP', 'T') ".$search_by_txt."
 						Order by Pe.codigo asc Limit ".$from.",10";
 
+                echo $sql."<br>";
                 $todos = "SELECT  
                                 Count(*)
                         FROM Protocolos as P
                         Join pedidos as Pe on Pe.npedido = P.idPedido
                         WHERE P.estado in ('PN','TP', 'T') ".$search_by_txt;
 
+
+
                 $cant = mysql_query($todos);
                 $fila = mysql_fetch_array($cant);
                 $cantidad = $fila[0];
                                 
-                                $resu = mysql_query($sql);
+                $resu = mysql_query($sql);
 				echo "<tbody>";
-                                if(mysql_num_rows($resu) <= 0)
-                                    {
-                                     echo '<tr><td colspan="4" style="text-align: center;">No se encontraron resultados.</td></tr>';
-                                    }
-                                    else
-                                    {
-                                       while($row = mysql_fetch_array($resu))
-                                       {
-                                           	echo "<tr>";
+                if(mysql_num_rows($resu) <= 0)
+                {
+                    echo '<tr><td colspan="4" style="text-align: center;">No se encontraron resultados.</td></tr>';
+                }
+                else
+                {
+                   while($row = mysql_fetch_array($resu))
+                   {
+                       	echo "<tr>";
 
-                                            echo "<td style=\"text-align: center\">".$row['codigo']."</td>";
-					    					echo "<td style=\"text-align: left\">".$row['clienteNombre']."</td>";
-					    					echo "<td style=\"text-align: left\">".$row['descripcion']."</td>";
-					    					echo "<td style=\"text-align: left\">".$row['email']."</td>";
-                                            echo "<td>".$row['cantEnt']."/".$row['cant']."</td>";
-                                            	if($row['estado'] == 'PN')
-                                            	{	
-                                            		echo '<td colspan="2" style="text-align: center">';
-                                            		echo '<span class="label label-warning">Pendiente</span>';
-                                            		echo '</td>';
-                                            	}
-                                            	else
-                                            	{
-                                            		echo '<td><img src="./assest/plugins/buttons/icons/email.png" width="20px" heigth="20px" title="Enviar EMail" style="cursor:pointer" onClick="EnviarMail(
-                                                                                                                                                                                                            '.($row['email'] == "" ? "''" : "'".$row['email']."'").', 
-                                                                                                                                                                                                            '.($row['email2'] == "" ? "''" : "'".$row['email2']."'").', 
-                                                                                                                                                                                                            '.($row['email3'] == "" ? "''" : "'".$row['email3']."'").', 
-                                                                                                                                                                                                            '.($row['email4'] == "" ? "''" : "'".$row['email4']."'").', 
-                                                                                                                                                                                                            '.($row['email5'] == "" ? "''" : "'".$row['email5']."'").', 
-                                                                                                                                                                                                            '.$row['prtId'].'
-                                                                                                                                                                                                            )">
-                                                         </td>';
-                                            		//echo '<td><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20" heigth="20" title="Generar PDF" style="cursor:pointer"></td>';
-                                                    echo '<td><img src="./assest/plugins/buttons/icons/door_in.png" width="20px" heigth="20px" title="Cerrar protocolo sin envío" style="cursor:pointer" onClick="DejarListo('.$row['prtId'].')"></td>';
-                                            		echo '<td width="20"><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20px" heigth="20px" title="Previsualizar Protocolo
-                                                    " style="cursor:pointer" class="preview_bt" data-prtid="'.$row['prtId'].'"></td>';
-                                            	}
-                                            echo '<td>';
-                                            if($row['estado'] == 'T'){
-                                            	echo '<div
-															style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: red;" title="Terminado" 
-															onClick="ConsularEntregas('.$row['prtId'].')"
-                                                            >
-															<b>T</b>
-														</div>';
-                                            }
-                                            if($row['estado'] == 'TP'){
-                                            	echo '<div
-															style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: orange;" title="Terminado Parcial" 
-															onClick="ConsularEntregas('.$row['prtId'].')"
-                                                            >
-															<b>P</b>
-														</div>';
-                                            }
-                                            echo '</td>';
-                                            echo "</tr>";
-                                       }
+                        echo "<td style=\"text-align: center\">".$row['idPedido']." ".$row['codigo']."</td>";
+    					echo "<td style=\"text-align: left\">".$row['clienteNombre']."</td>";
+    					echo "<td style=\"text-align: left\">".$row['descripcion']."</td>";
+    					echo "<td style=\"text-align: left\">".$row['email']."</td>";
+                        echo "<td>".$row['cantEnt']."/".$row['cant']."</td>";
+                        	if($row['estado'] == 'PN')
+                        	{	
+                        		echo '<td colspan="2" style="text-align: center">';
+                        		echo '<span class="label label-warning">Pendiente</span>';
+                        		echo '</td>';
+                        	}
+                        	else
+                        	{
+                        		echo '<td><img src="./assest/plugins/buttons/icons/email.png" width="20px" heigth="20px" title="Enviar EMail" style="cursor:pointer" onClick="EnviarMail(
+                                                                                                                                                                                        '.($row['email'] == "" ? "''" : "'".$row['email']."'").', 
+                                                                                                                                                                                        '.($row['email2'] == "" ? "''" : "'".$row['email2']."'").', 
+                                                                                                                                                                                        '.($row['email3'] == "" ? "''" : "'".$row['email3']."'").', 
+                                                                                                                                                                                        '.($row['email4'] == "" ? "''" : "'".$row['email4']."'").', 
+                                                                                                                                                                                        '.($row['email5'] == "" ? "''" : "'".$row['email5']."'").', 
+                                                                                                                                                                                        '.$row['prtId'].'
+                                                                                                                                                                                        )">
+                                     </td>';
+                        		//echo '<td><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20" heigth="20" title="Generar PDF" style="cursor:pointer"></td>';
+                                echo '<td><img src="./assest/plugins/buttons/icons/door_in.png" width="20px" heigth="20px" title="Cerrar protocolo sin envío" style="cursor:pointer" onClick="DejarListo('.$row['prtId'].')"></td>';
+                        		echo '<td width="20"><img src="./assest/plugins/buttons/icons/page_white_acrobat.png" width="20px" heigth="20px" title="Previsualizar Protocolo
+                                " style="cursor:pointer" class="preview_bt" data-prtid="'.$row['prtId'].'"></td>';
+                        	}
+                        echo '<td>';
+                        if($row['estado'] == 'T'){
+                        	echo '<div
+										style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: red;" title="Terminado" 
+										onClick="ConsularEntregas('.$row['prtId'].')"
+                                        >
+										<b>T</b>
+									</div>';
+                        }
+                        if($row['estado'] == 'TP'){
+                        	echo '<div
+										style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: orange;" title="Terminado Parcial" 
+										onClick="ConsularEntregas('.$row['prtId'].')"
+                                        >
+										<b>P</b>
+									</div>';
+                        }
+                        echo '</td>';
+                        echo "</tr>";
+                   }
 
-                                    }
-                                echo "</tbody>";
+                }
+                echo "</tbody>";
 			    ?>
                     </table>
 				<?php
@@ -271,28 +275,61 @@ $vari->conectarse();
     <h3>Previsualizar Envio de Protocolo</h3>
   </div>
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" >
+    <div class="modal-content " >
         <div class="alert alert-error" id="box_error" style="display: none">
             <strong id="msj_box_error"></strong>
         </div>
         
-    
-        <!--<a id="selectEntrega2" href="#">Seleccionar Entrega</a><br><br> -->
-
         <div class="list_entrega" id="entregasBody2">
            
         </div>
 
-        <div><!-- Observaciones -->
-            <strong> Observaciones de Protocolo:   </strong>  <textarea id="observaciones2" placeholder="Observaciones"></textarea>
-        </div>    
-        <hr>
-        <strong> Observaciones:   </strong>  <textarea id="observacionesBody2" placeholder=""></textarea>
-    </div>
+        <div class="form-horizontal">
+            <div class="form-group"><!-- Observaciones -->
+                 
+                <strong for="observaciones2" class="col-sm-3 control-label"> Observaciones de Protocolo:   </strong>
+                <div class="col-sm-9">
+                    <textarea id="observaciones2" placeholder="Observaciones" class="form-control"></textarea>
+                </div>
+            </div>    
+            <br>
 
+            <div class="form-group">
+                <strong for="observacionesBody2" class="col-sm-3 control-label">Observaciones de Email:   </strong>
+                <div class="col-sm-9">
+                    <textarea id="observacionesBody2" placeholder="" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <br>
     <div class="modal-footer">
     <a href="#" class="btn btn-info" id="viewPDF" >Ver</a>
   </div>
+
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div id="pdfModal" class="modal fade" role="dialog" style="width: 760px;margin-left: -20%;">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header hidden">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body" style="width: 100%;margin-left: 0;     max-height: 100%;">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer hidden">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -762,13 +799,25 @@ $(function() {
 
                 $("#idEntregaProtocolo").val(null);
                 $("#prtId_temp").val(null);
+                /*
                 var win=window.open('about:blank');
                 with(win.document)
                 {
                   open();
                   write(data);
                   close();
-                }
+                }*/
+
+                $("#pdfModal .modal-body").html(data);
+                $("#pdfModal").modal('show').css(
+    {
+        'margin-top': function () {
+            return -($(this).height() / 2);
+        },
+        'margin-left': function () {
+            return -($(this).width() / 2);
+        }
+    });
             });           
         }        
 
