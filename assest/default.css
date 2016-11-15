@@ -16,4 +16,9 @@
 	float:left; //para eliminar el comportamiento de elemento de bloque(salto de linea)
 }
 #selected {background-color:#B8EF8B;}	
-thead{ background-color:#B8EF8B; color:#333; border:1px;
+thead{ background-color:#B8EF8B; color:#333; border:1px;}
+.text-left{
+	color: red;
+}
+
+

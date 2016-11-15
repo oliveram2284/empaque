@@ -92,7 +92,7 @@ require("footer.php");
 <script>
     function editarProveedor(id)
     {
-	$(location).attr('href','../empaque/listadoProveedoresSave.php?id='+id);
+	$(location).attr('href','../empaque_demo/listadoProveedoresSave.php?id='+id);
     }
     
     function inicio()
@@ -101,6 +101,6 @@ require("footer.php");
     }
     
     $('#btn_nuevo').click(function(){
-        $(location).attr('href','../empaque/listadoProveedoresSave.php?id=0');
+        $(location).attr('href','../empaque_demo/listadoProveedoresSave.php?id=0');
     });
 </script>

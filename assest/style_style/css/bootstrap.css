@@ -2438,7 +2438,7 @@ table .span24 {
 }
 
 .icon-arrow-right {
-  background-position: -264px -96px;
+  /*background-position: -264px -96px;*/
 }
 
 .icon-arrow-up {
@@ -5640,4 +5640,9 @@ a.badge:hover {
 
 .affix {
   position: fixed;
+}
+
+
+.text-left{
+  text-align: left;
 }

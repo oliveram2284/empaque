@@ -125,7 +125,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoTemporadaphp.php",
+                        url: "/empaque_demo/listadoTemporadaphp.php",
                         data: { tmp: tempo, val: value},
                         success: function( data ) {
                                                     if(data != 0)

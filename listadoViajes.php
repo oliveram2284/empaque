@@ -361,7 +361,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoViajesphp.php",
+                        url: "/empaque_demo/listadoViajesphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)
@@ -443,7 +443,7 @@ function BuscadorDeDestinos(value)
 		var color = '#FFFFFF';
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarDestinos.php",
+				url: "/empaque_demo/buscarDestinos.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)
@@ -517,7 +517,7 @@ function BuscadorDeTransporte(value)
 		var color = '#FFFFFF';
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarTransportes.php",
+				url: "/empaque_demo/buscarTransportes.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)
@@ -629,7 +629,7 @@ function EditarViaje(idViaje, fecha, idDestino, codigo, idTransporte, razon_soci
 function CerrarViaje(id) {
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoViajesClose.php",
+				url: "/empaque_demo/listadoViajesClose.php",
 				data: { xid: id },
 				success: function( data ) {
 							    location.reload();

@@ -368,7 +368,7 @@ function AbrirPop(xid, accion)
 		
 		var data_ajax={
 			type: 'POST',
-			url: "/empaque/gethrci.php",
+			url: "../gethrci.php",
 			data: { id: xid},
 			success: function( data ) {
 					 $.each(data, function(k,v)
@@ -379,8 +379,8 @@ function AbrirPop(xid, accion)
 					  });
 				},
 			error: function(){
-					    alert("Error de conexión.");
-					  },
+		    console.log("Error de conexión.");
+		  },
 			dataType: 'json'
 			};
 		
@@ -391,7 +391,7 @@ function AbrirPop(xid, accion)
 			//si es un producto nuevo no se completan los campos
 			var data_ajax={
 				type: 'POST',
-				url: "/empaque/getPedidos.php",
+				url: "/empaque_demo/getPedidos.php",
 				data: { idP: xid},
 				success: function( data ) {
 						if (data[0]['productoCodigo'][0] == "n") {
@@ -455,7 +455,7 @@ function PedidoEnCurso()
 		
 			var data_ajax={
 				type: 'POST',
-				url: "/empaque/insertPedido.php",
+				url: "/empaque_demo/insertPedido.php",
 				data: { id: idPedido , action: GAccion , hoja: HojasDeRutaArrayFinal},
 				success: function( data ) {
 						$('#modal_produccion').modal('hide');
@@ -496,7 +496,7 @@ function PedidoEnCurso()
 				
 				var data_ajax={
 					type: 'POST',
-					url: "/empaque/insertPedido.php",
+					url: "/empaque_demo/insertPedido.php",
 					data: { id: idPedido , action: GAccion , hoja: HojasDeRutaArrayFinal, code: codigoProducto, desc: descProductos, tango: tangoCodigo},
 					success: function( data ) {
 							$('#modal_produccion').modal('hide');
@@ -533,7 +533,7 @@ function AbrirPopTerminado(id, producto, codigo)
 	//Acá poner llamado Ajax para obtener datos del pedido seleccionado.
 	var data_ajax={
 		type: 'POST',
-		url: "/empaque/getPedidos.php",
+		url: "/empaque_demo/getPedidos.php",
 		data: {
 			idP: id 
 			},
@@ -671,7 +671,7 @@ function AbrirPopEditarPrecio(id, producto, codigo)
 	//Acá poner llamado Ajax para obtener datos del pedido seleccionado.
 	var data_ajax={
 		type: 'POST',
-		url: "/empaque/getPedidos.php",
+		url: "/empaque_demo/getPedidos.php",
 		data: {
 			idP: id 
 			},
@@ -773,7 +773,7 @@ function PedidoTerminado()
 		{
 			var data_ajax={
 					type: 'POST',
-					url: "/empaque/insertPedido.php",
+					url: "/empaque_demo/insertPedido.php",
 					data: {
 						id: 		idPedido 	,
 						action: 	accion 		,
@@ -806,7 +806,7 @@ function Seguimiento(idPedido, codigoPedido)
 }
 
 function AbrirMotivos(idPedido)
-{
+{	console.debug("====> AbrirMotivos open");
 	$('#idC').text("Motivos de rechazo.");
 	$('#modal_seguimiento').modal('show');
 	CargarLogMotivos(idPedido);
@@ -852,29 +852,46 @@ function CargarLog(idPedido)
 	}
 	
 function CargarLogMotivos(idPedido)
-	{
-	// Obtendo la capa donde se muestran las respuestas del servidor
-	var capa=document.getElementById('div_seguimiento');
-	// Creo el objeto AJAX
-	var ajax=nuevoAjax();
-	// Coloco el mensaje "Cargando..." en la capa
-	capa.innerHTML="Cargando...";
-	// Abro la conexión, envío cabeceras correspondientes al uso de POST y envío los datos con el método send del objeto AJAX
-	ajax.open("POST", "loadLogMotivos.php", true);
-	ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+{
 	
-	// Al parecer esto crea una variable con nombre d que luego es utilizada en la pagina a la que llama esta accion   
-	ajax.send("variable="+idPedido);
 
-	ajax.onreadystatechange=function()
-		{
-			if (ajax.readyState==4)
-			{
-				// Respuesta recibida. Coloco el texto plano en la capa correspondiente
-				capa.innerHTML=ajax.responseText;
-			}
-		}	
-	}
+	$.ajax({
+	  type: "POST",
+	  url: "services/pedidos.php",
+	  data: {action:1,id:idPedido},
+	  success: function( data ) {			
+			var pedido= data.pedido;
+			console.debug("==>services/pedidos.php pedido: %o",pedido);
+		  var output="";
+		  		  
+		  if(pedido.hojaruta!='NN' && pedido.hojaruta!='' &&pedido.hojaruta!=null){
+		  	output+="<p>";
+		  	output+="<label><b> Hoja de Ruta Nroº:</b> <span class='label label-success'>"+pedido.hojaruta+"</span> </label> ";
+		  	output+="</p>";
+		  }
+
+		  if(pedido.estaImpreso=='1'){
+		  	output+="<p>";
+		  	output+='<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>  <strong>Atención!</strong> Esta Nota de Pedido pudo haber sido impresa anteriormente';
+		  	output+="</p>";
+		  }
+
+
+		  $("div.head_div").empty().html(output);
+		},
+	   dataType: 'json'
+	});
+
+	
+	$.post( "loadLogMotivos.php",{variable:idPedido}, function( data ) {
+		console.debug("==>loadLogMotivos");
+	  $( "#div_seguimiento" ).html( data );
+	});
+
+	
+
+	
+}
 	
 function CargarLogMotivosCancelados(idPedido)
 	{

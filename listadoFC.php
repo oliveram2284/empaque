@@ -141,7 +141,7 @@ require("footer.php");
         
         var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoFCampos.php",
+                        url: "/empaque_demo/listadoFCampos.php",
                         data: { xinput: input },
                         success: function( data ) {
                                                     if(data != 0)
@@ -218,7 +218,7 @@ require("footer.php");
             var id = $('#idFormat').val();
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoFCphp.php",
+                        url: "/empaque_demo/listadoFCphp.php",
                         data: { xinput: input,  xid: id},
                         success: function( data ) {
                                                     if(data != 0)

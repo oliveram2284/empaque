@@ -485,24 +485,27 @@ require("header.php");
     <h3>Seguimiento de Pedido <strong><label id="idC" style="font-size: 22px; font-weight: bold;"></label></strong></h3>
   </div>
   <div class="modal-body">
-    <p>
-      <table width="100%">
-	<tr>
-		<td colspan="2" align="center">
-			<div class="alert alert-error" id="error_div" style="display: none">
-				<label id="error_msj" style="margin-top: 9px"></label>
-			</div>
-		</td>
-	</tr>
-        <tr>
-          <td colspan="2">
-		<div style="width: 100%; height: 200px;" id="div_seguimiento">
-			
-		</div>
-	  </td>
-        </tr>
-      </table>
-    </p>
+    
+    <table class="table ">	
+    	<tr>
+				<td align="center">
+					<div class="alert alert-error" id="error_div" style="display: none">
+						<label id="error_msj" style="margin-top: 9px"></label>
+					</div>
+				</td>
+			</tr>
+      <tr>
+        <td >
+					<div style="width: 100%; height: 200px;" id="div_seguimiento">		
+					</div>	  
+				</td>        
+			</tr>      
+		</table>
+    <div class="head_div text-left">
+    	<p >
+    		<label>Tiene Hoja de Ruta</label>
+    	</p>
+    </div>
   </div>
   <div class="modal-footer">
     <!--<a href="#" class="btn">Cancelar</a>-->
@@ -519,37 +522,51 @@ require("header.php");
   </div>
   <div class="modal-body">
     <p>
-      <table width="100%">
-	<tr>
-		<td colspan="2" align="center">
-			<div class="alert alert-error" id="error_rehacer_div" style="display: none">
-				<label id="error_rehacer_msj" style="margin-top: 9px"></label>
-			</div>
-		</td>
-	</tr>
+      <table width="100%">	
+      	<tr>		
+      		<td colspan="2" align="center">			
+      			<div class="alert alert-error" id="error_rehacer_div" style="display: none">				
+      				<label id="error_rehacer_msj" style="margin-top: 9px"></label>			
+      			</div>		
+      		</td>	
+      	</tr>
         <tr>
-          <td colspan="2">
-		<div style="width: 100%;">
-		    <!-- Mensaje de Advertencia -->
-		    <div class="alert alert-error" id="div_alert_er">
-		      
-		    </div>
-		    <!-- Motivos de Cancelación o Anulación -->
-		    Motivos:
-		    <div id="div_motives" style="max-height: 100px; height: 100px; min-height: 100px; overflow-y: auto; overflow-y: auto; background-color: #FAFAFA; margin-bottom: 10px; border: 1px solid; border-color: #cccccc;">
-		    
-		    </div>
-		    <!-- Observaciones -->
-		    <div style="width: 100%;">
-			Observaciones:
-			<textarea rows="3" style="width: 100%" id="motivo"></textarea>
-		    </div>
-		</div>
-	  </td>
+          <td colspan="2">		
+          	<div style="width: 100%;">		    
+          		<!-- Mensaje de Advertencia -->		    
+          		<div class="alert alert-error" id="div_alert_er"></div>		    
+          		<!-- Motivos de Cancelación o Anulación -->		   
+          		Motivos :		    
+          		<div id="div_motives" style="max-height: 100px; height: 100px; min-height: 100px; overflow-y: auto; overflow-y: auto; background-color: #FAFAFA; margin-bottom: 10px; border: 1px solid; border-color: #cccccc;"> 	    
+          		</div>		    
+          		<!-- Observaciones -->		    
+          		<div style="width: 100%;">			
+          			Observaciones:			
+          			<textarea rows="3" style="width: 100%" id="motivo"></textarea>		    
+          		</div>		
+          	</div>	  
+          </td>
         </tr>
+        <?php if($_GET['accion']=='P'):?>
+        	<tr>
+        		<td colspan="2">
+        			<div style="width: 100%;">			
+          			<label>Nota de Pedido fue impresa ?:  <input type="checkbox" id="esta_impreso" value=""></label>          			
+          			    
+          		</div>
+          		<div style="width: 100%;">			
+          			Hoja de Ruta:          			
+          			<input type="text" id="dev_HojaRuta" value="<?php echo ($row[1])?$row[1]:'-'?>">    
+          		</div>	
+          		
+        		</td>
+        	</tr>
+
+      	<?php endif;?>
       </table>
     </p>
   </div>
+
   <div class="modal-footer">
     <a href="#" class="btn btn-danger" id="btn_rehacer" onclick="ClosePop('modal_rehacer')">No</a>
     <a href="#" class="btn btn-success" id="btn_rehacer_acp" onclick="ValidarMotivo()">Si</a>
@@ -1246,7 +1263,7 @@ require("footer.php");
 	if ($("#buscador_txt").val() != "") {
 	    var accion = $("#actionValue").val();
 	    var query = $("#buscador_txt").val();
-	    window.location.replace("../empaque/listadoPedidos.php?accion="+accion+"&page=0&query="+query+"");
+	    window.location.replace("../empaque_demo/listadoPedidos.php?accion="+accion+"&page=0&query="+query+"");
 	}
     }
   });
@@ -1284,7 +1301,7 @@ function BuscadorDeProductos(value, page)
 	  
 	  var data_ajax={
 			  type: 'POST',
-			  url: "/empaque/buscarProducto.php",
+			  url: "/empaque_demo/buscarProducto.php",
 			  data: { xinput: value, xpage: page , busq: $('#busc').val() },
 			  success: function( data ) {
 						      if(data != 0)
@@ -1364,55 +1381,71 @@ function ClosePop(div)
 	
 function ValidarMotivo()
 {
-    $('#error_rehacer_msj').html("");
-    $('#error_rehacer_div').css('display','none');
+
+
+  $('#error_rehacer_msj').html("");
+  $('#error_rehacer_div').css('display','none');
   
 	var motivos = "";
 	    
 	if (motives.length <= 0)
 	{
-	    $('#error_rehacer_msj').html("<strong>Ingrese al menos un motivo para poder cambiar de estado el pedido.</strong>");
-	    $('#error_rehacer_div').css('display','block');
-	    return;
+    $('#error_rehacer_msj').html("<strong>Ingrese al menos un motivo para poder cambiar de estado el pedido.</strong>");
+    $('#error_rehacer_div').css('display','block');
+    return;
 	}
 	
 	for (var i = 0; i < motives.length; i++) {
-	    if (motivos == "") {
-		motivos = motives[i];
-	    }
-	    else{
-		motivos += "-" + motives[i];
-	    }
+    if (motivos == "") {
+			motivos = motives[i];
+    }
+    else{
+			motivos += "-" + motives[i];
+    }
 	}
 	
 	if($('#motivo').val() == "")
 	{
-	    $('#error_rehacer_msj').html("<strong>Ingrese una descripción para poder cambiar de estado el pedido.</strong>");
-	    $('#error_rehacer_div').css('display','block');
-	    return;
+    $('#error_rehacer_msj').html("<strong>Ingrese una descripción para poder cambiar de estado el pedido.</strong>");
+    $('#error_rehacer_div').css('display','block');
+    return;
 	}
-	
+
+
+	var hojaruta=$("#dev_HojaRuta").val();
+	var estaImpreso=0;
+	if($("#esta_impreso").is(':checked')){
+		estaImpreso=1;
+	}
 	$('#btn_rehacer_acp').attr('disabled', 'disabled');
 	
 	var data_ajax={
-                        type: 'POST',
-                        url: "/empaque/insertPedido.php",
-                        data: { action: $("#statusAction").val(),
-				id: $('#idPed').val(),
-				motive: $('#motivo').val(),
-				status: $("#statusNow").val(),
-				mot: motivos},
-                        success: function( data ) {
-					$("#modal_rehacer").modal('hide');
-					location.reload();
-                                },
-                        error: function(){
-                                            alert("Error de conexión.");
-                                          },
-                        dataType: 'json'
-                        };
+    type: 'POST',
+    //url: "/empaque_demo/insertPedido.php",
+    url: "insertPedido.php",
+    data: { 
+    	action: $("#statusAction").val(),
+			id: $('#idPed').val(),
+			motive: $('#motivo').val(),
+			status: $("#statusNow").val(),			
+			hojaruta: hojaruta,
+			estaImpreso: estaImpreso,
+			mot: motivos
+		},
+    success: function( data ) {					
+    	
+    	
+    	$("#modal_rehacer").modal('hide');		
+
+    	location.reload();                                
+    },
+    error: function(){
+    	//alert("Error de conexión.");
+    },
+    dataType: 'json'
+  };
 		
-		$.ajax(data_ajax);
+	$.ajax(data_ajax);
     
 }
 
@@ -1451,7 +1484,7 @@ function ValidarMotivoCancel()
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/insertPedido.php",
+                        url: "insertPedido.php",
                         data: { action: 'C',
 				id: $('#idPed').val(),
 				motive: $('#motivo_').val(),
@@ -1565,6 +1598,41 @@ function AbrirPopPedidos(id, accion)
       $("#modal_rehacer").modal('show');
       
 }
+/*
+$( "td.td_dev" ).live('click',function(the_event){
+	alert("hola live td.td_dev");
+});
+*/
+$(document).on('click','td.td_dev',function(the_event){
+	var data = $(this).data();
+	console.debug("===> DATA: %o",data);
+
+	$("#statusNow").val('P');
+  $("#statusAction").val(data.action);
+  msj = "<b style=\"font-size: 13px; margin-left: 20px;\">Esta seguro de pasar el pedido seleccionado al estado de devolución ?</b>";
+  msj_h = "Devolver Pedido";
+  getMotives('D', 'div_motives');
+
+	$('#idPed').val(data.id);
+	console.debug("===> rh: %o",data.rh);
+	if(data.rh!=''){
+		//$("#tieneHojaRuta").prop('checked', true);
+		$('#dev_HojaRuta').val(data.rh)
+;	}else{
+		//$("#tieneHojaRuta").prop('checked', false);
+		$('#dev_HojaRuta').val(null);	
+	}
+	
+  $('#motivo').val("");
+  $('#error_rehacer_msj').html("");
+  $('#div_alert_er').html(msj);
+  $('#header_div_r').html(msj_h);
+  $('#error_rehacer_div').css('display','none');
+  $('#btn_rehacer_acp').removeAttr('disabled');
+  $("#modal_rehacer").modal('show');
+
+
+});
 
 var motives = new Array();
 function addMotive(value)
@@ -1585,7 +1653,7 @@ function getMotives(value, div)
 	$("#"+div+"").html("");
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/getMotives.php",
+                        url: "/empaque_demo/getMotives.php",
                         data: { val: value},
                         success: function( data ) {
 					
@@ -1631,7 +1699,7 @@ function ValidarMotivoCalidad(estado)
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/insertPedido.php",
+                        url: "/empaque_demo/insertPedido.php",
                         data: { action: estado, id: $('#idPed').val()},
                         success: function( data ) {
 					$("#modal_calidad").modal('hide');
@@ -1732,7 +1800,7 @@ function ValidarMotivoDiseño()
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/insertPedido.php",
+                        url: "/empaque_demo/insertPedido.php",
                         data: {
 				action: 	'CA',
 				id: 		$('#idPed').val(),
@@ -1811,7 +1879,7 @@ function ValidarCalidadPolimero()
 	
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/insertPedido.php",
+		  url: "/empaque_demo/insertPedido.php",
 		  data: { action: acction, id: $('#idPed').val(), observation: obs},
 		  success: function( data ) {
 				  $("#modal_aprovacion").modal('hide');
@@ -1838,7 +1906,7 @@ function ValidarRecibirPolimero()
   
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/insertPedido.php",
+		  url: "/empaque_demo/insertPedido.php",
 		  data: { action: "PR", id: $('#idPed').val()},
 		  success: function( data ) {
 				  $("#modal_aprovacion").modal('hide');
@@ -1873,7 +1941,7 @@ function AsociarPolimero()
 
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/insertPedido.php",
+		  url: "/empaque_demo/insertPedido.php",
 		  data: { action: "P1", id: $('#idPed').val(), nume: $("#numPolim").val()},
 		  success: function( data ) {
 				  $("#modal_asosiacion").modal('hide');
@@ -1905,7 +1973,7 @@ function BuscadorDeProveedores(value)
 		
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarProveedor.php",
+				url: "/empaque_demo/buscarProveedor.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)
@@ -1987,7 +2055,7 @@ function SeleccionadoP(valor)
 		//Load calidades
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/loadCalidades.php",
+				url: "/empaque_demo/loadCalidades.php",
 				data: { xinput: valor },
 				success: function( data ) {
 							    if(data != 0)
@@ -2048,7 +2116,7 @@ function openHR() {
     $("#HrList").html("");
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/gethrci.php",
+		  url: "gethrci.php",
 		  data: { id: $('#idPed').val() },
 		  success: function( data ) {
 				
@@ -2075,7 +2143,7 @@ function openET()
     
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/getEntregas.php",
+		  url: "/empaque_demo/getEntregas.php",
 		  data: { id: $('#idPed').val() },
 		  success: function( data ) {
 				$("#EntList").append('<tr><th width="70">Kg.</th><th width="70">Un.</th><th width="70">Bu.</th><th>Fecha</th><th>Usuario</th></tr>');
@@ -2148,7 +2216,7 @@ function SetImpresion(Id,Status)
 {
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/setImpresionPedido.php",
+		  url: "/empaque_demo/setImpresionPedido.php",
 		  data: { id: Id, status: Status},
 		  success: function( data ) {
 				location.reload();
@@ -2167,7 +2235,7 @@ function ValidarEditPrecio()
     if ($("#nprecio").val() != "") {
 	var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/editPrice.php",
+		  url: "/empaque_demo/editPrice.php",
 		  data: {
 			    id: $('#idPed').val(),
 			    precio: $("#nprecio").val(),
@@ -2687,7 +2755,7 @@ function ValidarPolimeroNuevo()
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/insertPolimero.php",
+                        url: "/empaque_demo/insertPolimero.php",
                         data: {
 				xidProveedor	: idProveedor,
 				xLineatura	: Lineatura,
@@ -2820,7 +2888,7 @@ function AbrirDisenioById(id, code, cli, prod, action)
     
     var data_ajax={
                         type: 'POST',
-                        url: "/empaque/getPolimero.php",
+                        url: "/empaque_demo/getPolimero.php",
                         data: { ntpId : id },
                         success: function( data ) {
 					$("#poliColores").val(data[0]['colores']);
@@ -3055,7 +3123,7 @@ function EditHRCI(xid)
     GlobalIdPedido = xid;
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/gethrci.php",
+		  url: "gethrci.php",
 		  data: { id: xid},
 		  success: function( data ) {
 				   $.each(data, function(k,v)
@@ -3102,7 +3170,7 @@ function SaveEditHRCI()
      
      var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/setEdithrci.php",
+		  url: "/empaque_demo/setEdithrci.php",
 		  data: { id: GlobalIdPedido, val: hojas},
 		  success: function( data ) {
 				 $("#modal_edithrci").modal('hide');  
@@ -3130,7 +3198,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
 	
 	var data_ajax={
 		type: 'POST',
-		url: "/empaque/getLogPolimero.php",
+		url: "/empaque_demo/getLogPolimero.php",
 		data: {
 			xId : idPolimero
 		      },
@@ -3170,7 +3238,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
 	
 	//var data_ajax2={
 	//	type: 'POST',
-	//	url: "/empaque/getCliente.php",
+	//	url: "/empaque_demo/getCliente.php",
 	//	data: {
 	//		xId : idPolimero
 	//	      },
@@ -3448,7 +3516,7 @@ function ReactivarPedido(id) {
 function reactivarP() {
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/insertPedido.php",
+		  url: "/empaque_demo/insertPedido.php",
 		  data: {
 			    id: reactivar,
 			    action: 'RA'
@@ -3475,7 +3543,7 @@ function ContraEntrega(id) {
 function reactivarP_ce(){
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque/insertPedido.php",
+		  url: "/empaque_demo/insertPedido.php",
 		  data: {
 			    id: contraEntrega,
 			    action: 'CE',

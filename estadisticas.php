@@ -283,7 +283,7 @@ function BuscadorDeUsuarios(value)
 		var color = '#FFFFFF';
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarUsuariosXCategoria.php",
+				url: "/empaque_demo/buscarUsuariosXCategoria.php",
 				data: { 
 						xinput: input,
 						xcateg: 'VEN'

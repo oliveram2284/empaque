@@ -196,7 +196,7 @@ var action = "";
         
         var data_ajax={
                     type: 'POST',
-                    url: "/empaque/insertUpdateMail.php",
+                    url: "/empaque_demo/insertUpdateMail.php",
                     data: { xid: input},
                     success: function( data ) {
                                                 if(data != 0)

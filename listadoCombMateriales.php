@@ -231,7 +231,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoCombMaterialesphp.php",
+                        url: "/empaque_demo/listadoCombMaterialesphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)

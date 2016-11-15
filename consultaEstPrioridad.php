@@ -115,7 +115,7 @@ function AbrirCalendario(mesx, ano){
 	}
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/calendarioEstConsulta.php",
+				url: "/empaque_demo/calendarioEstConsulta.php",
 				data: { dia: f.getDate(), mes: mesx, anio: ano },
 				success: function( data ) {
 								$("#ViajesContent").html(data);
@@ -136,7 +136,7 @@ function AbrirPorViaje(id_){
 	idUltimoViaje = id_;
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoDePrioridadesAdConsulta.php",
+				url: "/empaque_demo/listadoDePrioridadesAdConsulta.php",
 				data: { id: id_ },
 				success: function( data ) {
 								$("#PrioridadesContent_").html(data);
@@ -159,7 +159,7 @@ function Autorizar(codigo ,id, viaje)
 	//alert('Autorizar: '+ codigo + '----' + id);
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoDePrioridadesAdAuto.php",
+				url: "/empaque_demo/listadoDePrioridadesAdAuto.php",
 				data: { cnt: cant, ide: id, via: viaje },
 				success: function( data ) {
 								AbrirPorViaje(idUltimoViaje);
@@ -180,7 +180,7 @@ function NoAutorizar(codigo ,id, viaje)
 	//alert('Autorizar: '+ codigo + '----' + id);
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoDePrioridadesAdAuto.php",
+				url: "/empaque_demo/listadoDePrioridadesAdAuto.php",
 				data: { cnt: -1, ide: id, via: viaje },
 				success: function( data ) {
 							//$('#'+codigo+'_fila').css("background-color", "#f2dede");

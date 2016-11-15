@@ -1002,7 +1002,14 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                     break;
                 
                 case "D":
-                    $consulta = "Update pedidos Set estado ='D', version=(version+1), seDevolvio = 'P', marcarComoDevuelta = '1', estaImpreso = 0 Where npedido=$idPedido"; // Aca agregar versión
+
+                    //var_dump($_POST);
+                    $edit_hojaRuta=(isset($_POST['hojaruta']))?",hojaruta=".$_POST['hojaruta']:"";
+                    $edit_estaImpreso=(isset($_POST['estaImpreso']))?",estaImpreso=".$_POST['estaImpreso']:"0";
+
+                    $consulta = "Update pedidos Set estado ='D', version=(version+1), seDevolvio = 'P', marcarComoDevuelta = '1', estaImpreso = 0 $edit_hojaRuta $edit_estaImpreso Where npedido=$idPedido"; // Aca agregar versión
+                    
+                    
                     $resu = mysql_query($consulta);
                     
                     //reg_log($idPedido, "D");

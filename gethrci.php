@@ -6,7 +6,7 @@ $var->conectarse();
 
 $id = $_POST['id'];
 
-
+var
 $sql  = "Select esCI From pedidos Where npedido = ".$id;
 $resu = mysql_query($sql) or die(mysql_error());
 

@@ -189,7 +189,7 @@ require("footer.php");
 		                
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoFeriadosphp.php",
+                        url: "/empaque_demo/listadoFeriadosphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)
@@ -268,7 +268,7 @@ function EditarFeriado(ferId, ferName, ferDay){
 function CerrarViaje(id) {
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoViajesClose.php",
+				url: "/empaque_demo/listadoViajesClose.php",
 				data: { xid: id },
 				success: function( data ) {
 							    location.reload();

@@ -1,17 +1,60 @@
-<?php
+	<?php
 
 class menu
 {
+
+	function menu_ppal_new($idGpo){
+		$var = new conexion();
+		$var->conectarse();
+
+
+		$sql  = "(SELECT tm.* FROM tbl_menu_emp as tm INNER JOIN tbl_grupos_permisos as tgp ON tm.id_menu=tgp.id_menu where tgp.id_grupo=".$idGpo." ORDER BY tm.orden asc, tm.id_menu asc) UNION (Select menu.* 			From tbl_menu_emp as menu			Where menu.link = '' order by orden asc, id_menu asc   )";
+		//echo $sql."<br>";
+		$resultado = mysql_query($sql)or die(mysql_error());
+
+		$menu_items=array();
+		while ($fila = mysql_fetch_array($resultado, MYSQL_NUM)) {
+			$menu_items[]=$fila;
+		}
+
+		$result=$this->get_menu($menu_items);
+
+		$menu_output="";
+		foreach ($result as $key => $item) {
+
+			$menu_output.='<li class="dropdown">';
+			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($item['2']).'<b class="caret"></b></a>';
+			if(!empty($item[9])){
+
+				$level_2=$item[9];
+				$sub_menu='<ul class="dropdown-menu">';
+				foreach ($level_2 as $key => $level_2_item) {
+					//var_dump($level_2_item);
+					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.htmlentities($level_2_item['2']).'</a></li>';
+				}
+				$sub_menu.='</ul>';
+				$menu_output.=$sub_menu;
+			}
+			$menu_output.='</li>';
+		}
+
+		echo $menu_output;
+
+
+		return false;
+	}
+
+
 	function menu_ppal($idGpo)
 	{
 	$count = 1;
-	//en la variable $idGpo viene todos los indices del menu que 
+	//en la variable $idGpo viene todos los indices del menu que
 	$var = new conexion();
 	$var->conectarse();
-	 
+
 	$sql = "
 		(SELECT
-			menu. * 
+			menu. *
 		FROM
 			tbl_grupos_permisos AS gpo
 		JOIN
@@ -23,15 +66,15 @@ class menu
 			From tbl_menu_emp as menu
 			Where menu.link = \"\")
 		Order by ubicacion";
-			
+
 	 $res = mysql_query($sql);
-	 
+
 	 $encabezado_a_usar = "";
 	 $sub_encabezado_a_usar = "";
 	 $armando_Nivel1 = false;
 	 $armando_Nivel2 = false;
 	 $anterior_fue_subMenu = false;
-	 
+
 	if(mysql_num_rows($res)>0)
 	{
 		while($r =  mysql_fetch_array($res))
@@ -45,7 +88,7 @@ class menu
 					echo '</ul>';
 					$armando_Nivel1 = false;
 				}
-				
+
 				if($armando_Nivel2 == true)
 				{
 					if(substr_count($r['ubicacion'], '/') == 1 || substr_count($r['ubicacion'], '/') == 2)
@@ -60,7 +103,7 @@ class menu
 					$armando_Nivel2 = false;
 					$anterior_fue_subMenu = false;
 				}
-				
+
 			}
 			else
 			{
@@ -74,12 +117,12 @@ class menu
 					else
 					{
 						echo'<li class="dropdown">';
-						echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($encabezado_a_usar).'<b class="caret"></b></a>';
+						echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($encabezado_a_usar).'<b class="caret"></b></a>';
 						//ahora armar cuerpo
-						
+
 						echo '<ul class="dropdown-menu">';
-						echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
-							
+						echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
+
 						$encabezado_a_usar = "";
 						$armando_Nivel1 = true;
 					}
@@ -103,39 +146,39 @@ class menu
 									if($encabezado_a_usar_Level2 != "")
 									{
 										echo'<li class="dropdown-submenu" style="text-align: left;">';
-										echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($encabezado_a_usar_Level2).'</a>';
+										echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($encabezado_a_usar_Level2).'</a>';
 										//ahora armar cuerpo
 										echo '<ul class="dropdown-menu">';
-										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
-										
+										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
+
 										$encabezado_a_usar_Level2 = "";
 									}
 									else
 									{
-										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 									}
 								}
 								else
 								{
 									if(substr_count($r['ubicacion'], '/') >= 3)
 									{
-										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';	
+										echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 									}
 									else
 									{
-										if($anterior_fue_subMenu == true)										
+										if($anterior_fue_subMenu == true)
 											{
-												echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+												echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 												$armando_Nivel2 = false;
 											}
 											else
-											echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+											echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 									}
 								}
 							}
 							else
 							{
-								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';	
+								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 							}
 						}
 						else
@@ -143,12 +186,12 @@ class menu
 							if(substr_count($r['ubicacion'], '/') >= 3)
 							{
 								$anterior_fue_subMenu = true;
-								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';	
+								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 							}
-							
+
 							if($anterior_fue_subMenu == true)
 							{
-								echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';	
+								echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
 							}
 							else
 							{
@@ -158,8 +201,8 @@ class menu
 					}
 				}
 			}
-			
-			
+
+
 		}
 	}
 	else
@@ -170,12 +213,12 @@ class menu
 	    {
 		$encabezado = "";
 		$entroXprimeraVez = true;
-		
+
 		$encabezadoNivel2 = "";
 		$entroEnNivel2 = false;
-		
+
 		$cerrar = false;
-		
+
 		$menu = "";
 		while($r = mysql_fetch_array($res))
 			{
@@ -184,12 +227,12 @@ class menu
 				//2 = Opción de menu principal o header de submenu
 				//3 = Opción de submenu
 				switch($nivel)
-				{							
+				{
 					case "1":
 						//Encabezado
 						echo "Tienes problemas!!!!";
 						break;
-					
+
 					case "2":
 						//Normal
 						$posicion = strrpos($r['ubicacion'], '/', 0);
@@ -211,16 +254,16 @@ class menu
 										echo '</ul></li>';
 										$entroEnNivel2 = false;
 
-										
+
 									}
 									else
 									{
 										//Cerramos el item del menu
 										echo '</ul></li>';
 									}
-									
+
 								}
-								
+
 								//agregar encabezado al menu
 								$sqlCabeza = "SELECT * FROM tbl_menu_emp WHERE ubicacion = '".$inicioCadena."'";
 								$resCabeza = mysql_query($sqlCabeza);
@@ -228,7 +271,7 @@ class menu
 								{
 									$row = mysql_fetch_array($resCabeza);
 									$encabezado = $inicioCadena;
-									
+
 									echo'<li class="dropdown">';
 									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'<b class="caret"></b></a>';
 									//ahora armar cuerpo
@@ -247,18 +290,18 @@ class menu
 							}
 						}
 						break;
-					
+
 					case "3":
 						//2° Nivel
 						//obtener nivel 2
 						$posicion = strrpos($r['ubicacion'], '/', 0);
-							$entroEnNivel2 = true;					
+							$entroEnNivel2 = true;
 						if($posicion != false)
 						{
 							$inicioCadena = substr($r['ubicacion'], 0, $posicion);
-							
+
 							if($inicioCadena != $encabezadoNivel2)
-							{																
+							{
 								//agregar encabezado al menu
 								$sqlCabeza = "SELECT * FROM tbl_menu_emp WHERE ubicacion = '".$inicioCadena."'";
 								$resCabeza = mysql_query($sqlCabeza);
@@ -266,7 +309,7 @@ class menu
 								{
 									$row = mysql_fetch_array($resCabeza);
 									$encabezadoNivel2 = $inicioCadena;
-									
+
 									echo'<li class="dropdown-submenu" style="text-align: left;">';
 									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'</a>';
 									//ahora armar cuerpo
@@ -288,11 +331,11 @@ class menu
 							}
 						}
 						break;
-					
+
 					case "4":
 						//3° Nivel
 						break;
-					
+
 					default:
 						echo "Error => Hoooo!!!";
 						break;
@@ -307,16 +350,16 @@ class menu
 	       }
 
 	}
-	
+
 	function menu_permisos($id)
 	{
-	
+
 		$var = new conexion();
 		$var->conectarse();
-		 
 
 
-		$consulta = "Select * From tbl_menu_emp Where imagen != '' ORDER BY ubicacion";		
+
+		$consulta = "Select * From tbl_menu_emp Where imagen != '' ORDER BY ubicacion";
 		$resu = mysql_query($consulta);
 		if(mysql_num_rows($resu)>0)
 		       {
@@ -324,11 +367,11 @@ class menu
 				       {
 					       echo'<li class="dropdown">';
 					       echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'<b class="caret"></b></a>';
-					       
+
 					       //ahora armar cuerpo
 					       echo '<ul class="dropdown-menu">';
 					       $inicio = $row['ubicacion']."/";
-					       
+
 					       $cons = "Select * From tbl_menu_emp Where ubicacion Like '$inicio%' ORDER BY descripcion" ;
 						$res = mysql_query($cons);
 						if(mysql_num_rows($res)> 0)
@@ -339,7 +382,7 @@ class menu
 									$ubicacion = $r['ubicacion']."/";
 									$subM    = "Select * From tbl_menu_emp Where ubicacion Like '$ubicacion%' ORDER BY descripcion";
 									$subMres = mysql_query($subM);
-									
+
 									if(mysql_num_rows($subMres)> 0)
 									{
 										echo '<li class="dropdown-submenu" style="text-align: left;">
@@ -382,38 +425,132 @@ class menu
 											}
 											else
 											{
-												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';	
+												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';
 											}
 										}
 										else
 										{
-											echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';	
+											echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';
 										}
-										
+
 									}
-									
+
 								}
 							}
-					       
+
 					       echo '</ul></li>';
 				       }
 			       }
 	}
-	
+
+	function get_menu($data){
+
+	$new_orden=array();
+	$level_3=array();
+	$level_2=array();
+	$level_1=array();
+	foreach ($data as $key => $item) {
+		//var_dump($item);
+		if ($item[6]=='3') { //parent id=0
+			$level_3[]=$item;
+		}
+		if ($item[6]=='2') { //parent id=0
+			$level_2[]=$item;
+		}
+		if ($item[6]=='1') { //parent id=0
+			$level_1[]=$item;
+		}
+
+	}
+
+
+	foreach ($level_2 as $level_2_key => $level_2_item) {
+		$level_2[$level_2_key][9]=array();
+		foreach ($level_3 as $level_3_key => $level_3_item) {
+			if($level_2_item[0] == $level_3_item[7]){
+				$level_2[$level_2_key][9][]=$level_3_item;
+			}
+		}
+	}
+
+
+	foreach ($level_1 as $level_1_key => $level_1_item) {
+		$level_1[$level_1_key][9]=array();
+		foreach ($level_2 as $level_2_key => $level_2_item) {
+			if($level_1_item[0] == $level_2_item[7]){
+				$level_1[$level_1_key][9][]=$level_2_item;
+			}
+		}
+	}
+
+	return $level_1;
+}
+
+function is_allown($id_grupo=0,$id_menu=0){
+	$sql="SELECT * FROM tbl_grupos_permisos WHERE id_grupo=".$id."";
+	$result = mysql_query($sql)or die(mysql_error());
+	$menu_permisos=array();
+	while ($fila = mysql_fetch_array($result, MYSQL_ASSOC )) {
+		$menu_permisos[]=$fila;
+	}
+
+}
+
+	function menu_permisos2($id=0){
+
+		$var = new conexion();
+		$var->conectarse();
+
+
+		$sql  = "SELECT * FROM tbl_menu_emp as tm INNER JOIN tbl_grupos_permisos as tgp ON tm.id_menu=tgp.id_menu where tgp.id_grupo=".$id." ORDER BY tm.orden asc, tm.id_menu asc";
+		$resultado = mysql_query($sql)or die(mysql_error());
+
+		$menu_items=array();
+		while ($fila = mysql_fetch_array($resultado, MYSQL_NUM)) {
+			$menu_items[]=$fila;
+		}
+
+		$result=$this->get_menu($menu_items);
+
+		$menu_output="";
+		foreach ($result as $key => $item) {
+
+			$menu_output.='<li class="dropdown">';
+			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($item['2']).'<b class="caret"></b></a>';
+			if(!empty($item[9])){
+
+				$level_2=$item[9];
+				$sub_menu='<ul class="dropdown-menu">';
+				foreach ($level_2 as $key => $level_2_item) {
+					//var_dump($level_2_item);
+					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.htmlentities($level_2_item['2']).'</a></li>';
+				}
+				$sub_menu.='</ul>';
+				$menu_output.=$sub_menu;
+			}
+			$menu_output.='</li>';
+		}
+
+		echo $menu_output;
+
+
+		return false;
+	}
+
 	function getNotes($date){
 		/*
-		$sql = 'Select 
-					TIMESTAMPADD( DAY , ( 0 - WEEKDAY( \''.$date.'\' ) ) , CURDATE( ) ) AS PrimerDiaSemana, 
+		$sql = 'Select
+					TIMESTAMPADD( DAY , ( 0 - WEEKDAY( \''.$date.'\' ) ) , CURDATE( ) ) AS PrimerDiaSemana,
 					TIMESTAMPADD( DAY , ( 6 - WEEKDAY( \''.$date.'\' ) ) , CURDATE( ) ) AS UltimoDiaSemana,
 					TIMESTAMPADD( DAY , ( -1 - WEEKDAY( \''.$date.'\' ) ) , CURDATE( ) ) AS SemanaAnterior,
 					TIMESTAMPADD( DAY , ( 7 - WEEKDAY( \''.$date.'\' ) ) , CURDATE( ) ) AS SemanaPosterior';
 		*/
-		$sql = 'SELECT  
-					DATE_SUB(  \''.$date.'\', INTERVAL WEEKDAY(  \''.$date.'\' ) DAY ) AS PrimerDiaSemana, 
+		$sql = 'SELECT
+					DATE_SUB(  \''.$date.'\', INTERVAL WEEKDAY(  \''.$date.'\' ) DAY ) AS PrimerDiaSemana,
 					DATE_ADD( DATE_SUB(  \''.$date.'\', INTERVAL WEEKDAY(  \''.$date.'\' ) DAY ) , INTERVAL 6 DAY ) AS UltimoDiaSemana,
 					DATE_ADD( DATE_SUB(  \''.$date.'\', INTERVAL WEEKDAY(  \''.$date.'\' ) DAY ) , INTERVAL -1 DAY ) AS SemanaAnterior,
 					DATE_ADD( DATE_SUB(  \''.$date.'\', INTERVAL WEEKDAY(  \''.$date.'\' ) DAY ) , INTERVAL 7 DAY ) AS SemanaPosterior';
-		
+
 		$res = mysql_query($sql);
 
 	if(mysql_num_rows($res)>0) {
@@ -421,23 +558,23 @@ class menu
 		{
 			echo '<br><div class="row">
 					<div class="span12" style="text-align: left;">';
-					
+
 			echo 		'<a href="principal.php?day='.$r['SemanaAnterior'].'">';
 			echo 		'<button class="btn btn-info" type="button" title="Anterior"><i class="icon-chevron-left icon-white"></i></button></a>';
-			echo 			'  <b>'.$this->Invert_Fecha($r['PrimerDiaSemana']).'</b>   al   <b>'.$this->Invert_Fecha($r['UltimoDiaSemana']).'</b>  '; 
+			echo 			'  <b>'.$this->Invert_Fecha($r['PrimerDiaSemana']).'</b>   al   <b>'.$this->Invert_Fecha($r['UltimoDiaSemana']).'</b>  ';
 			echo 		'<a href="principal.php?day='.$r['SemanaPosterior'].'">';
 			echo 		'<button class="btn btn-info" type="button" title="Siguiente"><i class="icon-chevron-right icon-white"></i></button></a>';
-			
+
 			echo '	</div>
 				  </div><br>';
-			
-			$fecha = date($r['PrimerDiaSemana']);	
+
+			$fecha = date($r['PrimerDiaSemana']);
 			$band = false;
 			for ($i = 0 ; $i < 7 ; $i++)
 			{
 				$nuevafecha = strtotime ( '+'.$i.' day' , strtotime ( $fecha ) ) ;
 				$nuevafecha = date ( 'Y-m-d' , $nuevafecha );
-					  
+
 				$sql = 'Select * From Notas Where DATE( fecha ) =  \''.$nuevafecha.'\' and usrId = '.$_SESSION['id_usuario'].' order by fecha desc';
 				$notes = mysql_query($sql);
 				if(mysql_num_rows($notes)>0)
@@ -480,7 +617,7 @@ class menu
 						echo '<div class="row">
 							<div class="span12" style="text-align: left;">
 								<div class="span4 alert" style="background: rgba('.$tipo.'); color: black;">
-									<input type="checkbox" onClick="Leer('.$n['idNota'].','.$n['leido'].')" '.$checked.'> 
+									<input type="checkbox" onClick="Leer('.$n['idNota'].','.$n['leido'].')" '.$checked.'>
 									'.$icon.' '.$text.'
 								</div>
 							</div>
@@ -496,7 +633,7 @@ class menu
 					*/
 				}
 			}
-			
+
 			if($band == false)
 			{
 				echo '<div class="row">
@@ -514,10 +651,10 @@ class menu
 	}
 		//var_dump($_SESSION['id_usuario']);
 	}
-	
+
 	function Invert_Fecha($date){
 		$da = explode('-',$date);
-		
+
 		return $da[2].'-'.$da[1].'-'.$da[0];
 	}
 }

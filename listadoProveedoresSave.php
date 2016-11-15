@@ -480,7 +480,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoProveedoresSavephp.php",
+                        url: "/empaque_demo/listadoProveedoresSavephp.php",
                         data: {
                                 inid            : $("#idP").val(),
                                 inrazonSocial   : razonSocial,
@@ -510,7 +510,7 @@ require("footer.php");
                         success: function( data ) {
                                                     if(data == null)
                                                     {
-							$(location).attr('href','../empaque/listadoProveedores.php');
+							$(location).attr('href','../empaque_demo/listadoProveedores.php');
                                                     }
                                                     else
                                                     {
@@ -585,6 +585,6 @@ require("footer.php");
     
     function back()
     {
-        $(location).attr('href','../empaque/listadoProveedores.php');
+        $(location).attr('href','../empaque_demo/listadoProveedores.php');
     }
 </script>

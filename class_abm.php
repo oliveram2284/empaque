@@ -469,6 +469,7 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
+															hojaruta
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
 															".$nombreTabla."
@@ -526,7 +527,8 @@ class abm
 															estaImpreso,
 															poliNumero as polId,
 															caras,
-															marcarComoDevuelta
+															marcarComoDevuelta,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -835,6 +837,7 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
+															hojaruta,
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
 															".$nombreTabla."
@@ -880,7 +883,8 @@ class abm
 															estaImpreso,
 															poliNumero as polId,
 															caras,
-															marcarComoDevuelta
+															marcarComoDevuelta,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -912,7 +916,8 @@ class abm
 															estaImpreso,
 															poliNumero as polId,
 															caras,
-															seDevolvio
+															seDevolvio,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -944,7 +949,8 @@ class abm
 															seCargoHRCI,
 															poliNumero as polId,
 															caras,
-															marcarComoDevuelta
+															marcarComoDevuelta,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -979,7 +985,8 @@ class abm
 															ImporteFactPolimero,
 															prodHabitual,
 															poliNumero as polId,
-															caras
+															caras,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -1006,7 +1013,8 @@ class abm
 															prodHabitual,
 															poliNumero,
 															poliNumero as polId,
-															caras
+															caras,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -1030,7 +1038,8 @@ class abm
 															estado,
 															prodHabitual,
 															poliNumero as polId,
-															caras
+															caras,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -1055,7 +1064,8 @@ class abm
 															Date_format( femis, '%d-%m-%Y' ) as fecha,
 															prodHabitual,
 															poliNumero as polId,
-															caras
+															caras,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -1079,7 +1089,8 @@ class abm
 															estado,
 															prodHabitual,
 															poliNumero as polId,
-															caras
+															caras,
+															hojaruta
 														From
 															".$nombreTabla."
 														Where
@@ -1093,11 +1104,13 @@ class abm
 														     From ".$nombreTabla." 
 														     Where (calidad = 'PA' and (poliNumero = '' or poliNumero = null) and
 														     pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt."";
+												echo $consulta3;
 												break;
 											
 										}
 									}
 								}
+							
 							$resu3 = mysql_query($consulta3);
 							echo"<tbody>";
 							if(mysql_num_rows($resu3) <= 0)
@@ -1108,6 +1121,7 @@ class abm
 										$cant = mysql_query($consultaCantidad);
 										$fila = mysql_fetch_array($cant);
 										$cantidad = $fila[0];
+										
 										while($row_1 = mysql_fetch_array($resu3))
 											{
 											 
@@ -1246,8 +1260,11 @@ class abm
 																{
 																	echo '<td></td>';
 																}
+																echo "<td class='td_dev' data-id='".$row_1['npedido']."' data-action='D' data-rh='".(($row_1['hojaruta']!='')?$row_1['hojaruta']:'')."' style='text-align: center' width='50px'>
+																		<img src='./assest/plugins/buttons/icons/page_red.png' width='15' heigth='15' /></td>";
+																/*
 																echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','D')\" style=\"text-align: center\" width=\"50px;\">
-																		<img src=\"./assest/plugins/buttons/icons/page_red.png\" width=\"15\" heigth=\"15\" /></td>"; 
+																		<img src=\"./assest/plugins/buttons/icons/page_red.png\" width=\"15\" heigth=\"15\" /></td>"; */
 															}
 															else
 															{
@@ -1310,7 +1327,7 @@ class abm
 												  case "U": //curso //quitar calidad y evaluar por campo facturacion
 														if($row_1['esCI'] != null && $row_1['esCI'] != "")
 														{
-															echo "<td onClick=\"AbrirPopTerminado('$row_1[0]','".$row_1['Articulo']."','Terminar Nota De Pedido N° ".$row_1['codigo']."')\" style=\"text-align: center\" title=\"Terminar\">
+															echo "<td onClick=\"AbrirPopTerminado('$row_1[0]','".htmlspecialchars($row_1['Articulo'])."','Terminar Nota De Pedido N° ".$row_1['codigo']."')\" style=\"text-align: center\" title=\"Terminar\">
 																<img src=\"./assest/plugins/buttons/icons/box.png\" width=\"20\" heigth=\"20\" />
 															    </td>";
 															if($row_1['cantidad_entregadas'] > 0 ||
@@ -1334,7 +1351,7 @@ class abm
 														{
 															if($row_1['polimeroEnFacturacion'] == 2 || $row_1['polimeroEnFacturacion'] == '' || $row_1['polimeroEnFacturacion'] == 1)
 															{
-																echo "<td onClick=\"AbrirPopTerminado('$row_1[0]','".$row_1['Articulo']."','Terminar Nota De Pedido N° ".$row_1['codigo']."')\" style=\"text-align: center\" title=\"Terminar\">
+																echo "<td onClick=\"AbrirPopTerminado('$row_1[0]','".htmlspecialchars($row_1['Articulo'])."','Terminar Nota De Pedido N° ".$row_1['codigo']."')\" style=\"text-align: center\" title=\"Terminar\">
 																	<img src=\"./assest/plugins/buttons/icons/box.png\" width=\"20\" heigth=\"20\" />
 																    </td>"; 
 																if($row_1['cantidad_entregadas'] > 0 ||
@@ -1383,7 +1400,7 @@ class abm
 															{
 																echo "<td></td>
 																      <td></td>
-																      <td onClick=\"AbrirDisenioById('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','$row_1[Articulo]','CR')\" title=\"Generar Polímero\" style=\"text-align: center\" width=\"50px;\">
+																      <td onClick=\"AbrirDisenioById('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','".htmlspecialchars($row_1['Articulo'])."','CR')\" title=\"Generar Polímero\" style=\"text-align: center\" width=\"50px;\">
 																	<img src=\"./assest/plugins/buttons/icons/application_edit.png\" width=\"15\" heigth=\"15\" />
 																      </td>";
 																//echo "<td></td>";
@@ -1493,7 +1510,7 @@ class abm
 																		if($row_1['estado'] != 'B' && $row_1['estado'] != 'CA' && $row_1['estado'] != 'PO' && $row_1['estado'] != 'PX' && $row_1['estado'] != 'PA' && $row_1['estado'] != 'U' && $row_1['estado'] != 'DI' && $row_1['estado'] != 'CL')
 																		{
 																			echo "<td></td>";
-																			echo "<td onClick=\"AbrirDisenio('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','$row_1[Articulo]','TP')\" title=\"Generar Polímero\" style=\"text-align: center\">
+																			echo "<td onClick=\"AbrirDisenio('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','".htmlspecialchars($row_1['Articulo'])."','TP')\" title=\"Generar Polímero\" style=\"text-align: center\">
 																				<img src=\"./assest/plugins/buttons/icons/chart_bar_edit.png\" width=\"15\" heigth=\"15\" />
 																			      </td>
 																			      <td></td>";
@@ -1616,20 +1633,26 @@ class abm
 															echo '<td><button class="btn btn-mini btn-warning" type="button" style="width: 30px;" onClick="SetImpresion(\''.$row_1[0].'\',\'N\')"></button></td>';
 														      }
 														      if($row_1['marcarComoDevuelta'] == '1')
-																echo '<td>
+																/*echo '<td>
 																	<div
 																		style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: red;" title="Devuelto"
 																		>
 																		<b>D</b>
 																	</div>
-																</td>';
+																</td>';*/
+																echo '<td>
+																<div onClick="AbrirMotivos(\''.$row_1[0].'\')" 
+																		style="width: 20px; height: 15px; background:White; -moz-border-radius: 50%; -webkit-border-radius: 50%; border-radius: 50%; box-shadow: 2px 2px 5px #999; padding-top: 5px; text-align: center; color: red; cursor: pointer;" title="Devuelto"
+																		>
+																		<b>D</b>
+																	</div> </td>';
 																else echo '<td></td>';
 														}
 														
 														
 														break;
 												  case "AP":
-														echo "<td onClick=\"AbrirDisenioById('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','$row_1[Articulo]','AP')\" title=\"Polímero Aprobado\" style=\"text-align: center\" width=\"50px;\">
+														echo "<td onClick=\"AbrirDisenioById('$row_1[0]','$row_1[codigo]','$row_1[clienteNombre]','".htmlspecialchars($row_1['Articulo'])."','AP')\" title=\"Polímero Aprobado\" style=\"text-align: center\" width=\"50px;\">
 															<img src=\"./assest/plugins/buttons/icons/star.png\" width=\"15\" heigth=\"15\" /></td>";
 														echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','".$accion."')\" style=\"text-align: center\" width=\"50px;\">
 															<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
@@ -1657,7 +1680,7 @@ class abm
 													
 													        break;
 												  case "E":
-														echo "<td style=\"text-align: center\" onClick=\"AbrirPopEditarPrecio('$row_1[0]','".$row_1['Articulo']."','Editar Precio Nota De Pedido N° ".$row_1['codigo']."')\">
+														echo "<td style=\"text-align: center\" onClick=\"AbrirPopEditarPrecio('$row_1[0]','".htmlspecialchars($row_1['Articulo'])."','Editar Precio Nota De Pedido N° ".$row_1['codigo']."')\">
 															<img src=\"./assest/plugins/buttons/icons/pencil.png\" style=\"cursor: pointer;\" width=\"15\" heigth=\"15\" title=\"Editar Precio\"/>
 														      </td>";
 														break;

@@ -272,7 +272,7 @@ require("footer.php");
 	
 	var data_ajax={
 		type: 'POST',
-		url: "/empaque/getLogPolimero.php",
+		url: "/empaque_demo/getLogPolimero.php",
 		data: {
 			xId : idPolimero
 		      },
@@ -312,7 +312,7 @@ require("footer.php");
 	
 	var data_ajax2={
 		type: 'POST',
-		url: "/empaque/getCliente.php",
+		url: "/empaque_demo/getCliente.php",
 		data: {
 			xId : idPolimero
 		      },
@@ -504,7 +504,7 @@ function formatDate(date)
 	$("#HrList").html("");
 	var data_ajax={
 		      type: 'POST',
-		      url: "/empaque/gethrci.php",
+		      url: "/empaque_demo/gethrci.php",
 		      data: { id: idPedido },
 		      success: function( data ) {
 				    
@@ -531,7 +531,7 @@ function formatDate(date)
 	
 	var data_ajax={
 		      type: 'POST',
-		      url: "/empaque/getEntregas.php",
+		      url: "/empaque_demo/getEntregas.php",
 		      data: { id: idPedido },
 		      success: function( data ) {
 				    $("#EntList").append('<tr><th width="70">Kg.</th><th width="70">Un.</th><th width="70">Bu.</th><th>Fecha</th><th>Usuario</th></tr>');
@@ -685,7 +685,7 @@ function BuscadorDeClientes(value)
 		var color = '#FFFFFF';
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarCliente.php",
+				url: "/empaque_demo/buscarCliente.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)
@@ -771,7 +771,7 @@ function BuscadorDeUsuarios(value)
 		var color = '#FFFFFF';
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/buscarProveedores.php",
+				url: "/empaque_demo/buscarProveedores.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)

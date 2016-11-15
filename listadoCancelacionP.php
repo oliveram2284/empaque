@@ -190,7 +190,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoCancelacionpphp.php",
+                        url: "/empaque_demo/listadoCancelacionpphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)

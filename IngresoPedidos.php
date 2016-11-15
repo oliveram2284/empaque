@@ -17,7 +17,7 @@ $canti = mysql_fetch_array($resu);
 
 $cantidad = str_pad($canti[0] + 1, 4, "0000", STR_PAD_LEFT);
 $codigo = $nombre."-".$cantidad."-".date("y");
- 
+
 //$_GET['valor2'] => Accion
 $accionPedido = $_GET['valor2'];
 
@@ -31,8 +31,8 @@ $idPedido = $_GET['valor1'];
 				//ingreso nuevo
 				$num = $codigo;
 				break;
-			
-		case "A"://cargar los datos del pedido seleccionado 
+
+		case "A"://cargar los datos del pedido seleccionado
 		case "V":
 		case "P":
 		case "T":
@@ -52,15 +52,15 @@ $idPedido = $_GET['valor1'];
 				$consulta = "Select * From pedidos Where npedido=".$idPedido;
 				$resu = mysql_query($consulta);
 				$row = mysql_fetch_array($resu);
-				
-				//detalle del pedido 
+
+				//detalle del pedido
 				$detalle = "Select * From pedidosdetalle where idPedido = $idPedido";
 				$deta = mysql_query($detalle);
 				$rDeta = mysql_fetch_array($deta);
-				
+
 				break;
 		default :
-				//cargar pedido seleccionado 
+				//cargar pedido seleccionado
 				//$consulta = "Select * from ";
 				break;
 	}
@@ -85,382 +85,12 @@ require("header.php");
 
 
 ?>
+<style type="text/css">
+ .span6 {
+    width: 45%;
+  }
+</style>
 
-<script>
-	var campos_para_validar = [];
-	var cliente = true;
-	
-	function BuscarClientes()
-	{
-		cliente = true;
-		$("#buscador").val("");
-		$("#resultado_Cliente").html("");
-		$('#ClientesPop').modal('show');
-		setTimeout(function () { $('#buscador').focus(); }, 1000);
-	};
-	
-	//Cliente a facturar !!!!
-	function BuscarFacturars(value)
-	{
-		cliente = false;
-		$("#buscador").val("");
-		$("#resultado_Cliente").html("");
-		$('#ClientesPop').modal('show');
-		setTimeout(function () { $('#buscador').focus(); }, 1000);
-	}
-	
-	function ClosePop(div)
-	{
-		var idDiv = "#"+div;
-		$(idDiv).modal('hide');			
-	}
-	
-	function BuscadorDeClientes(value)
-	{
-		var input = [];
-		input.push(value);
-		var color = '#FFFFFF';
-		var data_ajax={
-				type: 'POST',
-				url: "/empaque/buscarCliente.php",
-				data: { xinput: input },
-				success: function( data ) {
-							    if(data != 0)
-							    {
-								var fila = '<table style="width: 90%;">';
-								fila +='<thead><th style="width: 20px;"></th><th style="width: 70px;">Código</th><th>Razón Social</th></tr></thead>';
-								fila += "<tbody>";
-								$.each(data, function(k,v)
-										{
-										    if(color == '#A9F5A9')
-										    {
-											color = '#FFFFFF';
-										    }
-										    else
-										    {
-											color = '#A9F5A9';
-										    }
-										    //Datos de cada cliente
-										    var idCodigo = "";
-										    $.each(v, function(i,j)
-											       {
-												 if(i == "cod_client")//<i class="iconic-o-check" style="color: #51A351"></i>
-												 {
-													//Icono  accept
-													fila += '<tr style="cursor: pointer; background-color:'+color+'" id="'+j+'" onClick="Seleccionado(\''+j+'\')">';
-													fila +='<td>';
-													fila +='<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>';
-													fila +='</td>';
-													fila +="<td>"+j+"</td>";
-													fila += '<input type="hidden" id="'+j+'_c" value="'+j+'">';
-													idCodigo = j;
-												 }
-												 if(i == "razon_soci")
-												 {
-													fila +="<td>"+j+"</td>";
-													fila += '<input type="hidden" id="'+idCodigo+'_rz" value="'+j+'">';
-												 }
-												 if(i == "telefono_1")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_f" value="'+j+'">';
-												 }
-												 if(i == "domicilio")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_d" value="'+j+'">';
-												 }
-												 if(i == "cuit")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_cu" value="'+j+'">';
-												 }
-												 if(i == "nom_com")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_n" value="'+j+'">';
-												 }
-												 if(i == "e_mail")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_mail" value="'+j+'">';
-												 }
-												 if(i == "telefono_2")
-												 {
-													fila += '<input type="hidden" id="'+idCodigo+'_protocolo" value="'+j+'">';
-												 }
-											       }
-											      );
-										    
-										    fila += "</tr>";
-										    
-										}
-										
-									       );
-								fila += "</tbody></table>";
-								
-								$("#resultado_Cliente").html(fila);
-								
-							    }
-							    else
-							    {
-								$("#resultado_Cliente").html('<strong style="color: red;">No se encontraron resultados</strong>');
-							    }
-							  },
-				error: function(){
-						    alert("Error de conexión.");
-						  },
-				dataType: 'json'
-				};
-		$.ajax(data_ajax);
-	}
-	
-	function Seleccionado(valor)
-	{
-		//tomar id pasado y buscar los valor para los campos correspondientes al cliente
-		var id = "#"+valor+"_c";
-		var rz = "#"+valor+"_rz";
-		
-		$("#facturarA").val($(rz).val());
-		$("#codigoTangoFacturar").val($(id).val());
-				
-		if(cliente == true)
-		{
-			var te = "#"+valor+"_f";
-			var dom = "#"+valor+"_d";
-			var cu = "#"+valor+"_cu";
-			var mail = "#"+valor+"_mail";
-			var proto = "#"+valor+"_protocolo";
-						
-			$("#codigoTango").val($(id).val());
-			$("#tbCliente").val($(rz).val());
-			$("#telefonoCliente").val($(te).val());
-			$("#direccionCliente").val($(dom).val());
-			$("#cuit").val($(cu).val());
-
-			$("#mail_protocolo").val($(mail).val());
-			$("#envia_protocolo").val($(proto).val());
-		
-		}	
-		
-		ClosePop("ClientesPop");
-	}
-	
-	function BuscarProductoN()
-	{
-		if($("#chkH").is(':checked'))
-		{
-			$("#buscadorP").val("");
-			$("#resultado_Productos").html("");
-			$('#ProductosPop').modal('show');
-			setTimeout(function () { $("#buscadorP").focus(); }, 1000);
-		}
-	}
-	
-	function BuscadorDeProductos(value, page)
-	{
-		var color = '#FFFFFF';
-		var data_ajax={
-				type: 'POST',
-				url: "/empaque/buscarProducto.php",
-				data: { xinput: value, xpage: page , busq: $('#busc').val() },
-				success: function( data ) {
-							    if(data != 0)
-							    {
-								var fila = '<table style="width: 90%; font-size: 10px;">';
-								fila +='<thead><th style="width: 20px;"></th><th style="width: 70px;">Código</th><th style="width: 500px;">Artículo</th><th>Código Producto</th></tr></thead>';
-								fila += "<tbody>";
-								$.each(data, function(k,v)
-										{
-										    if(color == '#A9F5A9')
-										    {
-											color = '#FFFFFF';
-										    }
-										    else
-										    {
-											color = '#A9F5A9';
-										    }
-										    //Datos de cada cliente
-										    var idCodigo = "";
-										    $.each(v, function(i,j)
-											       {
-												 if(i == "Id")
-												 {
-													//Icono
-													fila += '<tr style="cursor: pointer; background-color:'+color+'" id="'+j+'" onClick="SeleccionadoP(\''+j+'\')">';
-													fila +='<td>';
-													fila +='<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>'; 
-													fila +='</td>';
-													fila +="<td>"+j+"</td>";
-													fila += '<input type="hidden" id="'+j+'_cp" value="'+j+'">';
-													idCodigo = j;
-												 } 
-												 if(i == "Articulo")
-												 {
-													fila +='<td style="padding-left: 10px;">'+j+'</td>';
-													fila += '<input type="hidden" id="'+idCodigo+'_arp" value="'+j+'">';
-												 }
-												 if(i == "Nombre_en_Facturacion")
-												 {
-													fila +="<td>"+j+"</td>";
-													fila += '<input type="hidden" id="'+idCodigo+'_ncp" value="'+j+'">';
-												 }
-												 
-											       }
-											      );
-										    
-										    fila += "</tr>";
-										    
-										}
-										
-									       );
-								fila += "</tbody></table>";
-								
-								$("#resultado_Productos").html(fila);
-								
-							    }
-							    else
-							    {
-								$("#resultado_Productos").html('<strong style="color: red;">No se encontraron resultados</strong>');
-							    }
-							  },
-				error: function(){
-						    alert("Error de conexión.");
-						  },
-				dataType: 'json'
-				};
-		$.ajax(data_ajax);		
-	}
-	
-	function SeleccionadoP(valor)
-	{
-		//tomar id pasado y buscar los valor para los campos correspondientes al producto
-		var ar = "#"+valor+"_arp";
-		var nc = "#"+valor+"_ncp";
-		
-		$("#codigoProductop").val(valor);
-		$("#nombreProducto").val($(ar).val());
-		$("#descripcionProducto").val($(nc).val());
-		
-		ClosePop("ProductosPop");
-	}
-	
-	function chequeadoN(value)
-	{
-		
-		debugger;
-		if ($("#versionNP").val() > 1) {
-			if ($("#esNuevoNP").val() == 0 && value == "si") {
-				$('#msj_error_pop').html("<strong>No se puede cambiar un producto de habitual a nuevo cuando la versión de la nota de pedido es mayor a 1.</strong>");
-				$('#MensajesPop').modal('show');
-				$("#chkH").attr('checked', 'checked');
-				return;
-			}
-		}
-	
-		if(value == "si")
-		{
-			$("#codigoProductop").val("");
-			$("#nombreProducto").val("");
-			$('#nombreProducto').removeAttr('readonly');
-			$("#descripcionProducto").val("");
-			$("#div_busqueda_prod").removeClass("control-group error");
-			//$("#observaciones").removeAttr('readonly');
-		}
-		else
-		{
-			$("#div_busqueda_prod").addClass("control-group");
-			$("#div_busqueda_prod").addClass("error");
-			$('#nombreProducto').attr('readonly', true);
-			$("#descripcionProducto").val("");
-			$("#codigoProductop").val("");
-			$("#nombreProducto").val("");
-			//$('#observaciones').val('');
-			//$('#observaciones').attr('readonly', true);
-		}
-	}
-	
-	
-	$(document).ready(function(){
-		$("#formato").change(function(){
-			campos_para_validar = [];
-			clear_all();
-			var op = $(this).find("option:selected").val();
-			
-			var data_ajax={
-				type: 'POST',
-				url: "/empaque/get_campos_obligatorios.php",
-				data: { xinput: op },
-				success: function( data ) {
-							    if(data != 0)
-							    {
-								$.each(data, function(k,v)
-										{
-										   var id_cmp = "#"+v;
-										   campos_para_validar.push(id_cmp);
-										   
-										   if(v == "termo" || v == "micro" || v == "troquelado")
-										   {
-											$(id_cmp).removeAttr('disabled');
-										   }
-										   else
-										   {
-											$(id_cmp).removeAttr('readonly');
-										   }
-										}
-									);
-							    }
-							  },
-				error: function(){
-						    alert("Error de conexión.");
-						  },
-				dataType: 'json'
-				};
-			$.ajax(data_ajax);
-		});
-	});
-	
-	function clear_all()
-	{
-		$("#ancho").attr('readonly', true);
-		$("#ancho").val("");
-		$("#largo").attr('readonly', true);
-		$("#largo").val("");
-		$("#micronaje").attr('readonly', true);
-		$("#micronaje").val("");
-		$("#fuelle").attr('readonly', true);
-		$("#fuelle").val("");
-		$("#precioPoli").attr('readonly', true);
-		$("#precioPoli").val("");
-		$("#termo").attr("disabled", "disabled");
-		$("#termo").attr('checked', false);
-		$("#micro").attr("disabled", "disabled");
-		$("#micro").attr('checked', false);
-		$("#origen").val("");
-		$("#origen").attr('readonly', true);
-		$("#solapa").val("");
-		$("#solapa").attr('readonly', true);
-		$("#troquelado").attr("disabled", "disabled");
-		$("#troquelado").val("-1");
-	}
-	
-	function setear(valor)
-	{
-		$('#busc').val(valor);
-		$("#resultado_Productos").html("");
-	}
-	
-	function closeMensaje()
-	{
-		$('#MensajesPop').modal('hide');
-	}
-	
-	function abrir_venc()
-	{
-		$("#VencPop").modal('show');
-	}
-	
-	
-	//$('#btnCloseMensajePop').click(function(){
-	//	
-	//	$(idDiv).modal('hide');	
-	//});
-</script>
 
 <!-- VENTANAS EMERGENTES -->
 <!-- Vencimientos -->
@@ -470,7 +100,7 @@ require("header.php");
     <h3>Datos de Elaboración</h3>
   </div>
   <div class="modal-body">
-    
+
 	<table>
 		<tr>
 			<td>Envasado: </td>
@@ -485,7 +115,7 @@ require("header.php");
 			<td><input type="text" id="lote" value="<?php echo isset($row['lote']) ? $row['lote']: "";?>" <?php echo Readonly($accionPedido);?>/></td>
 		</tr>
 	</table>
-	
+
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" id="btnCloseClientesPop" onclick="ClosePop('VencPop')">Cerrar</a>
@@ -501,7 +131,7 @@ require("header.php");
   <div class="modal-body">
     <strong>Buscar :   </strong>  <input type="text" id="buscador" onkeyup="BuscadorDeClientes(this.value)"><br><br>
     <div id="resultado_Cliente" style="width: 90%; min-height: 250px; max-height: 250px;">
-	
+
     </div>
   </div>
   <div class="modal-footer">
@@ -532,7 +162,7 @@ require("header.php");
 		</tr>
 	</table>
     <div id="resultado_Productos" style="width: 90%; min-height: 250px; max-height: 250px;">
-	
+
     </div>
   </div>
   <div class="modal-footer">
@@ -550,7 +180,7 @@ require("header.php");
   <div class="modal-body">
     <br>
     <div id="msj_error_pop" class="alert alert-error">
-	
+
     </div>
   </div>
   <div class="modal-footer">
@@ -614,43 +244,43 @@ require("header.php");
 						case "I":
 							echo "<h2>Ingreso de Pedido</h2>";
 							break;
-						
+
 						case "A":
 							echo "<h2>Recepción de Pedido</h2>";
 							break;
-						
+
 						case "R":
 							echo "<h2>Rehacer Pedido</h2>";
 							break;
-						
+
 						case "C":
 							echo "<h2>Cancelar Pedido</h2>";
 							break;
-						
+
 						case "E":
 							echo "<h2>Editar Pedido</h2>";
 							break;
-						
+
 						case "P":
 							echo "<h2>Pedidos en Adm. de Producción</h2>";
 							break;
-						
+
 						case "AP":
 							echo "<h2>Pedido para Aprobar</h2>";
 							break;
-						
+
 						case "SI":
 							echo "<h2>Aprobar Pedido para diseño</h2>";
 							break;
-						
+
 						case "B":
 							echo "<h2>Pedido Diseñado</h2>";
 							break;
-						
+
 						case "NO":
 							echo "<h2><font style=\"color: red;\">NO</font> Aprobar Pedido para diseño</h2>";
 							break;
-						
+
 						case "D":
 							echo "<h2>Devolución de Pedido</h2>";
 							break;
@@ -658,22 +288,22 @@ require("header.php");
 							echo "<h2>Aprobar Diseño</h2>";
 							break;
 					}
-				
+
 				?>
 			</div>
 		</div>
-	</div>	
-	
+	</div>
+
 	<!-- Datos del pedido -->
 	<input type="hidden" id="idPedido" name="idPedido" value="<?php echo $idPedido; ?>"/>
-	
+
 	<div class="row">
 		<div class="span10">
 			<div class="bs-docs-example">
 				<table style="width: 90%">
 					<tr>
 						<td>
-							<?php 
+							<?php
 							if ($accionPedido != "I")
 							{
 							?>
@@ -687,7 +317,7 @@ require("header.php");
 						<td colspan="2">
 							<input type="text" name="numeroPedido" maxlength="8" value="<?php echo isset($row['codigo'])? $row['codigo']:$num;?>" readonly>
 						</td>
-						
+
 					</tr>
 					<tr>
 						<td><label>Cliente:</label> </td>
@@ -807,7 +437,7 @@ require("header.php");
 									echo "
 										<div class=\"control-group error\" id=\"div_busqueda_prod\">
 											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
-										</div>	
+										</div>
 									";
 								}
 								else
@@ -820,7 +450,7 @@ require("header.php");
 								}
 							}
 							?>
-							
+
 						</td>
 					</tr>
 					<tr>
@@ -858,7 +488,7 @@ require("header.php");
 				</table>
 			</div>
 		</div>
-		<div class="span3" style="margin-left: 120px;">
+		<div class="span6" style="">
 			<div class="bs-docs-date">
 				<table>
 					<tr>
@@ -897,7 +527,7 @@ require("header.php");
 									$fechin = explode('-',$row['entrega']);
 									$fechin = $fechin[2].'-'.$fechin[1].'-'.$fechin[0];
 								}
-								
+
 								if (Readonly($accionPedido) == "readonly")
 								{
 									?>
@@ -917,11 +547,11 @@ require("header.php");
 										$('#fecha1').datepicker( 'setDate', '".$fechin."' );
 									      });
 									</script>
-									
+
 									<div class=\"control-group error\">
 										<input type=\"text\" id=\"fecha1\" name=\"fecha1\" class=\"input-small\" readonly>
 									</div>
-									
+
 									";
 								}
 							?>
@@ -929,162 +559,15 @@ require("header.php");
 					</tr>
 				</table>
 			</div>
-			
+
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="span10">
 			<div class="bs-docs-detail">
-				<div class="row" style="text-align: center">
-					<div class="span4">
-						<div class="bs-docs-volumen">
-							<table style="width: 100%">
-								<tr>
-									<td>
-										Cantidad:
-									</td>
-									<td>
-										<input type="text" id="cantidad" name="cantidad" onKeyUp="numerico(cantidad);" value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Unidades:
-									</td>
-									<td>
-										<select id="unidades" name="unidades" style="width: 150px;" <?php IsEnabled($accionPedido);?>>
-											<option value="0" selected="selected">Selecc.</option>
-											<?php
-											$b = 0;
-												$consulta = "Select * from unidades order by descripcion";
-												$resu = mysql_query($consulta); 
-												if($accionPedido == "I")
-												{
-													while($uni = mysql_fetch_array($resu))
-													{
-														echo "<option value=".$uni['idUnidad'].">".$uni['descripcion']."</option>";
-													}
-												}else
-													{
-													    while($uni = mysql_fetch_array($resu))
-														{
-														if($rDeta['Unidad'] == $uni['idUnidad'])
-															{ 
-																 echo "<option value=".$uni['idUnidad']." selected>".$uni['descripcion']."</option>";
-															}else
-																{
-																	echo "<option value=".$uni['idUnidad'].">".$uni['descripcion']."</option>";
-																}
-														}		
-													}
-											?>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>Precio:</td>
-									<td>
-										<select id="moneda" name="moneda" style="width: 70px;" <?php IsEnabled($accionPedido);?>>
-											<option value="0" selected="selected">-</option>
-											<?php
-											$consulta = "Select * from monedas order by descripcion";
-											$resu = mysql_query($consulta);
-											if($accionPedido == "I")
-											{
-												while($uni = mysql_fetch_array($resu))
-												{
-													echo "<option value=".$uni['idMoneda'].">".$uni['descripcion']."</option>";
-												}
-											}else
-												{
-													while($uni = mysql_fetch_array($resu))
-													{
-													  if($rDeta['Moneda'] == $uni['idMoneda'])
-														{
-															echo "<option value=".$uni['idMoneda']." selected>".$uni['descripcion']."</option>";
-														}else
-															{
-																echo "<option value=".$uni['idMoneda'].">".$uni['descripcion']."</option>";
-															}
-													}    
-												}
-											?>
-										</select>
-										<input type="text" id="precio" name="precio" onKeyUp="decimal(precio)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['PrecioImporte'];?>" style="width: 85px;" <?php echo Readonly($accionPedido);?>>
-										<select id="condicionPago" name="condicionPago" style="width: 85px;" <?php IsEnabled($accionPedido);?>>
-											<option value="0" selected="selected">-</option>
-											<?php
-											$consulta = "Select * from condicioniva order by descripcion";
-											$resu = mysql_query($consulta);
-											if($accionPedido == "I")
-											{
-												while($uni = mysql_fetch_array($resu))
-												{
-													echo "<option value=".$uni['idIVA'].">".$uni['descripcion']."</option>";
-												}
-											}else
-												{
-													while($uni = mysql_fetch_array($resu))
-													{
-													   if($rDeta['IVA'] == $uni['idIVA'])
-														{
-															echo "<option value=".$uni['idIVA']." selected>".$uni['descripcion']."</option>";
-														}else
-															{
-																echo "<option value=".$uni['idIVA'].">".$uni['descripcion']."</option>";
-															}
-													}	
-												}
-											?>
-										</select>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<div class="span4 offset1">
-						<div class="bs-docs-print">
-							<table style="width: 100%">
-								<tr>
-									<td>Caras:</td>
-									<td>
-										<select name="caras" id="caras" onchange="HabilitarDatosImpresion()" <?php IsEnabled($accionPedido);?>>
-											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['caras'] == 3) ? "selected": "";?>>Seleccionar</option>
-											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 0) ? "selected": "";?>>Sin Impresi&oacute;n</option>
-											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 1) ? "selected": "";?>>1 Cara</option>
-											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 2) ? "selected": "";?>>2 Caras</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>Tipo Imp:</td>
-									<td>
-										<select name="centrada" id="centrada" <?php IsEnabled($accionPedido);?>>
-											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['centrada'] == 3) ? "selected": "";?>>Seleccionar</option>
-											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 2) ? "selected": "";?>>Ning&uacute;na</option>
-											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 1) ? "selected": "";?>>Centrada</option>
-											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 0) ? "selected": "";?>>Corrida</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>Horientación:</td>
-									<td>
-										<select name="tipo" id="tipo" <?php IsEnabled($accionPedido);?>>
-											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['apaisada'] == 3) ? "selected": "";?>>Seleccionar</option>
-											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 2) ? "selected": "";?>>Ninguna</option>
-											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 1) ? "selected": "";?>>Apaisada</option>
-											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 0) ? "selected": "";?>>Com&uacute;n</option>
-										</select>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</div>
 				<div class="row">
-					<div class="span4">
+					<div class="span6">
 						<div class="bs-docs-product">
 							<table style="width: 100%">
 								<tr>
@@ -1111,8 +594,8 @@ require("header.php");
 																}else
 																	{
 																		echo "<option value=".$uni['idFormato'].">".htmlentities($uni['descripcion'])."</option>";
-																	} 
-															}	
+																	}
+															}
 														}
 													?>
 										</select>
@@ -1143,12 +626,12 @@ require("header.php");
 																	{
 																		echo "<option value=".$uni['idMaterial']." >".$uni['descripcion']."</option>"; //onClick=\"habilitarComponentes(".$uni['idMaterial'].")\"
 																	}
-															}	
+															}
 														}
-														
 
-													
-													
+
+
+
 											?>
 										</select>
 										<?php
@@ -1161,13 +644,13 @@ require("header.php");
 											$termo = "disabled=\"false\"";
 											$micro = "disabled=\"false\"";
 											$troqu = "disabled=\"false\"";
-											
+
 											if($accionPedido == "E" || $accionPedido == "A" || $accionPedido == "P")
 											{
 												//get dinamic data format
 												$getDD  = "Select cmpId from tbl_formato_campos Where fId = ".$rDeta['Formato']."";
 												$values = mysql_query($getDD);
-												
+
 												while($frm= mysql_fetch_array($values))
 												{
 													switch($frm[0])
@@ -1200,15 +683,15 @@ require("header.php");
 															$troqu = "";
 															break;
 													}
-													
+
 													//echo '<script>
 													//	var id_cmp = "#"+'.$frm[0].';
 													//	campos_para_validar.push(id_cmp);
 													//      </script>';
 												}
-												
+
 											}
-											
+
 										?>
 									    </td>
 								</tr>
@@ -1218,6 +701,14 @@ require("header.php");
 									</td>
 									<td>
 										<input type="text" id="color" name="color" onKeyUp="alfanumerico(color)" value="<?php echo ($accionPedido == 'I')? "": $rDeta['ColorMaterial'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+                <tr>
+									<td>
+										Origen:
+									</td>
+									<td>
+										<input type="text" id="origen" name="origen" <?php echo $orige; ?> value="<?php echo ($accionPedido == 'I')? "": $rDeta['PrecioPolimeros'];?>"><!-- "-->
 									</td>
 								</tr>
 								<tr>
@@ -1266,16 +757,9 @@ require("header.php");
 									</td>
 									<td>
 										<input type="checkbox" name="micro" id="micro" <?php echo ($accionPedido == 'I')? "": ($rDeta['Micro'] == 1) ? "checked": "";?> <?php echo $micro; ?> >
-									</td>						
-								</tr>
-								<tr>
-									<td>
-										Origen:
-									</td>
-									<td>
-										<input type="text" id="origen" name="origen" <?php echo $orige; ?> value="<?php echo ($accionPedido == 'I')? "": $rDeta['PrecioPolimeros'];?>"><!-- "-->
 									</td>
 								</tr>
+
 								<tr>
 									<td>
 										Env/Ven/Lote:
@@ -1293,21 +777,21 @@ require("header.php");
 									<td style="padding-top: 10px;">
 										<input type="text" id="solapa" name="solapa" <?php echo $solap; ?> value="<?php echo ($accionPedido == 'I')? "": $rDeta['solapa'];?>"><!-- "-->
 									</td>
-								</tr>	
+								</tr>
 								<tr>
 									<td style="padding-top: 10px;">
-										Troquelado: 
+										Troquelado:
 									</td>
 									<td style="padding-top: 10px;">
 										<select id="troquelado" <?php echo $troqu; ?>>
-											<?php 
+											<?php
 											if(isset($row['tieneToquelado']))
 											{
 												if($row['tieneToquelado'] == null)
 													echo '<option value="-1" "Selected">--</option>';
 													else
 														echo '<option value="-1">--</option>';
-												
+
 												if($row['tieneToquelado'] == '1')
 													echo '<option value="1" Selected>Si</option>';
 													else
@@ -1327,11 +811,11 @@ require("header.php");
 											?>
 										</select>
 									</td>
-								</tr>								
+								</tr>
 							</table>
 						</div>
 					</div>
-					<div class="span4 offset1">
+					<div class="span6">
 						<div class="bs-docs-bobinado">
 							<table style="width: 100%">
 								<tr>
@@ -1400,16 +884,16 @@ require("header.php");
 								</tr>
 							</table>
 						</div>
-						
+
 						<div class="bs-docs-observacio">
 							<?php
 							$readonly = " readonly ";
-							
+
 							if($accionPedido != "I")
 							{
 								$readonly = "  ";
 							}
-							
+
 							if(Readonly($accionPedido) == "readonly")
 							   {
 								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px" readonly="readonly"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea> <?php
@@ -1418,12 +902,163 @@ require("header.php");
 							   {
 								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea><?php
 							   }
-							
+
 							?>
-							
+
 						</div>
 					</div>
 				</div>
+
+
+
+				<div class="row" style="text-align: center">
+					<div class="span4">
+						<div class="bs-docs-volumen">
+							<table style="width: 100%">
+								<tr>
+									<td>
+										Cantidad:
+									</td>
+									<td>
+										<input type="text" id="cantidad"  name="cantidad" onKeyUp="numerico(cantidad);" value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Unidades:
+									</td>
+									<td>
+										<select id="unidades" name="unidades" style="width: 150px;" <?php IsEnabled($accionPedido);?>>
+											<option value="0" selected="selected">Selecc.</option>
+											<?php
+											$b = 0;
+												$consulta = "Select * from unidades order by descripcion";
+												$resu = mysql_query($consulta);
+												if($accionPedido == "I")
+												{
+													while($uni = mysql_fetch_array($resu))
+													{
+														echo "<option value=".$uni['idUnidad'].">".$uni['descripcion']."</option>";
+													}
+												}else
+													{
+				   									    while($uni = mysql_fetch_array($resu))
+														{
+														if($rDeta['Unidad'] == $uni['idUnidad'])
+															{
+																 echo "<option value=".$uni['idUnidad']." selected>".$uni['descripcion']."</option>";
+															}else
+																{
+																	echo "<option value=".$uni['idUnidad'].">".$uni['descripcion']."</option>";
+																}
+														}
+													}
+											?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>Precio:</td>
+									<td>
+										<select id="moneda" name="moneda" style="width: 70px;" <?php IsEnabled($accionPedido);?>>
+											<option value="0" selected="selected">-</option>
+											<?php
+											$consulta = "Select * from monedas order by descripcion";
+											$resu = mysql_query($consulta);
+											if($accionPedido == "I")
+											{
+												while($uni = mysql_fetch_array($resu))
+												{
+													echo "<option value=".$uni['idMoneda'].">".$uni['descripcion']."</option>";
+												}
+											}else
+												{
+													while($uni = mysql_fetch_array($resu))
+													{
+													  if($rDeta['Moneda'] == $uni['idMoneda'])
+														{
+															echo "<option value=".$uni['idMoneda']." selected>".$uni['descripcion']."</option>";
+														}else
+															{
+																echo "<option value=".$uni['idMoneda'].">".$uni['descripcion']."</option>";
+															}
+													}
+												}
+											?>
+										</select>
+										<input type="text" id="precio" name="precio" onKeyUp="decimal(precio)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['PrecioImporte'];?>" style="width: 85px;" <?php echo Readonly($accionPedido);?>>
+										<select id="condicionPago" name="condicionPago" style="width: 85px;" <?php IsEnabled($accionPedido);?>>
+											<option value="0" selected="selected">-</option>
+											<?php
+											$consulta = "Select * from condicioniva order by descripcion";
+											$resu = mysql_query($consulta);
+											if($accionPedido == "I")
+											{
+												while($uni = mysql_fetch_array($resu))
+												{
+													echo "<option value=".$uni['idIVA'].">".$uni['descripcion']."</option>";
+												}
+											}else
+												{
+													while($uni = mysql_fetch_array($resu))
+													{
+													   if($rDeta['IVA'] == $uni['idIVA'])
+														{
+															echo "<option value=".$uni['idIVA']." selected>".$uni['descripcion']."</option>";
+														}else
+															{
+																echo "<option value=".$uni['idIVA'].">".$uni['descripcion']."</option>";
+															}
+													}
+												}
+											?>
+										</select>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="span4 offset1">
+						<div class="bs-docs-print">
+							<table style="width: 100%">
+								<tr>
+									<td>Caras:</td>
+									<td>
+										<select name="caras" id="caras" onchange="HabilitarDatosImpresion()" <?php IsEnabled($accionPedido);?>>
+											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['caras'] == 3) ? "selected": "";?>>Seleccionar</option>
+											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 0) ? "selected": "";?>>Sin Impresi&oacute;n</option>
+											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 1) ? "selected": "";?>>1 Cara</option>
+											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['caras'] == 2) ? "selected": "";?>>2 Caras</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>Tipo Imp:</td>
+									<td>
+										<select name="centrada" id="centrada" <?php IsEnabled($accionPedido);?>>
+											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['centrada'] == 3) ? "selected": "";?>>Seleccionar</option>
+											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 2) ? "selected": "";?>>Ning&uacute;na</option>
+											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 1) ? "selected": "";?>>Centrada</option>
+											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['centrada'] == 0) ? "selected": "";?>>Corrida</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>Horientación:</td>
+									<td>
+										<select name="tipo" id="tipo" <?php IsEnabled($accionPedido);?>>
+											<option value="3" <?php echo ($accionPedido == 'I')? "selected": ($row['apaisada'] == 3) ? "selected": "";?>>Seleccionar</option>
+											<option value="2" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 2) ? "selected": "";?>>Ninguna</option>
+											<option value="1" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 1) ? "selected": "";?>>Apaisada</option>
+											<option value="0" <?php echo ($accionPedido == 'I')? "": ($row['apaisada'] == 0) ? "selected": "";?>>Com&uacute;n</option>
+										</select>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+
 				<div class="row">
 					<div class="span9">
 						<div class="bs-docs-laminado">
@@ -1446,13 +1081,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Bilaminado1'] == $uni['idComponente'])
-														{ 
+														{
 															 echo "<option value=".$uni['idComponente']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idComponente'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1473,13 +1108,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Bilaminado2'] == $uni['idComponente'])
-														{ 
+														{
 															 echo "<option value=".$uni['idComponente']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idComponente'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1500,13 +1135,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Trilaminado'] == $uni['idComponente'])
-														{ 
+														{
 															 echo "<option value=".$uni['idComponente']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idComponente'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1530,13 +1165,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Material1'] == $uni['idMaterialLam'])
-														{ 
+														{
 															 echo "<option value=".$uni['idMaterialLam']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idMaterialLam'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1557,13 +1192,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Material2'] == $uni['idMaterialLam'])
-														{ 
+														{
 															 echo "<option value=".$uni['idMaterialLam']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idMaterialLam'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1584,13 +1219,13 @@ require("header.php");
 													while($uni = mysql_fetch_array($resu))
 													{
 														if($rDeta['Material3'] == $uni['idMaterialLam'])
-														{ 
+														{
 															 echo "<option value=".$uni['idMaterialLam']." selected>".$uni['descripcion']."</option>";
 														}else
 															{
 																echo "<option value=".$uni['idMaterialLam'].">".$uni['descripcion']."</option>";
 															}
-													}		
+													}
 												}
 										?>
 										</select>
@@ -1615,7 +1250,7 @@ require("header.php");
 						<table>
 							<tr>
 								<td style="padding-right: 20px;">
-									Estadística:	
+									Estadística:
 								</td>
 								<td>
 									<select id="estadistica" name="estadistica">
@@ -1644,13 +1279,13 @@ require("header.php");
 					if($accionPedido == "P")
 					{
 						?>
-						
+
 						<div class="row">
 							<div class="span4">
 							<table>
 								<tr>
 									<td style="padding-right: 20px;">
-										Es Comunicación Interna:	
+										Es Comunicación Interna:
 									</td>
 									<td>
 										<input type="checkbox" id="esCI" onclick="EnabledButtonCI()">
@@ -1659,7 +1294,7 @@ require("header.php");
 							</table>
 							</div>
 						</div>
-						
+
 						<?php
 					}
 				}
@@ -1667,9 +1302,9 @@ require("header.php");
 				<input type="hidden" id="CI_values" value="">
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 	<div class="row">
 		<div class="span9" style="text-align: right">
 			<table style="margin-left: 700px">
@@ -1685,7 +1320,7 @@ require("header.php");
 	</div>
 
 	<!--<form name="alta_pedido" action="IngresoPedidosphp.php" method="post" >-->
-		
+
 
 <!-- accion que se ejecuta -->
 	<?php
@@ -1748,14 +1383,48 @@ require("header.php");
 	}
 	?>
 
-        
-	
 
-	
+<div class="modal hide fade" id="cantidad_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close"  data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Cantidades Permitidas</h3>
+  </div>
+  <div class="modal-body">
+		<table class="table" id="table_cant">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Descripción</th>
+					<th>Corte(largo)</th>
+					<th>Ancho</th>
+					<th>Multiplo de Bolsas</th>
+				</tr>
+			</thead>
+			<tbody>
+
+			</tbody>
+		</table>
+  	<div class="control-group">
+	    <div class="controls">
+	    	<input type="text" id="input_cant_pop" class="" placeholder="Ingrese Cantidad">
+	    	<input type="hidden" id="multiplo_cant" >
+	    </div>
+	  </div>
+    <ul class="cant_allowed unstyled " data-multi=""></ul>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn">Cerrar</a>
+    <a href="#" class="btn btn-primary">Seleccionar</a>
+  </div>
+</div>
+
+
 </div>
 
 <?php
 require("footer.php");
+
+
 
 //--------------- FUNCIONES -------------------
 function invertirFecha($date)
@@ -1767,1002 +1436,4 @@ function invertirFecha($date)
 //---------------------------------------------
 
 ?>
-
-<script>
-
-function EnabledButtonCI()
-	{
-		if($("#esCI").is(':checked')) {  
-			$("#btn_save").css("display", "none");
-			$("#btn_CI").css("display", "block");  
-		} else {  
-			$("#btn_CI").css("display", "none");
-			$("#btn_save").css("display", "block");  
-		}  
-	}
-	
-function guardar_CI() {
-	$("#error_div_CI").css("display", "none");  
-	$("#error_msj_CI").html('');
-	$("#CIpop").modal('show');
-	$("#CI_values").val("");
-}
-
-function AddCI() {
-    if($("#numberCI").val() != "" && $("#numberCI").val() != null)
-    {
-	$('#table_hoja_CI > tbody:last').append('<tr><td>' + $("#numberCI").val() + '<br></td></tr></tr>');
-	var str = $("#CI_values").val() == "" ? $("#numberCI").val() : $("#CI_values").val() + "-" + $("#numberCI").val(); 
-	$("#CI_values").val(str);
-	$("#numberCI").val('');
-    }
-}
-
-function ValidarConCI() {
-	debugger;
-	if ($("#CI_values").val() == "") {
-		$("#error_div_CI").css("display", "block");  
-		$("#error_msj_CI").html('<b>Ingrese al menos un número de comprobante de CI.</b>');
-	}
-	else{
-		$("#error_div_CI").css("display", "none");  
-		$("#error_msj_CI").html('');
-		$("#CIpop").modal('hide');
-		
-		//Validar demas datos
-		guardar_1();
-	}
-}
-
-function BuscarCliente()
-	{
-	 window.open("buscarCliente.php", "PopUp", 'width=700px,height=350px,scrollbars=YES'); return false;
-	}
-
-function BuscarFacturar()
-	{
-	 window.open("buscarFacturar.php", "PopUp", 'width=700px,height=350px,scrollbars=YES'); return false;
-	}
-	
-function BuscarProducto()
-	{
-	 window.open("buscarProducto.php", "PopUp", 'width=900px,height=350px,scrollbars=YES'); return false;
-	}
-
-function guardar_1()
-	{
-		$('#btn_save').attr("disabled", "disabled");
-		$('#btn_CI').attr("disabled", "disabled");
-		
-		var input = [];
-		var title = [];
-	
-			if($("#codigoTango").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione un cliente válido.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#codigoTango").val());
-				title.push("codTango");
-				
-				input.push($("#tbCliente").val());
-				title.push("nomCliente");
-				
-				input.push($("#direccionCliente").val());
-				title.push("dirCliente");
-				
-				input.push($("#telefonoCliente").val());
-				title.push("telCliente");
-				
-				input.push($("#cuit").val());
-				title.push("cuit");
-				
-				input.push($("#facturarA").val());
-				title.push("codTangoFact");
-				
-				input.push($("#codigoTangoFacturar").val());
-				title.push("codTangoCod");
-
-				input.push($("#mail_protocolo").val());
-				title.push("mail_p");				
-
-				input.push($("#envia_protocolo").val());
-				title.push("envia_p");				
-			}
-			if($("#lugId").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione el lugar de entrega.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#lugId").val());
-				title.push("lugarEnt");
-			}
-			
-			debugger;
-			//if($("#arti").val() == "no")
-			if ($("#chkH").is(':checked') == true) 
-			{
-				//el producto no es nuevo
-				if($("#nombreProducto").val() == "")
-					{
-						$('#msj_error_pop').html("<strong>Seleccione un artículo.</strong>");
-						$('#MensajesPop').modal('show');
-						$('#btn_save').removeAttr('disabled');
-						$('#btn_CI').removeAttr('disabled');
-						return false;	
-					}
-					else
-					{
-						//Datos de Productos
-						input.push($("#codigoProductop").val());
-						title.push("codProd");
-						
-						input.push($("#nombreProducto").val());
-						title.push("nomProd");
-						
-						input.push($("#descripcionProducto").val());
-						title.push("codTangoProd");
-						
-						input.push("no");
-						title.push("habitual");
-					}
-			}else
-				{
-					//el producto es nuevo
-					if($("#nombreProducto").val() == "")
-					{
-						$('#msj_error_pop').html("<strong>Eligio cargar un producto nuevo, entonces debe cargar la descripción de este.</strong>");
-						$('#MensajesPop').modal('show');
-						$('#btn_save').removeAttr('disabled');
-						$('#btn_CI').removeAttr('disabled');
-						return false;	
-					}
-					else
-					{
-						if($("#codigoProductop").val() != "" && $("#codigoProductop").val() != null)
-						{
-							input.push($("#codigoProductop").val());
-							title.push("codProd");	
-						}
-						else
-						{
-							input.push("");
-							title.push("codProd");
-						}
-						
-						input.push($("#nombreProducto").val());
-						title.push("nomProd");
-						
-						input.push("");
-						title.push("codTangoProd");
-						
-						input.push("si");
-						title.push("habitual");
-					}
-				}
-			
-			if($("#fecha1").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la fecha de entrega.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;
-			}
-			else
-			{
-				input.push($("#fecha1").val());
-				title.push("fechaEnt");
-			}
-			//Volumen de pedido
-			if($("#cantidad").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la cantidad.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#cantidad").val());
-				title.push("cantProd");	
-			}
-			
-			if($("#unidades").val() == "0")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la unidad de medida.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#unidades").val());
-				title.push("unidades");	
-			}
-			
-			if($("#moneda").val() == "0")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione el tipo de moneda.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#moneda").val());
-				title.push("moneda");	
-			}
-			
-			if($("#precio").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Indique el precio de la nota de pedido.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#precio").val());
-				title.push("precio");
-			}
-			
-			if($("#condicionPago").val() == "0")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la condición de IVA.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#condicionPago").val());
-				title.push("condIVA");
-			}
-			
-			if($('#caras').val() == "3")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la cantidad de caras a imprimir.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($('#caras').val());
-				title.push("caras");
-			}
-			
-			if($('#centrada').val() == "3")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la opción de tipo de impresión.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($('#centrada').val());
-				title.push("tipoImp");
-			}
-			
-			if($('#tipo').val() == "3")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione la opción de horientación.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($('#tipo').val());
-				title.push("horientacion");
-			}
-			
-			if($('#formato').val() == "0")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione el formato del producto.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#formato").val());
-				title.push("formato");
-			}
-			
-			if($('#material').val() == "0")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione material del producto.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#material").val());
-				title.push("material");
-			}
-			
-			if($("#color").val() == "")
-			{
-				$('#msj_error_pop').html("<strong>Seleccione el color del producto.</strong>");
-				$('#MensajesPop').modal('show');
-				$('#btn_save').removeAttr('disabled');
-				$('#btn_CI').removeAttr('disabled');
-				return false;	
-			}
-			else
-			{
-				input.push($("#color").val());
-				title.push("color");
-			}
-			
-			debugger;
-			if(campos_para_validar.length > 0)
-			{
-				for(var i in campos_para_validar)
-				{
-				    switch(campos_para_validar[i])
-					{
-						case "#largo":
-							if($("#largo").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el largo del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#largo").val());
-								title.push("largo");
-							}
-							break;
-						
-						case "#ancho":
-							if($("#ancho").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el ancho del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#ancho").val());
-								title.push("ancho");
-							}
-							break;
-						
-						case "#micronaje":
-							if($("#micronaje").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el micronaje del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#micronaje").val());
-								title.push("micronaje");
-							}
-							break;
-						
-						case "#fuelle":
-							if($("#fuelle").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el fuelle del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#fuelle").val());
-								title.push("fuelle");
-							}
-							break;
-						
-						case "#termo":
-							if($("#termo").is(':checked'))
-							{  
-								input.push("1");
-							}
-							else
-							{  
-								input.push("0");  
-							}
-							title.push("termo");
-							break;
-						
-						case "#micro":
-							if($("#micro").is(':checked'))
-							{  
-								input.push("1");
-							}
-							else
-							{  
-								input.push("0");  
-							}
-							title.push("micro");
-							break;
-						
-						case "#origen":
-							if($("#origen").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el origen del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;
-							}
-							else
-							{
-								input.push($("#origen").val());
-								title.push("origen");
-							}
-							break;
-
-						case "#solapa":
-							if($("#solapa").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione la solapa del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;
-							}
-							else
-							{
-								input.push($("#solapa").val());
-								title.push("solapa");
-							}
-							break;
-
-						case "#troquelado":
-						debugger;
-							if($("#troquelado").val() == "-1")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione si el producto tiene troquelado.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;
-							}
-							else
-							{
-								input.push($("#troquelado").val());
-								title.push("troquelado");
-							}
-							break;
-					}
-				}
-			}
-			else
-			{
-				//Validar por disponibilidad
-				if($("#ancho").attr("readonly") != "readonly")
-				{
-					if($("#ancho").val() == "")
-						{
-							$('#msj_error_pop').html("<strong>Seleccione el ancho del producto.</strong>");
-							$('#MensajesPop').modal('show');
-							$('#btn_save').removeAttr('disabled');
-							$('#btn_CI').removeAttr('disabled');
-							return false;	
-						}
-						else
-						{
-							input.push($("#ancho").val());
-							title.push("ancho");
-						}
-				}
-				
-				if($("#largo").attr("readonly") != "readonly")
-				{
-					if($("#largo").val() == "")
-						{
-							$('#msj_error_pop').html("<strong>Seleccione el largo del producto.</strong>");
-							$('#MensajesPop').modal('show');
-							$('#btn_save').removeAttr('disabled');
-							$('#btn_CI').removeAttr('disabled');
-							return false;	
-						}
-						else
-						{
-							input.push($("#largo").val());
-							title.push("largo");
-						}
-				}
-				
-				if($("#micronaje").attr("readonly") != "readonly")
-				{
-					if($("#micronaje").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el micronaje del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#micronaje").val());
-								title.push("micronaje");
-							}
-				}
-				
-				if($("#fuelle").attr("readonly") != "readonly")
-				{
-					if($("#fuelle").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el fuelle del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;	
-							}
-							else
-							{
-								input.push($("#fuelle").val());
-								title.push("fuelle");
-							}
-				}
-				
-				if($("#origen").attr("readonly") != "readonly")
-				{
-					if($("#origen").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione el origen del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;
-							}
-							else
-							{
-								input.push($("#origen").val());
-								title.push("origen");
-							}
-				}
-				
-				if($("#solapa").attr("readonly") != "readonly")
-				{
-					if($("#solapa").val() == "")
-							{
-								$('#msj_error_pop').html("<strong>Seleccione la solapa del producto.</strong>");
-								$('#MensajesPop').modal('show');
-								$('#btn_save').removeAttr('disabled');
-								$('#btn_CI').removeAttr('disabled');
-								return false;
-							}
-							else
-							{
-								input.push($("#solapa").val());
-								title.push("solapa");
-							}
-				}
-
-				if($("#termo").attr("disabled") != "disabled")
-				{
-					if($("#termo").is(':checked'))
-						{  
-							input.push("1");
-						}
-						else
-						{  
-							input.push("0");  
-						}
-						title.push("termo");
-				}
-				
-				if($("#micro").attr("disabled") != "disabled")
-				{
-					if($("#micro").is(':checked'))
-						{  
-							input.push("1");
-						}
-						else
-						{  
-							input.push("0");  
-						}
-						title.push("micro");
-				}
-
-				if($("#troquelado").attr("disabled") != "disabled")
-				{
-					if($("#troquelado").val() == "-1")
-					{
-						$('#msj_error_pop').html("<strong>Seleccione si el producto tiene troquelado.</strong>");
-						$('#MensajesPop').modal('show');
-						$('#btn_save').removeAttr('disabled');
-						$('#btn_CI').removeAttr('disabled');
-						return false;
-					}
-					input.push($("#troquelado").val());  
-					title.push("troquelado");
-				}else{
-					input.push('-1');  
-					title.push("troquelado");
-				}
-			}
-			/*
-			if($('#accionPedido').val() != "CL" && $('#accionPedido').val() != "N")
-			{
-				if($('#troquelado').val() == "-1")
-				{
-					$('#msj_error_pop').html("<strong>Seleccione si el producto tiene troquelado.</strong>");
-					$('#MensajesPop').modal('show');
-					$('#btn_save').removeAttr('disabled');
-					$('#btn_CI').removeAttr('disabled');
-					return false;	
-				}
-				else
-				{
-					debugger;
-					input.push($("#troquelado").val());
-					title.push("troquelado");
-				}
-			}else
-			{
-				input.push($("#troquelado").val());
-				title.push("troquelado");
-			}
-			*/
-			//--------------------------------------
-		
-			//Campos no requeridos
-			input.push($('#bobinado').val());
-			title.push("sentido");
-			
-			input.push($('#fuera').val());
-			title.push("tratado");
-			
-			input.push($('#distancia').val());
-			title.push("distTaco");
-			
-			input.push($('#bobina').val());
-			title.push("diamBobina");
-			
-			input.push($('#canuto').val());
-			title.push("diamCanuto");
-			
-			input.push($('#kgBobina').val());
-			title.push("kgBobina");
-			
-			input.push($('#mtsBobina').val());
-			title.push("mtsBobina");
-			
-			input.push($('#observaciones').val());
-			title.push("observaciones");
-			
-			
-			input.push($("#CI_values").val());
-			title.push("CI_values");
-			//--------------------------------------
-			
-			//Descripción del Laminado
-			if($('#material').val() == "1")
-			{
-				//Bilaminado
-				if (
-				    $('#Bilaminado1').val() == "1" || $('#Bilaminado2').val() == "1" ||
-				    $('#Material1').val() == "1" || $('#Material2').val() == "1" ||
-				    $('#Micronaje1').val() == "" || $('#Micronaje2').val() == ""
-				    )
-				{
-					$('#msj_error_pop').html("<strong>Descripción de laminado incompleta.</strong>");
-					$('#MensajesPop').modal('show');
-					$('#btn_save').removeAttr('disabled');
-					$('#btn_CI').removeAttr('disabled');
-					return false;
-				}
-				else
-				{
-					input.push($('#Bilaminado1').val());
-					title.push("Bilaminado1");
-					input.push($('#Material1').val());
-					title.push("Material1");
-					input.push($('#Micronaje1').val());
-					title.push("Micronaje1");
-					//---
-					input.push($('#Bilaminado2').val());
-					title.push("Bilaminado2");
-					input.push($('#Material2').val());
-					title.push("Material2");
-					input.push($('#Micronaje2').val());
-					title.push("Micronaje2");
-					//--
-					input.push(1);
-					title.push("Bilaminado3");
-					input.push(1);
-					title.push("Material3");
-					input.push("");
-					title.push("Micronaje3");
-				}
-			}
-			else
-			{
-				if($('#material').val() == "0" || $('#material').val() == "2")
-				{
-					if ($('#material').val() == "2")
-					{
-						if (
-							$('#Bilaminado1').val() == "1" || $('#Bilaminado2').val() == "1" || $('#Trilaminado').val() == "1" || 
-							$('#Material1').val() == "1" || $('#Material2').val() == "1" || $('#Material3').val() == "1" ||
-							$('#Micronaje1').val() == "" || $('#Micronaje2').val() == "" || $('#Micronaje3').val() == ""
-						   )
-						{
-							$('#msj_error_pop').html("<strong>Descripción de laminado incompleta.</strong>");
-							$('#MensajesPop').modal('show');
-							$('#btn_save').removeAttr('disabled');
-							$('#btn_CI').removeAttr('disabled');
-							return false;
-						}
-					}
-					input.push($('#Bilaminado1').val());
-					title.push("Bilaminado1");
-					input.push($('#Material1').val());
-					title.push("Material1");
-					input.push($('#Micronaje1').val());
-					title.push("Micronaje1");
-					//---
-					input.push($('#Bilaminado2').val());
-					title.push("Bilaminado2");
-					input.push($('#Material2').val());
-					title.push("Material2");
-					input.push($('#Micronaje2').val());
-					title.push("Micronaje2");
-					//--
-					input.push($('#Trilaminado').val());
-					title.push("Bilaminado3");
-					input.push($('#Material3').val());
-					title.push("Material3");
-					input.push($('#Micronaje3').val());
-					title.push("Micronaje3");
-				}
-				else
-				{
-					input.push(1);
-					title.push("Bilaminado1");
-					input.push(1);
-					title.push("Material1");
-					input.push("");
-					title.push("Micronaje1");
-					//---
-					input.push(1);
-					title.push("Bilaminado2");
-					input.push(1);
-					title.push("Material2");
-					input.push("");
-					title.push("Micronaje2");
-					//--
-					input.push(1);
-					title.push("Bilaminado3");
-					input.push(1);
-					title.push("Material3");
-					input.push("");
-					title.push("Micronaje3");
-				}
-			}
-			//--------------------------------------
-			
-			//Datos de elaboración -----------------
-			input.push($('#envasado').val());
-			title.push("envasado");
-			
-			input.push($('#vencimiento').val());
-			title.push("vencimiento");
-			
-			input.push($('#lote').val());
-			title.push("lote");
-			//--------------------------------------
-	
-		var IdPed = $('#idPedido').val();
-		var Accion = $('#accionPedido').val();
-		
-		title.push("estadistica");
-		if($('#accionPedido').val() == "A")
-		{
-			input.push($('#estadistica').val());
-		}
-		else
-		{
-			input.push(0);
-		}
-		//alert(Accion);
-		
-		if(Accion != "I" && Accion != "E" && Accion != "A" && Accion != "P" && Accion != "CL" && Accion != "N")
-		{
-			return;
-		}
-	
-		var data_ajax={
-                        type: 'POST',
-                        url: "/empaque/insertPedido.php",
-                        data: { valores: input, titulos: title, action: Accion, id: IdPed},
-                        success: function( data )
-								{	
-									window.location.href = 'principal.php';
-									return false;
-                                },
-                        error: function(){
-                                            alert("Error de conexión.");
-					    $('#btn_save').removeAttr('disabled');
-					    $('#btn_CI').removeAttr('disabled');
-                                          },
-                        dataType: 'json'
-                        };
-		
-		$.ajax(data_ajax);
-		
-	}
-
-function habilitarComponentes(id)
-	{		
-		if(id == 1) //es bilamina , habilitar los dos primeros select
-			{
-				$('#Bilaminado1').attr('disabled', false);
-				$('#Bilaminado2').attr('disabled', false);
-				$('#Trilaminado').attr('disabled', true);
-				
-				$('#Material1').attr('disabled', false);
-				$('#Material2').attr('disabled', false);
-				$('#Material3').attr('disabled', true);
-				
-				$('#Micronaje1').attr('disabled', false);
-				$('#Micronaje2').attr('disabled', false);
-				$('#Micronaje3').attr('disabled', true);
-				
-			}else
-				{
-					if(id == 2) // es trilamina , habilitar los 3 select
-						{
-							
-							$('#Bilaminado1').attr('disabled', false);
-							$('#Bilaminado2').attr('disabled', false);
-							$('#Trilaminado').attr('disabled', false);
-				
-							$('#Material1').attr('disabled', false);
-							$('#Material2').attr('disabled', false);
-							$('#Material3').attr('disabled', false);
-							
-							$('#Micronaje1').attr('disabled', false);
-							$('#Micronaje2').attr('disabled', false);
-							$('#Micronaje3').attr('disabled', false);
-						}else
-							{
-								$('#Bilaminado1').attr('disabled', true);
-								$('#Bilaminado2').attr('disabled', true);
-								$('#Trilaminado').attr('disabled', true);
-								
-								$('#Material1').attr('disabled', true);
-								$('#Material2').attr('disabled', true);
-								$('#Material3').attr('disabled', true);
-				
-								$('#Micronaje1').attr('disabled', true);
-								$('#Micronaje2').attr('disabled', true);
-								$('#Micronaje3').attr('disabled', true);
-							}
-				}
-	}
-	
-function HabilitarDatosImpresion()
-	{
-		if($("#caras").val() == 0)
-		{
-			$("#centrada option[value=2]").attr("selected",true);
-			$("#tipo option[value=2]").attr("selected",true);
-			$('#centrada').attr('disabled','disabled');
-			$('#tipo').attr('disabled','disabled');
-		}
-		else
-		{
-			$("#centrada option[value=3]").attr("selected",true);
-			$("#tipo option[value=3]").attr("selected",true);
-			$('#centrada').removeAttr('disabled');
-			$('#tipo').removeAttr('disabled');
-		}
-	}
-//_________________________________________________________//
-function Imprimir(valor)
-	{
-		window.open("impresionComprobantes.php?documento=4&id="+valor, "PopUp", "menubar=1,width=920,height=700");
-	}
-//_________________________________________________________//	
-//solo letras en el campo	
-function letras (campo) 
-	{
-	var charpos = campo.value.search("[^A-Za-z ]"); 
-	if(campo.value.length > 0 &&  charpos >= 0) 
-		{ 
-		campo.value= campo.value.slice(0, -1);
-		campo.focus();
-		return false; 
-		}
-		 else 
-		 	{
-			return true;
-			}
-}
-//_________________________________________________________//
-
-//Solo numeros en el campo
-function numerico(campo) 
-	{
-	var charpos = campo.value.search("[^0-9]"); 
-    if (campo.value.length > 0 &&  charpos >= 0)  
-		{ 
-		campo.value = campo.value.slice(0, -1);
-		campo.focus();
-	    return false; 
-		} 
-			else 
-				{
-				return true;
-				}
-	}
-//_________________________________________________________//
-
-//Solo se permiten numero y letras (no simbolos)
-function alfanumerico(campo)
-	{ 
-	var charpos = campo.value.search("[^A-Za-z0-9. ]"); 
-	if(campo.value.length > 0 &&  charpos >= 0) 
-		{ 
-		campo.value =  campo.value.slice(0, -1)
-		campo.focus();
-		return false; 
-		} 
-			else 
-				{
-				return true;
-				}
-	}
-//_________________________________________________________//
-
-//Solo se permiten numero y punto
-function decimal(campo)
-	{ 
-	var charpos = campo.value.search("[^0-9. ]"); 
-	if(campo.value.length > 0 &&  charpos >= 0) 
-		{ 
-		campo.value =  campo.value.slice(0, -1)
-		campo.focus();
-		return false; 
-		} 
-			else 
-				{
-				return true;
-				}
-	}
-//_________________________________________________________//	
-
-</script>
+<script type="text/javascript" src="Js/IngresoPedidos.js"></script>

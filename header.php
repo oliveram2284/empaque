@@ -17,6 +17,7 @@
   <link href="assest/style_style/css/bootstrap.css" rel="stylesheet">
   <link href="assest/style_style/css/bootstrap-responsive.css" rel="stylesheet">
   <link href="assest/style_style/css/docs.css" rel="stylesheet">
+  <link href="assest/font-awesome/css/font-awesome.css" rel="stylesheet">
   
   <script src="assest/style_style/js/jquery.js"></script>
   <script src="assest/style_style/js/bootstrap.js"></script>

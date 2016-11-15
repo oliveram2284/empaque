@@ -26,7 +26,7 @@ include("class_menu.php");
 				<div class="span-24 " >
 			<center>
 <img class="  " src="logo.png"  width="100" height="100" />
-<p align="center"><h2 id="titulo1">Sistema de Gestión Empaque S.A</h2></p>
+<p align="center"><h2 id="titulo1">Sistema de Gestión Empaque S.A aasdds</h2></p>
 </center>
 			<!-- <div class=" left span-3 border"><img class="pull-0 " src="logo.png"  /><br /></div>
 				<div class=" append-4 ">

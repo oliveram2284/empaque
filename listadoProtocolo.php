@@ -95,7 +95,7 @@ $vari->conectarse();
 						WHERE P.estado in ('PN','TP', 'T') ".$search_by_txt."
 						Order by Pe.codigo asc Limit ".$from.",10";
 
-                echo $sql."<br>";
+                //echo $sql."<br>";
                 $todos = "SELECT  
                                 Count(*)
                         FROM Protocolos as P
@@ -349,7 +349,7 @@ require("footer.php");
         if(e.which == 13) {
         if ($("#buscador_txt").val() != "") {
             var query = $("#buscador_txt").val();
-            window.location.replace("../empaque/listadoProtocolo.php?page=0&query="+query+"");
+            window.location.replace("../empaque_demo/listadoProtocolo.php?page=0&query="+query+"");
         }
         }
     });
@@ -373,7 +373,7 @@ require("footer.php");
     function ConsularEntregas(id_){
         var data_ajax={
                 type: 'POST',
-                url: "/empaque/listadoEntregasProtocolo.php",
+                url: "/empaque_demo/listadoEntregasProtocolo.php",
                 data: { 
                         id: id_
                     },
@@ -524,7 +524,7 @@ require("footer.php");
 
     	var data_ajax={
                     type: 'POST',
-                    url: "/empaque/enviarMail.php",
+                    url: "/empaque_demo/enviarMail.php",
                     data: { 
                     		id: idProtocolo,
                     		mail: $("#emailDestinatario").val(),
@@ -553,7 +553,7 @@ require("footer.php");
     function DejarListo_(){
         var data_ajax={
                     type: 'POST',
-                    url: "/empaque/dejarListo.php",
+                    url: "/empaque_demo/dejarListo.php",
                     data: { 
                             id: idProto__
                         },
@@ -590,7 +590,7 @@ $('#selectEntrega').click(function(){
 	$("#idEntregaProtocolo").val('');
 	var data_ajax={
         type: 'POST',
-        url: "/empaque/listadoEntregasProtocolo.php",
+        url: "/empaque_demo/listadoEntregasProtocolo.php",
         //url: "listadoEntregasProtocolo.php",
         data: { 
         		id: idProtocolo
@@ -682,7 +682,7 @@ $(function() {
         
         var data_ajax={
             type: 'POST',
-            //url: "/empaque/listadoEntregasProtocolo.php",
+            //url: "/empaque_demo/listadoEntregasProtocolo.php",
             url: "listadoEntregasProtocolo.php",
             data: { 
                     id: $("#prtId_temp").val()
@@ -794,7 +794,7 @@ $(function() {
             $("#previewModal .modal-content #entregasBody2").empty(); 
             $("#previewModal").modal('hide');
             
-            //$.post("/empaque/previewProtocolo.php",params_ajax, function (data) {
+            //$.post("/empaque_demo/previewProtocolo.php",params_ajax, function (data) {
             $.post("previewProtocolo.php",params_ajax, function (data) {
 
                 $("#idEntregaProtocolo").val(null);

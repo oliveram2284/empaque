@@ -677,7 +677,10 @@ h2 + .row {
      -moz-border-radius: 4px 0 4px 0;
           border-radius: 4px 0 4px 0;
 }
-
+.bs-docs-date,.bs-docs-article{
+ 
+  min-height: 200px;
+}
 /* Base class */
 .bs-docs-article {
   position: relative;
@@ -689,6 +692,7 @@ h2 + .row {
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
           border-radius: 4px;
+  width: 95%;
 }
 
 /* Echo out a label for the example */

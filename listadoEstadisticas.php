@@ -223,7 +223,7 @@ require("footer.php");
         
         var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoEstadisticasCons.php",
+                        url: "/empaque_demo/listadoEstadisticasCons.php",
                         data: { xinput: id },
                         success: function( data ) {
                                                     if(data != 0)
@@ -350,7 +350,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoEstadisticasphp.php",
+                        url: "/empaque_demo/listadoEstadisticasphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)
@@ -488,7 +488,7 @@ require("footer.php");
 	
 	var data_ajax={
 		    type: 'POST',
-		    url: "/empaque/listadoEstadisticasphp.php",
+		    url: "/empaque_demo/listadoEstadisticasphp.php",
 		    data: { xinput: input},
 		    success: function( data ) {
 						if(data != 0)

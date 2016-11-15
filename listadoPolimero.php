@@ -410,7 +410,7 @@ require("footer.php");
 	    var data_ajax=
 	    {
 		type: 'POST',
-		url: "/empaque/loadLogPolimeros.php",
+		url: "/empaque_demo/loadLogPolimeros.php",
 		data: { xId: $("#idPolimero").val(), xstatus: $("#nextStatus").val() },
 		success: function( data )
 		    {
@@ -488,7 +488,7 @@ require("footer.php");
 	$("#"+div+"").html("");
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/getMotivesP.php",
+                        url: "/empaque_demo/getMotivesP.php",
                         data: { val: value},
                         success: function( data ) {
 					
@@ -569,7 +569,7 @@ require("footer.php");
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque/insertPolimeroWithMotive.php",
+                        url: "/empaque_demo/insertPolimeroWithMotive.php",
                         data: { action: MainAction,
 				id: idPoli,
 				motive: $('#motivo_').val(),
@@ -604,7 +604,7 @@ require("footer.php");
 	var data_ajax=
 	{
 	    type: 'POST',
-	    url: "/empaque/getPolimeroCalidades.php",
+	    url: "/empaque_demo/getPolimeroCalidades.php",
 	    data: { id: idPolimero },
 	    success: function( data )
 		{
@@ -761,7 +761,7 @@ $("#verDetalleLink").click(function(){
    //alert(idPolimeroSelected);
    var data_ajax={
 	    type: 'POST',
-	    url: "/empaque/getPolimeroFact.php",
+	    url: "/empaque_demo/getPolimeroFact.php",
 	    data: {
 		    Id : idPolimeroSelected
 		  },
@@ -905,7 +905,7 @@ $("#btn_ok_fact").click(function(){
     $('#btn_ok_fact').attr('disabled', 'disabled');
     var data_ajax={
 	    type: 'POST',
-	    url: "/empaque/insertPolimeroFact.php",
+	    url: "/empaque_demo/insertPolimeroFact.php",
 	    data: {
 		    xId : idPoli,
 		    xFa : Fact,
@@ -948,7 +948,7 @@ function FacturarPolimeroSiNo(idPolimero) {
     
     var data_ajax={
 	    type: 'POST',
-	    url: "/empaque/getImportePolimeroFact.php",
+	    url: "/empaque_demo/getImportePolimeroFact.php",
 	    data: {
 		    xId : $("#idPolimero").val()
 		  },
@@ -1071,7 +1071,7 @@ $("#btn_acept").click(function(){
     $("#btn_acept").attr('disabled', 'disabled');
     var data_ajax={
 	    type: 'POST',
-	    url: "/empaque/insertPolimeroFactFinal.php",
+	    url: "/empaque_demo/insertPolimeroFactFinal.php",
 	    data: {
 		    xId : $("#idPolimero").val(),
 		    xDe : descuenta,
@@ -1133,7 +1133,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
     
     var data_ajax={
 	    type: 'POST',
-	    url: "/empaque/getLogPolimero.php",
+	    url: "/empaque_demo/getLogPolimero.php",
 	    data: {
 		    xId : idPolimero
 		  },
@@ -1173,7 +1173,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
     
     var data_ajax2={
 	    type: 'POST',
-	    url: "/empaque/getCliente.php",
+	    url: "/empaque_demo/getCliente.php",
 	    data: {
 		    xId : idPolimero
 		  },
@@ -1457,7 +1457,7 @@ function ImprimirReporte(sql){
 	if ($("#buscador_txt").val() != "") {
 	    var accion = $("#actionValue").val();
 	    var query = $("#buscador_txt").val();
-	    window.location.replace("../empaque/listadoPolimero.php?accion="+accion+"&page=0&query="+query+"");
+	    window.location.replace("../empaque_demo/listadoPolimero.php?accion="+accion+"&page=0&query="+query+"");
 		//alert(accion + ' - ' + query);
 	}
     }

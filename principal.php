@@ -4,6 +4,9 @@ session_start();
 include("class_sesion.php");
 $sesion= new Sesion();
 $CadenaPermisos = $sesion->iniciar();
+
+
+
 include ("class_menu.php") ;
 $menu= new menu();
 
@@ -42,40 +45,16 @@ require("header.php");
        	</div>
     </div>
 	
-	<!--
-	<nav role="navigation" class="navbar navbar-default">
-	     Brand and toggle get grouped for better mobile display 
-	    <div class="navbar-header">
-	        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	        </button>
-	        <a href="#" class="navbar-brand">Brand</a>
-	    </div>
-	     Collection of nav links and other content for toggling 
-	    <div id="navbarCollapse" class="collapse navbar-collapse">
-	        <ul class="nav navbar-nav">
-	            <li class="active"><a href="#">Home</a></li>
-	            <li><a href="#">Profile</a></li>
-	            <li><a href="#">Messages</a></li>
-	        </ul>
-	        <ul class="nav navbar-nav navbar-right">
-	            <li><a href="#">Login</a></li>
-	        </ul>
-	    </div>
-	</nav>
-	-->
-	    <?php echo $var ;?>
+	  <?php echo $var ;?>
 
-		<div class="row">
+		<div class="row hidden">
 			<div class="span12" style="text-align: left;">
 				<a href="#" class="btn btn-success" onClick="AgregarNota()">Agregar Nota</a>
 			</div>
 		</div>
 		
 		<?php 
+		/*
 			if(!isset($_GET['day']))
 			{
 				$fecha = getdate();
@@ -84,7 +63,7 @@ require("header.php");
 			else
 			{
 				$menu->getNotes($_GET['day']); 
-			}
+			}*/
 		?>
 	    
     </div>

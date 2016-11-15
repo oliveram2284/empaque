@@ -88,7 +88,7 @@ function AbrirCalendario(mesx, ano){
 	var f = new Date();
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/calendario.php",
+				url: "/empaque_demo/calendario.php",
 				data: { dia: f.getDate(), mes: mesx, anio: ano },
 				success: function( data ) {
 								$("#ViajesContent").html(data);
@@ -109,7 +109,7 @@ function CrearPrioridad(){
 		//Crear prioridad
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque/prioridadCrear.php",
+				url: "/empaque_demo/prioridadCrear.php",
 				data: { viaje: $("#ViajeId").val(), pedidos: pedidosId },
 				success: function( data ) {
 								location.reload();

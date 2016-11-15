@@ -50,8 +50,8 @@ require("header.php");
                 }
                 //Ordenar descendenete
                 for($i = count($files_) - 1 ; $i >= 0;  $i--){
-                    print '<a href="../empaque/backs/'.$files_[$i].'" download>'.$files_[$i].'</a>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="#" onClick="Eliminar(\'../empaque/backs/'.$files_[$i].'\')"><img src="./assest/plugins/buttons/icons/delete.png" title="Borrar"></a><br>';
+                    print '<a href="../empaque_demo/backs/'.$files_[$i].'" download>'.$files_[$i].'</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" onClick="Eliminar(\'../empaque_demo/backs/'.$files_[$i].'\')"><img src="./assest/plugins/buttons/icons/delete.png" title="Borrar"></a><br>';
                     print '<hr>';
                 }
                 ?>
@@ -70,7 +70,7 @@ function generaBackUp(){
     $("#nuevo_bck").attr('disabled', 'disabled');
     var data_ajax={
                         type: 'POST',
-                        url: "/empaque/backupdatabasephp.php",
+                        url: "/empaque_demo/backupdatabasephp.php",
                         data: { },
                         success: function( data ) {
 					location.reload();
@@ -87,7 +87,7 @@ function Eliminar(path_) {
     $("#nuevo_bck").attr('disabled', 'disabled');
     var data_ajax={
                         type: 'POST',
-                        url: "/empaque/backupdatabasedeletephp.php",
+                        url: "/empaque_demo/backupdatabasedeletephp.php",
                         data: { path: path_},
                         success: function( data ) {
 					location.reload();

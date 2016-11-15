@@ -193,7 +193,7 @@ require("footer.php");
             
             var data_ajax={
                         type: 'POST',
-                        url: "/empaque/listadoCategoriasphp.php",
+                        url: "/empaque_demo/listadoCategoriasphp.php",
                         data: { xinput: input},
                         success: function( data ) {
                                                     if(data != 0)

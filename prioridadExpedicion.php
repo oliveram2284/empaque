@@ -112,7 +112,7 @@ function AbrirCalendario(mesx, ano){
 	}
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/calendarioEx.php",
+				url: "/empaque_demo/calendarioEx.php",
 				data: { dia: f.getDate(), mes: mesx, anio: ano },
 				success: function( data ) {
 								$("#ViajesContent").html(data);
@@ -132,7 +132,7 @@ function AbrirPorViaje(id_){
 	idUltimoViaje = id_;
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoDePrioridadesEx.php",
+				url: "/empaque_demo/listadoDePrioridadesEx.php",
 				data: { id: id_ },
 				success: function( data ) {
 								$("#PrioridadesContent_").html(data);
@@ -155,7 +155,7 @@ function Autorizar(codigo ,id, viaje)
 	//alert('Autorizar: '+ codigo + '----' + id);
 	var data_ajax={
 				type: 'POST',
-				url: "/empaque/listadoDePrioridadesExAuto.php",
+				url: "/empaque_demo/listadoDePrioridadesExAuto.php",
 				data: { cnt: cant, ide: id, via: viaje },
 				success: function( data ) {
 								AbrirPorViaje(idUltimoViaje);

@@ -14,7 +14,7 @@ include ("class_menu.php") ;
 $menu= new menu();
 
 $accion = "I";
-$id = 0;
+$id = 42;
 if(isset($_GET['a']))
    {
 	//Buscar los datos del grupo
@@ -88,19 +88,29 @@ require("header.php");
 	    
 	    <div class="row">
 		<div class="span10">
-			    <div class="navbar">
+			<div class="navbar">
 				<div class="navbar-inner">
 				  <div class="container">
 				    <div class="nav-collapse">
 				      <ul class="nav">
-					<?php
-					    $menu->menu_permisos($id);
-					?>
+				      	<?php	$menu->menu_permisos($id);?>
 				      </ul>
 				    </div>
 				  </div>
-				</div>
-			      </div>
+				</div>			      
+			</div>
+
+			<div class="navbar">
+				<div class="navbar-inner">
+				  <div class="container">
+				    <div class="nav-collapse">
+				      <ul class="nav">
+				      	<?php	$menu->menu_permisos2($id);?>
+				      </ul>
+				    </div>
+				  </div>
+				</div>			      
+			</div>
 		</div>
 	    </div>
 	    
