@@ -920,7 +920,7 @@ require("header.php");
 										Cantidad:
 									</td>
 									<td>
-										<input type="text" id="cantidad"  name="cantidad" onKeyUp="numerico(cantidad);" value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
+										<input type="text" id="cantidad"  readonly name="cantidad" onKeyUp="numerico(cantidad);" value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
 									</td>
 								</tr>
 								<tr>
@@ -1390,12 +1390,12 @@ require("header.php");
     <h3>Cantidades Permitidas</h3>
   </div>
   <div class="modal-body">
-		<table class="table" id="table_cant">
+		<table class="table table-bordered" id="table_cant">
 			<thead>
 				<tr>
 					<th>#</th>
 					<th>Descripción</th>
-					<th>Corte(largo)</th>
+					<th>Largo Desarrollo(Corte)</th>
 					<th>Ancho</th>
 					<th>Multiplo de Bolsas</th>
 				</tr>
@@ -1413,7 +1413,7 @@ require("header.php");
     <ul class="cant_allowed unstyled " data-multi=""></ul>
   </div>
   <div class="modal-footer">
-    <a href="#" class="btn">Cerrar</a>
+    <a href="#" class="btn" id="pop_close">Cerrar</a>
     <a href="#" class="btn btn-primary">Seleccionar</a>
   </div>
 </div>
@@ -1436,4 +1436,15 @@ function invertirFecha($date)
 //---------------------------------------------
 
 ?>
+<script type="text/javascript">
+/*
+	$(function(){
+		swal({
+  title: "Error!",
+  text: "Here's my error message!",
+  type: "error",
+  confirmButtonText: "Cool"
+});
+	});*/
+</script>
 <script type="text/javascript" src="Js/IngresoPedidos.js"></script>

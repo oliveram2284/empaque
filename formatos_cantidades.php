@@ -38,10 +38,20 @@ $cantidades=  R::getAll($sql);
 		</div>
 	    </div>
 	    <div class="row">
-		<div class="span12 text-left ">
+		<div class="span5 text-left ">
             <a href="principal.php" class="btn btn-danger">&nbsp;Atrás&nbsp;</a>
 		    <input type="button" value="&nbsp;Atrás&nbsp;" class="btn btn-danger hidden" onClick="inicio()">
 		    <input type="button" value="&nbsp;Agregar&nbsp;" class="btn btn-success" id="btnAceptar">
+		</div>
+
+    <div class="span5 pull-right ">
+      <div class="btn-group">
+        <a href="#" id="delete_selected_bt" class="btn btn-default"> Eliminar</a>
+      <a href="#" id="enable_selected_bt" class="btn btn-default"> Hablitar</a>
+      <a href="#" id="disable_selected_bt" class="btn btn-default"> Deshabilitar</a>
+</div>
+
+
 		</div>
 
 	    </div>
@@ -66,7 +76,7 @@ $cantidades=  R::getAll($sql);
                     <tbody >
                         <?php foreach ($cantidades as $key => $value):?>
                             <tr class="text-center">
-                                <td><input class="cant_check" type="checkbox" name="cant[]" value="<?php echo $value['id']?>"></td>
+                                <td><input class="cant_check" type="checkbox" name="cant[]" value="<?php echo $value['id']?>" data-id="<?php echo $value['id']?>"></td>
                                 <td><?php echo $value['formato_descripcion']?></td>
                                 <td><?php echo $value['descripcion']?></td>
                                 <td><?php echo str_replace('.', ',', $value['largo'])?></td>
@@ -85,7 +95,7 @@ $cantidades=  R::getAll($sql);
                                 <td>
                                     <a href="#" class="bt_disabled" data-id="<?php echo $value['id']?>" data-status="<?php echo $value['status']?>">
 
-                                        <i class="fa <?php echo ($value['status']!=1)?'fa-check-square-o':'fa-square-o'?> fa-2x label label-warning" aria-hidden="true"></i>
+                                        <i class="fa <?php echo ($value['status']==1)?'fa-check-square-o':'fa-square-o'?> fa-2x label label-warning" aria-hidden="true"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -178,14 +188,14 @@ $cantidades=  R::getAll($sql);
                             <input  class="input-large" type="text" id="field_ancho" name="ancho" placeholder="Ancho">
                         </div>
                     </div>
-                    <!--
+
                     <div class="control-group">
-                        <label class="control-label" for="inputPassword">Metros:</label>
+                        <label class="control-label" for="inputPassword">Micronaje:</label>
                         <div class="controls">
-                            <input  class="input-large" type="text" id="field_metro" name="metros" placeholder="Metros">
+                            <input  class="input-large" type="text" id="field_micronaje" name="micronaje" placeholder="Micronaje">
                         </div>
                     </div>
-                  -->
+
                     <div class="control-group">
                         <label class="control-label" for="inputPassword">Multiplo:</label>
                         <div class="controls">
@@ -228,7 +238,7 @@ require("footer.php");
                 });
             },
             error:function(){
-                console.debug("===> error Carga Formato");
+                //console.debug("===> error Carga Formato");
             },
             dataType: 'json'
         };
@@ -244,7 +254,7 @@ $(function(){
     });*/
 
     $("#inputArticulo").keyup(function(){
-        console.debug("keyup load: %o", $(this).val());
+        //console.debug("keyup load: %o", $(this).val());
 
         var color = '#FFFFFF';
         var data_ajax={
@@ -267,7 +277,7 @@ $(function(){
                                 color = '#A9F5A9';
                             }
 
-                            console.debug("=> articulo data: %o",articulo);
+                            //console.debug("=> articulo data: %o",articulo);
                             fila += '<tr style="cursor: pointer; background-color:'+color+'" id="'+articulo.Id+'" data-id="'+articulo.Id+'"  data-name="'+articulo.Articulo+'">';
                             fila +='<td>';
                             fila +='<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>';
@@ -307,26 +317,14 @@ $(function(){
         $("#ArticuloPop").modal("hide");
     });
 
-
-
-
-
-
     $("#btnAceptar").click(function(){
-        $("#modalCant").modal("show");
+      $("form").trigger("reset");
+      $("#modalCant").modal("show");
     });
     $("#bt_submit").click(function(){
-        console.debug("SUBMIT FORM");
+        //////console.debug("SUBMIT FORM");
 
         var validate=true;
-        /*if($("#id_articulo").val().length<0){
-            validate=false;
-            $(".alert").find("p").text("Debe ingresar un Artículo");
-            $(".alert").removeClass("hidden");
-            $("#id_articulo").focus();
-            return false;
-        }*/
-
         if($("#field_formato").val() == 0){
             validate=false;
             $(".alert").find("p").text("Debe seleccionar un Formato de Material");
@@ -351,16 +349,8 @@ $(function(){
             $("#field_ancho").focus();
             return false;
         }
-        /*
-        if($("#field_peso").val().length<0){
-            validate=false;
-            $(".alert").find("p").text("Debe ingresar Peso de Material");
-            $(".alert").removeClass("hidden");
-            $("#field_peso").focus();
-            return false;
-        }
-        */
-         if($("#field_multiplo").val().length<0){
+
+       if($("#field_multiplo").val().length<0){
             validate=false;
             $(".alert").find("p").text("Debe ingresar Multiplos de Unidades de Formato");
             $(".alert").removeClass("hidden");
@@ -381,12 +371,12 @@ $(function(){
                 },
                 data: {action:2,params:$("form").serialize()},
                 success: function(data) {
-                    console.debug("==> seria: %o",data);
+                    ////console.debug("==> seria: %o",data);
                     $("#modalCant").modal("hide");
                     location.reload();
                 },
                 error:function(){
-                    console.debug("===> error Carga Formato");
+                    //console.debug("===> error Carga Formato");
                 },
                 dataType: 'json'
             };
@@ -398,9 +388,9 @@ $(function(){
     });
 
     $(".bt_edit").click(function(){
-        console.debug("bt_edit clicked");
+        //console.debug("bt_edit clicked");
         var id=$(this).data('id');
-        console.debug("Formato cantidad ID: %o",id);
+        //console.debug("Formato cantidad ID: %o",id);
 
         var data_ajax={
             type: 'POST',
@@ -411,21 +401,21 @@ $(function(){
             data: {action:3,id:id},
             success: function(data) {
                 formato=data.formato;
-                console.debug("Formato cantidad data: %o",formato);
+                //console.debug("Formato cantidad data: %o",formato);
                 $('#field_formato option[value="'+formato.formato_id+'"]').prop('selected', true);
                 $("#id").val(formato.id);
                 $("#field_description").val(formato.descripcion);
                 $("#field_ancho").val(formato.ancho);
                 $("#field_largo").val(formato.largo);
                 $("#field_micro").val(formato.micronaje);
-                $("#field_metro").val(formato.metros);
+                $("#field_micronaje").val(formato.micronaje);
                 $("#field_peso").val(formato.peso);
                 $("#field_multiplo").val(formato.multiplo);
                 $("#modalCant").modal("show");
 
             },
             error:function(){
-                console.debug("===> error Carga Formato");
+                //console.debug("===> error Carga Formato");
             },
             dataType: 'json'
         };
@@ -434,9 +424,9 @@ $(function(){
         return false;
     });
     $(".bt_delete").click(function(){
-        console.debug("bt_delete clicked");
+        //console.debug("bt_delete clicked");
         var id=$(this).data('id');
-        console.debug("Formato cantidad ID: %o",id);
+        //console.debug("Formato cantidad ID: %o",id);
         var data_ajax={
             type: 'POST',
             url: "services/formatos.php",
@@ -449,7 +439,7 @@ $(function(){
                 location.reload();
             },
             error:function(){
-                console.debug("===> error Carga Formato");
+                //console.debug("===> error Carga Formato");
             },
             dataType: 'json'
         };
@@ -457,7 +447,7 @@ $(function(){
         return false;
     });
     $(".bt_disabled").click(function(){
-        console.debug("bt_delete clicked");
+        //console.debug("bt_delete clicked");
         var id=$(this).data('id');
         var status=0;
         var icon_bt="";
@@ -467,8 +457,8 @@ $(function(){
         }else{
             icon_bt='fa fa-check-square-o fa-2x label label-warning';
         }
-        console.debug("Formato cantidad ID: %o",id);
-        console.debug("Formato cantidad status: %o",status);
+        //console.debug("Formato cantidad ID: %o",id);
+        //console.debug("Formato cantidad status: %o",status);
 
         var data_ajax={
             type: 'POST',
@@ -481,7 +471,7 @@ $(function(){
                 location.reload();
             },
             error:function(){
-                console.debug("===> error Carga Formato");
+                //console.debug("===> error Carga Formato");
             },
             dataType: 'json'
         };
@@ -489,6 +479,105 @@ $(function(){
         location.reload();
     });
 
+
+    $("#delete_selected_bt").click(function(){
+      if (confirm('Esta seguro que quiere ELIMINAR estas opciones?')) {
+        var checkbox_checked=$("table").find("input[type=checkbox]:checked");
+        ids=[];
+        $.each(checkbox_checked,function(index,input){
+          ids.push($(input).data('id'));
+        });
+
+        if(ids.length>0){
+          var data_ajax={
+               type: 'POST',
+               url: "services/formatos.php",
+               beforeSend:function(xhr){
+                   xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+               },
+               data: {action:7,ids:ids},
+               success: function(data) {
+                   location.reload();
+               },
+               error:function(){
+                   alert("===> error ERROR AL ELIMINAR FORMATOS");
+                   return false;
+               },
+               dataType: 'json'
+           };
+           $.ajax(data_ajax);
+        }
+      } else {
+        return false;
+      }
+    });
+
+
+    $("#enable_selected_bt").click(function(){
+      if (confirm('Esta seguro que quiere Habilitar estas opciones?')) {
+        var checkbox_checked=$("table").find("input[type=checkbox]:checked");
+        ids=[];
+        $.each(checkbox_checked,function(index,input){
+          ids.push($(input).data('id'));
+        });
+
+        if(ids.length>0){
+          var data_ajax={
+               type: 'POST',
+               url: "services/formatos.php",
+               beforeSend:function(xhr){
+                   xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+               },
+               data: {action:8,status:1,ids:ids},
+               success: function(data) {
+
+                   location.reload();
+               },
+               error:function(){
+                   alert("===> error ERROR AL ELIMINAR FORMATOS");
+                   return false;
+               },
+               dataType: 'json'
+           };
+           $.ajax(data_ajax);
+        }
+      } else {
+        return false;
+      }
+    });
+
+    $("#disable_selected_bt").click(function(){
+      if (confirm('Esta seguro que quiere Deshabilitar estas opciones?')) {
+        var checkbox_checked=$("table").find("input[type=checkbox]:checked");
+        ids=[];
+        $.each(checkbox_checked,function(index,input){
+          ids.push($(input).data('id'));
+        });
+
+        if(ids.length>0){
+          var data_ajax={
+               type: 'POST',
+               url: "services/formatos.php",
+               beforeSend:function(xhr){
+                   xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+               },
+               data: {action:8,status:0,ids:ids},
+               success: function(data) {
+
+                   location.reload();
+               },
+               error:function(){
+                   alert("===> error ERROR AL ELIMINAR FORMATOS");
+                   return false;
+               },
+               dataType: 'json'
+           };
+           $.ajax(data_ajax);
+        }
+      } else {
+        return false;
+      }
+    });
 });
 
 </script>

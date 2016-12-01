@@ -26,6 +26,7 @@
 		//Obtener Datos Fichas_Tecnicas
 		$ficha_tecnica_query="SELECT TOP 1 * FROM dbo.Fichas_Tecnicas  WHERE Id_Articulo='".$id_articulo."';";
 		if($result = odbc_exec($cid,$ficha_tecnica_query)){
+			$response['Fichas_Tecnica']=array();
 			while($ficha = odbc_fetch_array ($result))
 			{
 				//var_dump($ficha);
@@ -33,16 +34,18 @@
 			}
 
 			//Obtener Datos Fichas_Tecnicas_Detalle
+			$ficha_tecnica_id=(isset($response['Fichas_Tecnica']['Id']))?$response['Fichas_Tecnica']['Id']:'0';
+
 			$ficha_tecnica_detalle_query="SELECT
 			ftd.id, ftd.Id_Unidad_Medida,ftd.Valor,ftd.Referencia,ftd.Id_Maquina,ftd.Id_Matriz, um.Nombre,um.Detalle,
 			um.Unidad,um.Tipo,um.Id_Sector,um.Id_Ubicacion
 			FROM
 				dbo.Fichas_Tecnicas_Detalle as ftd
 			INNER JOIN dbo.Unidades_Medida as um ON ftd.Id_Unidad_Medida=um.Id
-			WHERE Id_Ficha_Tecnica ='".$response['Fichas_Tecnica']['Id']."' ;";
+			WHERE Id_Ficha_Tecnica ='".$ficha_tecnica_id."' ;";
 
 			//echo $ficha_tecnica_detalle_query."<br>";
-
+			$response['Fichas_Tecnica_Detalle']=array();
 			if($result = odbc_exec($cid,$ficha_tecnica_detalle_query)){
 				while($ficha_detalle = odbc_fetch_array ($result))
 				{

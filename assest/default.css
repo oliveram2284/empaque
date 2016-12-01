@@ -4,7 +4,7 @@
 
 #titulo_main{ background:#62C05B; font-size:24px;}
 
-#navi {  
+#navi {
 	list-style:none;
 	margin:0;
 	padding:0;
@@ -15,10 +15,8 @@
 	border:1px solid #CCCCCC;
 	float:left; //para eliminar el comportamiento de elemento de bloque(salto de linea)
 }
-#selected {background-color:#B8EF8B;}	
+#selected {background-color:#B8EF8B;}
 thead{ background-color:#B8EF8B; color:#333; border:1px;}
 .text-left{
 	color: red;
 }
-
-

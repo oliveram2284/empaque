@@ -41,7 +41,7 @@ if(!isset($_REQUEST['action'])){
             $params['descripcion']=str_replace('+',' ',$params['descripcion']);
           }
           if($params['id']==0){
-            $sql='INSERT INTO formatos_cantidades (articulo_id,articulo_nombre,formato_id,descripcion,largo,ancho,metros,multiplo)VALUES(" ", " ",'.$params['formato'].',"'.$params['descripcion'].'",'.$params['largo'].','.$params['ancho'].',0,'.$params['multiplo'].')' ;
+            $sql='INSERT INTO formatos_cantidades (articulo_id,articulo_nombre,formato_id,descripcion,largo,ancho,micronaje,metros,multiplo)VALUES(" ", " ",'.$params['formato'].',"'.$params['descripcion'].'",'.$params['largo'].','.$params['ancho'].','.$params['micronaje'].',0,'.$params['multiplo'].')' ;
             //echo $sql."<br>";
             R::exec( $sql);
             $id = R::getInsertID();
@@ -52,7 +52,7 @@ if(!isset($_REQUEST['action'])){
               articulo_nombre= "",
               largo='.$params['largo'].',
               ancho='.$params['ancho'].',
-
+              micronaje='.$params['micronaje'].',
               descripcion= "'.$params['descripcion'].'",
               multiplo= '.$params['multiplo'].' where id='.$params['id'].'; ' ;
             //  echo $sql_query_update."<br>";
@@ -89,10 +89,27 @@ if(!isset($_REQUEST['action'])){
         case '6':
 
           # Retorna Listado de Formatos
-          $formato=R::getAll("SELECT * FROM formatos_cantidades where formato_id=".$_REQUEST['id_formato']."  and status=0 ; order by descripcion ;");
+          $formato=R::getAll("SELECT * FROM formatos_cantidades where formato_id=".$_REQUEST['id_formato']."  and status=1 ; order by descripcion ;");
 
           echo json_encode(array('result'=>$formato));
           break;
+        case '7':{
+
+          $ids=implode(',',$_REQUEST['ids']);
+          R::exec( "DELETE FROM formatos_cantidades  WHERE id IN ( $ids );" );
+          echo json_encode(array('result'=>true));
+          break;
+        }
+
+        case '8':{
+
+          $ids=implode(',',$_REQUEST['ids']);
+          //R::exec( "DELETE FROM formatos_cantidades  WHERE id IN ( $ids );" );
+
+          R::exec( "UPDATE formatos_cantidades SET status=".$_REQUEST['status']."   WHERE id IN ( $ids ); " );
+          echo json_encode(array('result'=>true));
+          break;
+        }
         default:
           echo json_encode(array('result'=>false));
           break;

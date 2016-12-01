@@ -1,6 +1,11 @@
 var campos_para_validar = [];
 	var cliente = true;
 
+	$("#pop_close").live('click',function(){
+		/*alert("ClOSE");*/
+		$("#cantidad_modal").modal("hide");
+		$("#cantidad").attr("readonly",true);
+	});
 	function BuscarClientes()
 	{
 		cliente = true;
@@ -114,7 +119,12 @@ var campos_para_validar = [];
 							    }
 							  },
 				error: function(){
-						    alert("Error de conexión.");
+						    swal({
+  title: "Error!",
+  text: "Error de conexión.",
+  type: "error",
+  confirmButtonText: "Cerrar"
+});
 						  },
 				dataType: 'json'
 				};
@@ -233,7 +243,12 @@ var campos_para_validar = [];
 							    }
 							  },
 				error: function(){
-						    alert("Error de conexión.");
+						    swal({
+  title: "Error!",
+  text: "Error de conexión.",
+  type: "error",
+  confirmButtonText: "Cerrar"
+});
 						  },
 				dataType: 'json'
 				};
@@ -249,7 +264,9 @@ var campos_para_validar = [];
   	$("#º").val(null);
   	$("#micronaje").val(null);
   	$("#color").val(null);
-  	//$("#formato option[value=0] ").attr('selected','selected');
+		$('#formato').prop('selectedIndex',0);
+		$('#material').prop('selectedIndex',0);
+		//$("#formato option[value=0] ").attr('selected','selected');
   	//$("#formato").trigger('change');
 		//tomar id pasado y buscar los valor para los campos correspondientes al producto
 		var ar = "#"+valor+"_arp";
@@ -270,19 +287,29 @@ var campos_para_validar = [];
 		  	var color=data.Color;
 				var formato=data.Formato;
 		  	var material=data.Material;
-				//console.debug("==> SeleccionadoP - formato: %o",formato);
-		  	//console.debug("==> SeleccionadoP - material: %o",material);
 
 		  	$("#ancho").val(null);
 		  	$("#largo").val(null);
 		  	$("#micronaje").val(null);
 		  	$("#color").val(null);
-		  	$("#fuelle").val(null);
+				$("#fuelle").val(null);
+				$("#origen").removeAttr("readonly");
+		  	$("#cantidad").val(null).attr("readonly",true);
+
+				if(ficha_tecnica_detalle.length<1){
+					var output="El Articulo seleccionado "+valor+"\n No Tiene Ficha Técnica.";
+					swal({
+						title: "Advertencia!",
+						text: output,
+						type: "warning",
+						confirmButtonText: "Ok"
+					});
+					//alert(output);
+				}
 
 		  	$.each(ficha_tecnica_detalle,function(index,item){
 
 		  		var i=0;
-
 		  		if(item.Id_Unidad_Medida=='200'){
 						$("#ancho").val(item.Valor);
 		  			i=1;
@@ -362,9 +389,14 @@ var campos_para_validar = [];
 
 
 	$(document).ready(function(){
+
+
 		$("#formato").change(function(){
-			console.debug("HOL>");
+
+			console.debug('$("#formato").change');
 			campos_para_validar = [];
+			$("#cantidad").val(null);
+			$("#cantidad").attr("readonly",true);
 			clear_all();
 			var op = $(this).find("option:selected").val();
 
@@ -393,8 +425,14 @@ var campos_para_validar = [];
 			    }
 			  },
 				error: function(){
-						    alert("Error de conexión.");
-						  },
+					swal({
+						title: "Error!",
+						text: "Error de conexión.",
+						type: "error",
+						confirmButtonText: "Cerrar"
+					});
+
+				},
 				dataType: 'json'
 				};
 			$.ajax(data_ajax);
@@ -405,14 +443,22 @@ var campos_para_validar = [];
 		});
 
 
-		$("#cantidad").on('click',function(e){
+		$("#cantidad").live('click',function(e){
+
 
 			var id_formato=$("#formato").val();
+			var largo	=$("#largo").val();
+			//alert("Debe Seleccionar un Formato.");
+
 			if(id_formato==0){ //Si no se selecciono un formato no abre el popup
+
+				alert("Debe Seleccionar un Formato.");
+				$("#formato").focus();
 				return false;
 			}
 
 			console.debug("==> Formato Seleccionado: %o",id_formato);
+
 
 			var data_ajax={
         type: 'POST',
@@ -423,26 +469,41 @@ var campos_para_validar = [];
         //data: {action:6,id_formato:id_formato,largo:largo},
         data: {action:6,id_formato:id_formato},
         success: function(data) {
-
+					console.debug("=DATA: %o",data);
 					if(data.result.length<1){
+
+						$("#cantidad").removeAttr("readonly");
+						console.debug("ASDASDDS");
 						return false;
+					}else{
+						$(this).attr("readonly","readonly");
+
 					}
+
+					var largo	= $("#largo").val();
 					console.debug("== FORMATO CANTIDADES: %o",data);
 					//return false;
 					var tbody_content="";
 					$.each(data.result,function(index, item){
-						console.debug("===> FORMATO: %o",item);
-						tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'">';
-						tbody_content +='<td><a href="#" data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'" class=""><i class="fa fa-circle-o fa-2x " aria-hidden="true"></i></a></td>';
-						tbody_content +='<td>'+item.descripcion+'</td>';
-						tbody_content +='<td>'+item.largo+'</td>';
-						tbody_content +='<td>'+item.ancho+'</td>';
-						tbody_content +='<td>'+item.multiplo+'</td>';
-						tbody_content +='</tr>';
+
+
+						if(parseFloat(item.largo).toFixed(2)==parseFloat(largo).toFixed(2)){
+
+							tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'">';
+							tbody_content +='<td><a href="#" data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'" class=""><i class="fa fa-circle-o fa-2x " aria-hidden="true"></i></a></td>';
+							tbody_content +='<td>'+item.descripcion+'</td>';
+							tbody_content +='<td>'+parseFloat(item.largo).toFixed(1)+'</td>';
+							tbody_content +='<td>'+parseFloat(item.ancho).toFixed(1)+'</td>';
+							tbody_content +='<td>'+item.multiplo+'</td>';
+							tbody_content +='</tr>';
+						}
+
+
 					});
 
 
 					$("#table_cant").find("tbody").html(tbody_content);
+					$("#table_cant tbody  ").find("tr:first-child").trigger("click");
         	$("#cantidad_modal").modal("show");
 
         },
@@ -552,7 +613,7 @@ var campos_para_validar = [];
 		$("#micro").attr("disabled", "disabled");
 		$("#micro").attr('checked', false);
 		$("#origen").val("");
-		$("#origen").attr('readonly', true);
+		$("#origen").attr('readonly', false);
 		$("#solapa").val("");
 		$("#solapa").attr('readonly', true);
 		$("#troquelado").attr("disabled", "disabled");
@@ -642,8 +703,14 @@ function BuscarProducto()
 	 window.open("buscarProducto.php", "PopUp", 'width=900px,height=350px,scrollbars=YES'); return false;
 	}
 
-function guardar_1()
-	{
+function guardar_1(){
+
+
+	update_formato_material();
+
+
+
+
 		$('#btn_save').attr("disabled", "disabled");
 		$('#btn_CI').attr("disabled", "disabled");
 
@@ -701,7 +768,7 @@ function guardar_1()
 				title.push("lugarEnt");
 			}
 
-			debugger;
+			//debugger;
 			//if($("#arti").val() == "no")
 			if ($("#chkH").is(':checked') == true)
 			{
@@ -1436,7 +1503,12 @@ function guardar_1()
 				return false;
 			},
 			error: function(){
-				alert("Error de conexión.");
+				swal({
+  title: "Error!",
+  text: "Error de conexión.",
+  type: "error",
+  confirmButtonText: "Cerrar"
+});
 		    $('#btn_save').removeAttr('disabled');
 		    $('#btn_CI').removeAttr('disabled');
 		  },
@@ -1446,6 +1518,41 @@ function guardar_1()
 		$.ajax(data_ajax);
 
 	}
+
+
+function update_formato_material(){
+
+	var id=$("#codigoProductop").val();
+	var formato=$("#formato").val();
+	var material=$("#material").val();
+
+	if(id.length==0){
+		return false;
+	}
+
+	var data_ajax={
+		type: 'POST',
+		url: "services/pedidos.php",
+		data: { action:1,id:id,formato:formato,material:material},
+		success: function( data ){
+
+			return true;
+		},
+		error: function(){
+			swal({
+  title: "Error!",
+  text: "Error de conexión.",
+  type: "error",
+  confirmButtonText: "Cerrar"
+});
+			$('#btn_save').removeAttr('disabled');
+			$('#btn_CI').removeAttr('disabled');
+		},
+		dataType: 'json'
+	};
+
+	$.ajax(data_ajax);
+}
 
 function habilitarComponentes(id)
 	{
