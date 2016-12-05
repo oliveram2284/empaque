@@ -89,6 +89,14 @@ require("header.php");
  .span6 {
     width: 45%;
   }
+
+
+	.input_cant{
+		font-size: 18 !important;
+	font-weight: bold !important;
+	height: 40px !important;
+	}
+
 </style>
 
 
@@ -1406,7 +1414,7 @@ require("header.php");
 		</table>
   	<div class="control-group">
 	    <div class="controls">
-	    	<input type="text" id="input_cant_pop" class="" placeholder="Ingrese Cantidad">
+	    	<input type="text" id="input_cant_pop" class="input_cant" placeholder="Ingrese Cantidad">
 	    	<input type="hidden" id="multiplo_cant" >
 	    </div>
 	  </div>

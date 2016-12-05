@@ -443,23 +443,33 @@ var campos_para_validar = [];
 		});
 
 
-		$("#cantidad").live('click',function(e){
+		//$("#input_cant_pop")
 
+		$("#cantidad").live('click',function(e){
 
 			var id_formato=$("#formato").val();
 			var largo	=$("#largo").val();
 			//alert("Debe Seleccionar un Formato.");
-
+			$("#input_cant_pop").val(null);
 			if(id_formato==0){ //Si no se selecciono un formato no abre el popup
-
 				alert("Debe Seleccionar un Formato.");
 				$("#formato").focus();
 				return false;
 			}
 
-			console.debug("==> Formato Seleccionado: %o",id_formato);
-
-
+			console.debug('$("#largo").val().length ',$("#largo").val().length);
+			if($("#largo").val().length < 1 ){
+				swal({
+					title: "Error!",
+					text: "<b>Debe Ingresar Largo de Producto.</b>",
+					type: "error",
+					html: true,
+					confirmButtonText: "Cerrar"
+				});
+				$("#largo").focus();
+				return false;
+			}
+			//console.debug("==> Formato Seleccionado: %o",id_formato);
 			var data_ajax={
         type: 'POST',
         url: "services/formatos.php",
@@ -471,17 +481,14 @@ var campos_para_validar = [];
         success: function(data) {
 					console.debug("=DATA: %o",data);
 					if(data.result.length<1){
-
 						$("#cantidad").removeAttr("readonly");
-						console.debug("ASDASDDS");
 						return false;
 					}else{
 						$(this).attr("readonly","readonly");
-
 					}
 
 					var largo	= $("#largo").val();
-					console.debug("== FORMATO CANTIDADES: %o",data);
+					//console.debug("== FORMATO CANTIDADES: %o",data);
 					//return false;
 					var tbody_content="";
 					$.each(data.result,function(index, item){
@@ -529,21 +536,45 @@ var campos_para_validar = [];
 			$("#input_cant_pop").val(null);
 		});
 
-		$("#input_cant_pop").on('keyup',function(e){
-			console.debug("input_cant_pop kerda: %o",$(this).val());
-			var cant=$(this).val();
+		function format2(input)
+		{
+				var num = input.value.replace(/\./g,'');
+				if(!isNaN(num)){
+					num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+					num = num.split('').reverse().join('').replace(/^[\.]/,'');
+					input.value = num;
+				}else{
+					alert('Solo se permiten numeros');
+					input.value = input.value.replace(/[^\d\.]*/g,'');
+				}
+		}
+
+		$("#input_cant_pop").live('keyup',function(e){
+
+
+			if(event.which >= 37 && event.which <= 40) return;
+		  $(this).val(function(index, value) {
+		    return value
+		    .replace(/\D/g, "")
+		    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+		    ;
+		  });
+
+
+			//console.debug("input_cant_pop kerda: %o",$(this).val());
+			var cant=$(this).val().replace(".","");
 			var multiplo=$("#multiplo_cant").val();
-			console.debug("input_cant_pop cant: %o",cant);
-			console.debug("input_cant_pop multiplo: %o",multiplo);
+			//console.debug("input_cant_pop cant: %o",cant);
+			//console.debug("input_cant_pop multiplo: %o",multiplo);
 
 			min=0;
 			max=multiplo;
 			i=1;
 			flag=false;
+
 			while(!flag){
 				min=max;
 				max=multiplo*i;
-
 				if(cant>=max){
 					i++;
 				}else{
@@ -551,14 +582,44 @@ var campos_para_validar = [];
 				}
 			}
 
+			/*
+			do{
+				min=max;
+				max=multiplo*i;
+
+				if(cant == min){
+					flag=true;
+				}else if(cant == max){
+					flag=true;
+				}else if(cant>=max){
+					i++;
+				}else{
+					flag=true;
+				}
+
+			}while( flag!=true)*/
+
 			var list_li="";
-			if(i==1){
-				min=0;
+			console.debug("input_cant_pop cant: %o"	,	cant);
+			console.debug("input_cant_pop min: %o"	,	min);
+			console.debug("input_cant_pop max: %o"	,	max);
+
+			if( cant == min || cant == max ){
+
+					list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
+
 			}else{
-				list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+
+				if(i==1){
+					min=0;
+				}else{
+					list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+				}
+				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
+
 			}
 
-			list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
+
 
 			$(".cant_allowed").empty().append(list_li);
 
