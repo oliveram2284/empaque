@@ -6,6 +6,223 @@ var campos_para_validar = [];
 		$("#cantidad_modal").modal("hide");
 		$("#cantidad").attr("readonly",true);
 	});
+
+
+	$("#tbCliente").typeahead({
+			minLength:1,
+			source: function (query, process) {
+				var strng=$('#tbCliente').val();
+				var input = [];
+				input.push(strng);
+				var data_ajax={
+					type: "POST",
+					//method: "POST",
+					//url: "jsons/buscarCliente.json",
+					url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
+					data: { xinput: strng, xpage: 1 , busq: 1 },
+					success:function(data){
+						objects = [];
+						map = {};
+						$.each(data, function(i, object) {
+								var key= object.cod_client+" - "+object.razon_soci
+								map[key] = object;
+								objects.push(key);
+						});
+						return process(objects);
+
+					},
+					error:function(error_msg){
+						alert( "error_msg: " + error_msg );
+					},
+					dataType: 'json'
+				};
+				$.ajax(data_ajax);
+			},
+			updater: function(item) {
+				var data=map[item];
+				$("#tbCliente").prop('maxLength', item.length);
+				$("#codigoTango").val(map[item].cod_client);
+				//$("#tbCliente").val(data.name).data('id',map[item].cod_client);
+				$("#direccionCliente").val(data.domicilio);
+				$("#telefonoCliente").val(data.telefono);
+				$("#cuit").val(data.cuit);
+				$("#dirCliente").val(data.domicilio);
+				$("#facturarA").val(data.name);
+				$("#codigoTangoFacturar").val(map[item].cod_client);
+				return data.razon_soci;
+			}
+	});
+
+	$("#codigoProductop").typeahead({
+		minLength:1,
+		source: function (query, process) {
+			console.debug("codigoProductop typeahead() ");
+			var strng=$('#codigoProductop').val();
+			var input = [];
+			input.push(strng);
+
+			var data_ajax={
+				type: "POST",
+				//method: "POST",
+				//url: "jsons/buscarArticulo.json",
+				url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
+				data: { xinput: strng, xpage: 1 , busq: 1 },
+				success:function(data){
+					objects = [];
+					map = {};
+					$.each(data, function(i, object) {
+							var key= object.Id+" - "+object.Articulo
+							map[key] = object;
+							objects.push(key);
+					});
+					return process(objects);
+				},
+				error:function(error_msg){
+					alert( "error_msg: " + error_msg );
+				},
+				dataType: 'json'
+			};
+			$.ajax(data_ajax);
+		},
+		updater:function(item){
+			var data=map[item];
+			$("#nombreProducto").val(data.Articulo);
+			$("#articuloTangoCode").val(data.Nombre_en_Facturacion);
+			get_ficha_tecnica(data.Id);
+			return data.Id;
+		}
+
+	});
+
+
+
+	function get_ficha_tecnica(id){
+		var data_ajax={
+			method: "POST",
+			url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
+			//url: "buscarArticulo.json",
+			data: {id:id},
+			dataType: "json",
+			success:function(data){
+				var articulo=data.articulo;
+				var ficha_tecnica_detalle=data.Fichas_Tecnica_Detalle;
+
+				var color="";
+
+				var formato=data.Formato;
+				var material=data.Material;
+
+				$("#ancho").val(null);
+				$("#largo").val(null);
+				$("#micronaje").val(null);
+				$("#color").val(null);
+				$("#fuelle").val(null);
+				$("#origen").removeAttr("readonly");
+				$("#cantidad").val(null).attr("readonly",true);
+
+				if(ficha_tecnica_detalle.length<1){
+					var output="<p style='font-size:20px; color:#000000'>El Articulo <b style='color:red'> "+valor+" </b> <br> No posee Ficha Técnica en Mercedario.<br> Por favor, ingrese datos manualmente<p>";
+					swal({
+						title: "Advertencia!",
+						text: output,
+						type: "warning",
+						confirmButtonText: "Ok",
+						html:true
+					});
+					//alert(output);
+					color=data.Color.Color;
+				}
+
+				var first_color=false;
+				var cantidad_pistas=null;
+				$.each(ficha_tecnica_detalle,function(index,item){
+
+					var i=0;
+					if(item.Id_Unidad_Medida=='200'){
+						$("#ancho").val(item.Valor);
+						i=1;
+					}
+
+					if(item.Id_Unidad_Medida=='5000'){ //.Nombre=='LARGO PT'||item.Nombre=="LARGO  PT"){
+						$("#largo").val(item.Valor);
+						i=1;
+					}
+
+					//if(item.Nombre=='MICRONAJE 1'){
+					if(item.Id_Unidad_Medida=='40'){
+						$("#micronaje").val(item.Valor);
+						i=1;
+					}
+
+					if(item.Nombre=='FUELLE 1'){
+						$("#fuelle").val(item.Valor);
+						i=1;
+					}
+
+					//if(item.Nombre=='COLOR 1' && first_color!=true){
+					if(item.Nombre=='COLOR 1'){
+						color += item.Referencia.replace("[object Object]","")+"  ";
+						i=1;
+						first_color=true;
+					}
+
+					if(item.Nombre=='CANT. DE PISTAS' || item.Id_Unidad_Medida=="4005"){
+						console.debug("=> Cantidad de Pistas: %o",item.Valor);
+						cantidad_pistas=item.Valor;
+					}
+
+				});
+
+				console.debug("===> articulo ID: %o",articulo.Id.substring(0,2));
+				//reset cant_pista
+				$("#cant_pista").val(null);
+
+				switch (articulo.Id.substring(0,2)) {
+					case 'L0':
+					case 'T0':{
+						$("#micronaje").val(articulo.Espesor);
+						$("#largo").val(articulo.Largo);
+						break;
+					}
+					case 'I0':{
+						console.debug("===> articulo.Id: %o ",articulo.Id);
+						$("#micronaje").val(articulo.Espesor);
+						$("#largo").val(articulo.Largo);
+						$("#cant_pista").val(cantidad_pistas);
+
+						break;
+					}
+
+						break;
+					default:
+
+				}
+				/*if(articulo.Id.startsWith("L0") || articulo.Id.startsWith("T0")){
+						$("#micronaje").val(articulo.Espesor);
+				}*/
+
+				$("#color").val(color);
+
+				if(formato!=null){
+					console.debug("===> formato.formato_i: %o",formato.formato_id);
+					$("#formato").removeAttr("selected");
+					$("#formato option[value="+formato.formato_id+"] ").attr("selected", "selected");
+				}
+				if(material!=null){
+					$("#material option[value="+material.material_id+"] ").attr("selected", "selected");
+					$("#material").trigger("change");
+				}
+
+			},
+			error:function(error_msg){
+				alert( "error_msg: " + error_msg );
+			}
+		};
+		$.ajax(data_ajax);
+
+	}
+
+
 	function BuscarClientes()
 	{
 		cliente = true;
@@ -258,7 +475,7 @@ var campos_para_validar = [];
 	function SeleccionadoP(valor)
 	{
 
-		//console.debug("===> valor: %o",valor);
+		console.debug("===> valor: %o",valor);
 		//reset:
 		$("#ancho").val(null);
   	$("#º").val(null);
@@ -274,17 +491,20 @@ var campos_para_validar = [];
 		$("#codigoProductop").val(valor);
 		$("#nombreProducto").val($(ar).val());
 		$("#descripcionProducto").val($(nc).val());
-		//console.debug("===> Seleccionar");
+		console.debug("===> Seleccionar");
 
 		var data_ajax={
 		  method: "POST",
-		  url: "buscarProductoFicha.php",
+			url: "buscarProductoFicha.php",
+		  //url: "buscarArticulo.json",
 		  data: {id:valor},
 		  dataType: "json",
 		  success:function(data){
 		  	var articulo=data.articulo;
 		  	var ficha_tecnica_detalle=data.Fichas_Tecnica_Detalle;
-		  	var color=data.Color;
+
+		  	var color="";
+
 				var formato=data.Formato;
 		  	var material=data.Material;
 
@@ -293,19 +513,26 @@ var campos_para_validar = [];
 		  	$("#micronaje").val(null);
 		  	$("#color").val(null);
 				$("#fuelle").val(null);
-				$("#origen").removeAttr("readonly");
+				//$("#origen").removeAttr("readonly");
 		  	$("#cantidad").val(null).attr("readonly",true);
 
 				if(ficha_tecnica_detalle.length<1){
-					var output="El Articulo seleccionado "+valor+"\n No Tiene Ficha Técnica.";
+					var output="<p style='font-size:20px; color:#000000'>El Articulo <b style='color:red'> "+valor+" </b> <br> No posee Ficha Técnica en Mercedario.<br> Por favor, ingrese datos manualmente<p>";
 					swal({
 						title: "Advertencia!",
 						text: output,
 						type: "warning",
-						confirmButtonText: "Ok"
+						confirmButtonText: "Ok",
+						html:true
 					});
 					//alert(output);
+					color=data.Color.Color;
 				}
+
+				var first_color=false;
+				$("#ancho").val("0.0");
+				$("#largo").val("0.0");
+				$("#micronaje").val("0.0");
 
 		  	$.each(ficha_tecnica_detalle,function(index,item){
 
@@ -320,27 +547,52 @@ var campos_para_validar = [];
 		  			i=1;
 		  		}
 
+
 					//if(item.Nombre=='MICRONAJE 1'){
 		  		if(item.Id_Unidad_Medida=='40'){
 		  			$("#micronaje").val(item.Valor);
 						i=1;
 		  		}
 
+
 		  		if(item.Nombre=='FUELLE 1'){
 		  			$("#fuelle").val(item.Valor);
 		  			i=1;
 		  		}
 
+					//if(item.Nombre=='COLOR 1' && first_color!=true){
+					if(item.Nombre=='COLOR 1'){
+		  			color += item.Referencia.replace("[object Object]","")+"  ";
+		  			i=1;
+						first_color=true;
+		  		}
+
 		  	});
 
-		  	$("#color").val(color.Color);
+				console.debug("===> articulo ID: %o",articulo.Id);
+				if(articulo.Id.startsWith("L0") || articulo.Id.startsWith("T0")|| articulo.Id.startsWith("I0")){
+					console.debug("====> ARTICULO: %o",articulo);
+					$("#micronaje").val(articulo.Espesor);
+					$("#largo").val(articulo.Largo);
+					$("#ancho").val(articulo.Ancho);
+
+				}else{
+					console.debug("===> ancho: %o",$("#ancho").val());
+					console.debug("===> largo: %o",$("#largo").val());
+					console.debug("===> micronaje: %o",$("#micronaje").val());
+				}
+
+		   	$("#color").val(color);
 
 				if(formato!=null){
 					$("#formato option[value="+formato.formato_id+"] ").attr("selected", "selected");
+					$("#formato").trigger("change");
 				}
-
+				console.debug("===> HERE MATERIAL");
 				if(material!=null){
+					console.debug("===> HERE MATERIAL");
 					$("#material option[value="+material.material_id+"] ").attr("selected", "selected");
+					$("#material").trigger("change");
 				}
 
 		  },
@@ -388,15 +640,20 @@ var campos_para_validar = [];
 	}
 
 
+
+
 	$(document).ready(function(){
+
+
 
 
 		$("#formato").change(function(){
 
-			console.debug('$("#formato").change');
+			//console.debug('$("#formato").change');
 			campos_para_validar = [];
 			$("#cantidad").val(null);
 			$("#cantidad").attr("readonly",true);
+			$("#origen").attr("readonly",true);
 			clear_all();
 			var op = $(this).find("option:selected").val();
 
@@ -405,20 +662,23 @@ var campos_para_validar = [];
 				url: "get_campos_obligatorios.php",
 				data: { xinput: op },
 				success: function( data ) {
-					console.debug("formato  data: %o",data);
+					//console.debug("formato  data: %o",data);
 			    if(data != 0){
+						$("#origen").attr("readonly",true);
 						$.each(data, function(k,v){
-
+							//console.debug("== >  k %o : %o",k,v);
 						   var id_cmp = "#"+v;
 						   campos_para_validar.push(id_cmp);
 
 						   if(v == "termo" || v == "micro" || v == "troquelado")
 						   {
-							$(id_cmp).removeAttr('disabled');
+								 $(id_cmp).removeAttr('disabled');
+						   }else if (v=='origen') {
+						   	 $("#origen").removeAttr('readonly');
 						   }
 						   else
 						   {
-							$(id_cmp).removeAttr('readonly');
+								 $(id_cmp).removeAttr('readonly');
 						   }
 						}
 					);
@@ -448,8 +708,67 @@ var campos_para_validar = [];
 		$("#cantidad").live('click',function(e){
 
 			var id_formato=$("#formato").val();
+
+			if($("#largo").val().length < 1 ){
+				swal({
+					title: "Error!",
+					text: "<b>Debe Ingresar Largo de Producto.</b>",
+					type: "error",
+					html: true,
+					confirmButtonText: "Cerrar"
+				});
+				$("#largo").focus();
+				return false;
+			}
+
 			var largo	=$("#largo").val();
-			//alert("Debe Seleccionar un Formato.");
+
+			console.debug("===> aca id_formato : %o",id_formato);
+			console.debug("===> largo: %o",largo);
+
+
+
+
+			switch (id_formato) {
+				case '0':{
+					alert("Debe Seleccionar un Formato.");
+					$("#formato").focus();
+					return false;
+					break;}
+				case '6':{
+					console.debug("===> cant_pista: %o",$("#cant_pista").val().length);
+					var pistas	=	(	$("#cant_pista").val().length>0	)? $("#cant_pista").val()	:	0	;
+					procesa_cantidades_etiqueta(	id_formato	,	largo	,	pistas	);
+					return false;
+					break;
+				}
+
+				case '23':{
+					console.debug("==> procesa_cantidades_bolsa ")
+					//console.debug("===> cant_pista: %o",$("#cant_pista").val().length);
+					procesa_cantidades_bolsa(	id_formato	,	largo	);
+					return false;
+					break;
+				}
+
+				default:{
+					//alert("Formato Incorrecto:  "+id_formato+"");
+					$("#cantidad").removeAttr("readonly");
+					return false;
+					break;
+				}
+
+			}
+			return false;
+
+
+
+		});
+
+		function procesa_cantidades_bolsa(id_formato,largo_corte){
+
+
+			$(this).attr("readonly","readonly");
 			$("#input_cant_pop").val(null);
 			if(id_formato==0){ //Si no se selecciono un formato no abre el popup
 				alert("Debe Seleccionar un Formato.");
@@ -471,14 +790,14 @@ var campos_para_validar = [];
 			}
 			//console.debug("==> Formato Seleccionado: %o",id_formato);
 			var data_ajax={
-        type: 'POST',
-        url: "services/formatos.php",
-        beforeSend:function(xhr){
-          xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-        },
-        //data: {action:6,id_formato:id_formato,largo:largo},
-        data: {action:6,id_formato:id_formato},
-        success: function(data) {
+				type: 'POST',
+				url: "services/formatos.php",
+				beforeSend:function(xhr){
+					xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+				},
+				//data: {action:6,id_formato:id_formato,largo:largo},
+				data: {action:6,id_formato:id_formato},
+				success: function(data) {
 					console.debug("=DATA: %o",data);
 					if(data.result.length<1){
 						$("#cantidad").removeAttr("readonly");
@@ -508,22 +827,155 @@ var campos_para_validar = [];
 
 					});
 
-
+					if(tbody_content==''){
+						$("#cantidad").removeAttr("readonly");
+						return false;
+					}
 					$("#table_cant").find("tbody").html(tbody_content);
 					$("#table_cant tbody  ").find("tr:first-child").trigger("click");
-        	$("#cantidad_modal").modal("show");
+					$("#cantidad_modal").modal("show");
 
-        },
-        error:function(){
-            console.debug("===> error Carga Formato");
-        },
-        complete:function(){
-        	//$("#cantidad_modal").modal("show");
-        },
-        dataType: 'json'
-    };
-    $.ajax(data_ajax);
-		});
+				},
+				error:function(){
+						console.debug("===> error Carga Formato");
+				},
+				complete:function(){
+					//$("#cantidad_modal").modal("show");
+				},
+				dataType: 'json'
+		};
+		$.ajax(data_ajax);
+		}
+
+
+		function  procesa_cantidades_etiqueta(id_formato,largo_corte,pistas){
+			console.debug("===> procesa_cantidades_etiqueta function	");
+			console.debug("===> id_formato: %o",id_formato);
+			console.debug("===> largo_corte: %o",largo_corte);
+			console.debug("===> pistas: %o",pistas);
+
+			var data_ajax={
+				type: 'POST',
+				url: "services/bobinas.php",
+				beforeSend:function(xhr){
+					xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+				},
+				data:{action:3,formato_id:id_formato},
+				success:function(data){
+					console.debug("=>>> BOBINA: %o",data);
+					var tbody_content="";
+					$.each(data.bobina,function(index, item){
+						console.debug("===> index: %o - %o",index,item);
+
+						total_etiquetas= ( parseFloat(item.largo_cm) / parseFloat(largo_corte) ) * parseInt(pistas);
+						total_etiquetas= total_etiquetas.toFixed();
+
+						tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+total_etiquetas+'">';
+						tbody_content +='<td><a href="#" data-id="'+item.id+'"  data-multiplo="'+total_etiquetas+'" class=""><i class="fa fa-circle-o fa-2x " aria-hidden="true"></i></a></td>';
+						tbody_content +='<td>'+item.nombre+'</td>';
+						tbody_content +='<td>'+parseFloat(item.largo).toFixed(1)+'</td>';
+						tbody_content +='<td>'+pistas+'</td>';
+						tbody_content +='<td>'+total_etiquetas+'</td>';
+						tbody_content +='</tr>';
+
+					});
+					console.debug("===> tbody_content: %o",tbody_content);
+
+					if(tbody_content==''){
+						$("#cantidad").removeAttr("readonly");
+						return false;
+					}
+
+					$("#table_bobina_cant").find("tbody").html(tbody_content);
+					$("#table_bobina_cant tbody  ").find("tr:first-child").trigger("click");
+					$("#etiqueta_cantidad_modal").modal('show');
+
+					return false;
+					$("#etiqueta_cantidad_modal").modal('show');
+				},
+				error:function(){
+						console.debug("===> error Carga Formato");
+				},
+				complete:function(){
+					//$("#cantidad_modal").modal("show");
+				},
+				dataType: 'json'
+
+			}
+			$.ajax(data_ajax);
+
+
+			//#TODO: Falta cargar datos en modal
+
+			return false;
+		}
+
+
+
+
+		function Moneda(entrada){
+		var num = entrada.replace(/\./g,"");
+		if(!isNaN(num)){
+		num = num.toString().split("").reverse().join("").replace(/(?=\d*\.?)(\d{3})/g,"$1.");
+		num = num.split("").reverse().join("").replace(/^[\.]/,"");
+		entrada = num;
+		}else{
+		entrada = input.value.replace(/[^\d\.]*/g,"");
+		}
+		return entrada;
+		}
+
+		function formatearNumero(nStr) {
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + '.' + '$2');
+    }
+    return x1 + x2;
+	}
+
+	  function addCommas(input){
+  // If the regex doesn't match, `replace` returns the string unmodified
+  return (input.toString()).replace(
+    // Each parentheses group (or 'capture') in this regex becomes an argument
+    // to the function; in this case, every argument after 'match'
+    /^([-+]?)(0?)(\d+)(.?)(\d+)$/g, function(match, sign, zeros, before, decimal, after) {
+
+      // Less obtrusive than adding 'reverse' method on all strings
+      var reverseString = function(string) { return string.split('').reverse().join(''); };
+
+      // Insert commas every three characters from the right
+      var insertCommas  = function(string) {
+
+        // Reverse, because it's easier to do things from the left
+        var reversed           = reverseString(string);
+
+        // Add commas every three characters
+        var reversedWithCommas = reversed.match(/.{1,3}/g).join(',');
+
+        // Reverse again (back to normal)
+        return reverseString(reversedWithCommas);
+      };
+
+      // If there was no decimal, the last capture grabs the final digit, so
+      // we have to put it back together with the 'before' substring
+      return sign + (decimal ? insertCommas(before) + decimal + after : insertCommas(before + after));
+    }
+  );
+};
+
+		/*$("#cantidad").live('keyup',function(){
+			var input=$(this).val();//$(this).val();
+			//console.debug("===> cantidad valor: %o",input);
+			//console.debug("===> cantidad Moneda: %o",Moneda(input));
+			console.debug("===> cantidad formatearNumero: %o",addCommas(input));
+
+			$(this).val(Moneda(input));
+			//$(this).val(input);
+		});*/
 
 		$("#table_cant tbody tr ").live('click',function(){
 			console.debug("===> OPTION CLICKED: %o",$(this).find('i').length );
@@ -534,6 +986,17 @@ var campos_para_validar = [];
 			var multiplo = $(this).data('multiplo');
 			$("#multiplo_cant").val(multiplo);
 			$("#input_cant_pop").val(null);
+		});
+
+		$("#table_bobina_cant tbody tr ").live('click',function(){
+			console.debug("===> OPTION CLICKED: %o",$(this).find('i').length );
+			$("#table_bobina_cant tbody tr").removeClass('label label-success');
+			$("#table_bobina_cant tbody tr i").attr('class','fa fa-circle-o fa-2x ');//  removeClass('label label-success');
+			$(this).addClass('label label-success');
+			$(this).find('i').attr('class','fa fa-check-circle fa-2x  label label-success');
+			var multiplo = $(this).data('multiplo');
+			$("#multiplo_etiqueta_cant").val(multiplo);
+			$("#input_cant_etiqueta_pop").val(null);
 		});
 
 		function format2(input)
@@ -549,29 +1012,21 @@ var campos_para_validar = [];
 				}
 		}
 
-		$("#input_cant_pop").live('keyup',function(e){
-
+		$("#input_cant_pop").live('keyup',function(event){
 
 			if(event.which >= 37 && event.which <= 40) return;
+
 		  $(this).val(function(index, value) {
 		    return value
 		    .replace(/\D/g, "")
-		    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-		    ;
+		    .replace(/\B(?=(\d{3})+(?!\d))/g, ".") ;
 		  });
-
-
-			//console.debug("input_cant_pop kerda: %o",$(this).val());
 			var cant=$(this).val().replace(".","");
 			var multiplo=$("#multiplo_cant").val();
-			//console.debug("input_cant_pop cant: %o",cant);
-			//console.debug("input_cant_pop multiplo: %o",multiplo);
-
 			min=0;
 			max=multiplo;
 			i=1;
 			flag=false;
-
 			while(!flag){
 				min=max;
 				max=multiplo*i;
@@ -582,49 +1037,103 @@ var campos_para_validar = [];
 				}
 			}
 
-			/*
-			do{
-				min=max;
-				max=multiplo*i;
-
-				if(cant == min){
-					flag=true;
-				}else if(cant == max){
-					flag=true;
-				}else if(cant>=max){
-					i++;
-				}else{
-					flag=true;
-				}
-
-			}while( flag!=true)*/
-
 			var list_li="";
-			console.debug("input_cant_pop cant: %o"	,	cant);
-			console.debug("input_cant_pop min: %o"	,	min);
-			console.debug("input_cant_pop max: %o"	,	max);
-
 			if( cant == min || cant == max ){
-
 					list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
-
 			}else{
-
 				if(i==1){
 					min=0;
 				}else{
 					list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
 				}
 				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
-
 			}
-
-
-
 			$(".cant_allowed").empty().append(list_li);
-
 		});
 
+		$("#input_cant_pop").live('keyup',function(e){
+
+			if(event.which >= 37 && event.which <= 40) return;
+		  $(this).val(function(index, value) {
+		    return value
+		    .replace(/\D/g, "")
+		    .replace(/\B(?=(\d{3})+(?!\d))/g, ".") ;
+		  });
+			var cant=$(this).val().replace(".","");
+			var multiplo=$("#multiplo_cant").val();
+			min=0;
+			max=multiplo;
+			i=1;
+			flag=false;
+			while(!flag){
+				min=max;
+				max=multiplo*i;
+				if(cant>=max){
+					i++;
+				}else{
+					flag=true;
+				}
+			}
+
+			var list_li="";
+			if( cant == min || cant == max ){
+					list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
+			}else{
+				if(i==1){
+					min=0;
+				}else{
+					list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+				}
+				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
+			}
+			$(".cant_etiquetas_allowed").empty().append(list_li);
+		});
+
+		$("#input_cant_etiqueta_pop").live('keyup',function(event){
+			console.debug("==> input_cant_etiqueta_pop: %o",$(this).val());
+			if(event.which >= 37 && event.which <= 40) return;
+		  $(this).val(function(index, value) {
+		    return value
+		    .replace(/\D/g, "")
+		    .replace(/\B(?=(\d{3})+(?!\d))/g, ".") ;
+		  });
+			var cant=parseInt($(this).val().replace(".",""));///$(this).val().replace(".","");
+			var multiplo=$("#multiplo_etiqueta_cant").val();
+			console.debug("==> cant: %o",cant);
+			min=0;
+			max=multiplo;
+			i=1;
+			flag=false;
+			while(!flag){
+				min=max;
+				max=multiplo*i;
+				if(cant>=max){
+					i++;
+				}else{
+					flag=true;
+				}
+			}
+
+			medio= multiplo/2;
+			medio=medio.toFixed();
+			min_y_medio=parseInt(min)+parseInt(medio);
+
+			var list_li="";
+			if( cant == min || cant == min_y_medio  || cant == max ){
+					list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
+			}else{
+				if(i==1){
+					min=0;
+				}else{
+
+					list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+					list_li+='<li><input type="radio" value="'+min_y_medio+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min_y_medio+'</li>';
+				}
+				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
+			}
+			$(".cant_etiquetas_allowed").empty().append(list_li);
+			return false;
+		});
 
 		$("#cantidad_modal .btn-primary").click(function(){
 			//console.debug("Save bt");
@@ -639,6 +1148,21 @@ var campos_para_validar = [];
 			}
 			$("#cantidad").val(radios_cants.val()).focus();
 			$("#cantidad_modal").modal("hide");
+		});
+
+		$("#etiqueta_cantidad_modal .btn-primary").click(function(){
+			//console.debug("Save bt");
+			var radios_cants=$("#etiqueta_cantidad_modal .modal-body").find("input[type='radio']:checked");
+			console.debug("==> radios_cants: %o",radios_cants.length);
+			$(".cant_allowed").find("li.alert-danger").remove();
+			if(radios_cants.length==0){
+				$(".cant_etiquetas_allowed").append("<li class='alert alert-danger'>Debe seleccionar una cantidad disponible</li>");
+				return false;
+			}else{
+				$(".cant_etiquetas_allowed").find("li.alert-danger").remove();
+			}
+			$("#cantidad").val(radios_cants.val()).focus();
+			$("#etiqueta_cantidad_modal").modal("hide");
 		});
 
 
@@ -831,8 +1355,7 @@ function guardar_1(){
 
 			//debugger;
 			//if($("#arti").val() == "no")
-			if ($("#chkH").is(':checked') == true)
-			{
+			if ($("#chkH").is(':checked') == true){
 				//el producto no es nuevo
 				if($("#nombreProducto").val() == "")
 					{
@@ -857,8 +1380,7 @@ function guardar_1(){
 						input.push("no");
 						title.push("habitual");
 					}
-			}else
-				{
+			}else{
 					//el producto es nuevo
 					if($("#nombreProducto").val() == "")
 					{
@@ -890,7 +1412,7 @@ function guardar_1(){
 						input.push("si");
 						title.push("habitual");
 					}
-				}
+			}
 
 			if($("#fecha1").val() == "")
 			{
@@ -916,7 +1438,8 @@ function guardar_1(){
 			}
 			else
 			{
-				input.push($("#cantidad").val());
+
+				input.push($("#cantidad").val().replace('.',''));
 				title.push("cantProd");
 			}
 
@@ -1362,29 +1885,7 @@ function guardar_1(){
 					title.push("troquelado");
 				}
 			}
-			/*
-			if($('#accionPedido').val() != "CL" && $('#accionPedido').val() != "N")
-			{
-				if($('#troquelado').val() == "-1")
-				{
-					$('#msj_error_pop').html("<strong>Seleccione si el producto tiene troquelado.</strong>");
-					$('#MensajesPop').modal('show');
-					$('#btn_save').removeAttr('disabled');
-					$('#btn_CI').removeAttr('disabled');
-					return false;
-				}
-				else
-				{
-					debugger;
-					input.push($("#troquelado").val());
-					title.push("troquelado");
-				}
-			}else
-			{
-				input.push($("#troquelado").val());
-				title.push("troquelado");
-			}
-			*/
+
 			//--------------------------------------
 
 			//Campos no requeridos
@@ -1601,11 +2102,11 @@ function update_formato_material(){
 		},
 		error: function(){
 			swal({
-  title: "Error!",
-  text: "Error de conexión.",
-  type: "error",
-  confirmButtonText: "Cerrar"
-});
+			  title: "Error!",
+			  text: "Error de conexión.",
+			  type: "error",
+			  confirmButtonText: "Cerrar"
+			});
 			$('#btn_save').removeAttr('disabled');
 			$('#btn_CI').removeAttr('disabled');
 		},
@@ -1617,6 +2118,7 @@ function update_formato_material(){
 
 function habilitarComponentes(id)
 	{
+		console.debug("==> habilitarComponentes");
 		if(id == 1) //es bilamina , habilitar los dos primeros select
 			{
 				$('#Bilaminado1').attr('disabled', false);
@@ -1705,14 +2207,12 @@ function letras (campo)
 //_________________________________________________________//
 
 //Solo numeros en el campo
-function numerico(campo)
-	{
+function numerico(campo){
 	var charpos = campo.value.search("[^0-9]");
-    if (campo.value.length > 0 &&  charpos >= 0)
-		{
+	if (campo.value.length > 0 &&  charpos >= 0){
 		campo.value = campo.value.slice(0, -1);
 		campo.focus();
-	    return false;
+		return false;
 		}
 			else
 				{

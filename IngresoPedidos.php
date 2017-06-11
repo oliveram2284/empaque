@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 $nombre = substr($_SESSION['Nombre'], 0, 2);
 
 include("conexion.php");
@@ -335,7 +334,7 @@ require("header.php");
 								{
 									?>
 									<div>
-										<input type="text" id="tbCliente" name="nombreCliente" readonly="true" value="<?php echo $row['clienteNombre'];?>">
+										<input type="text" id="tbCliente" name="nombreCliente"  data-provide="typeahead"readonly="true" value="<?php echo $row['clienteNombre'];?>">
 									</div>
 									<?php
 								}
@@ -343,7 +342,7 @@ require("header.php");
 								{
 									?>
 									<div class="control-group error">
-										<input type="text" id="tbCliente" onclick="BuscarClientes()" name="nombreCliente" readonly="true" value="<?php echo isset($row['clienteNombre']) ? $row['clienteNombre']:"";?>">
+										<input type="text" id="tbCliente"  data-provide="typeahead"  name="nombreCliente"  value="<?php echo isset($row['clienteNombre']) ? $row['clienteNombre']:"";?>">
 									</div>
 									<?php
 								}
@@ -425,7 +424,7 @@ require("header.php");
 								{
 									echo "
 										<div class=\"control-group error\" id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\"  value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
 										</div>
 									";
 								}
@@ -433,7 +432,7 @@ require("header.php");
 								{
 									echo "
 										<div id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\"  value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
 										</div>
 									";
 								}
@@ -444,7 +443,7 @@ require("header.php");
 								{
 									echo "
 										<div class=\"control-group error\" id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
 										</div>
 									";
 								}
@@ -735,6 +734,9 @@ require("header.php");
 										<input type="text" id="largo" name="largo" onKeyUp="decimal(largo)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['Largo'];?>" <?php echo $largo; ?>>
 									</td>
 								</tr>
+
+
+
 								<tr>
 									<td>
 										Micronaje:
@@ -928,7 +930,7 @@ require("header.php");
 										Cantidad:
 									</td>
 									<td>
-										<input type="text" id="cantidad"  readonly name="cantidad" onKeyUp="numerico(cantidad);" value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
+										<input type="text" id="cantidad"  readonly name="cantidad" o value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
 									</td>
 								</tr>
 								<tr>
@@ -1312,7 +1314,7 @@ require("header.php");
 		</div>
 
 	</div>
-
+	<input type="hidden" name="cant_pista" id="cant_pista" >
 	<div class="row">
 		<div class="span9" style="text-align: right">
 			<table style="margin-left: 700px">
@@ -1426,11 +1428,14 @@ require("header.php");
   </div>
 </div>
 
+<?php include_once('_modal_etiqueta_cantidades.php')?>
+
 
 </div>
 
 <?php
 require("footer.php");
+
 
 
 
@@ -1444,6 +1449,7 @@ function invertirFecha($date)
 //---------------------------------------------
 
 ?>
+<script src="assest/Typeahead/bootstrap3-typeahead.min.js"></script>
 <script type="text/javascript">
 /*
 	$(function(){
@@ -1456,3 +1462,10 @@ function invertirFecha($date)
 	});*/
 </script>
 <script type="text/javascript" src="Js/IngresoPedidos.js"></script>
+<script src="assest/dist/js/jquery.maskMoney.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#cantidad").maskMoney({allowNegative: true, thousands:'.', decimal:','});
+
+	});
+</script>

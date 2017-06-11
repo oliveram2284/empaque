@@ -6,8 +6,8 @@ $nombre = substr($_SESSION['Nombre'], 0, 2);
 
 if(!$_SESSION['Nombre'])
 {
-    header('Location: index.php'); 
-}	
+    header('Location: index.php');
+}
 $idUsuario = $_SESSION['id_usuario'];
 $esAdmin = $_SESSION['admin'];
 
@@ -18,7 +18,7 @@ include("conexion.php");
 $var = new conexion();
 $var->conectarse();
  ?>
- 
+
  <!-- Include Bootstrap Multiselect CSS, JS -->
 <link rel="stylesheet" href="assest/dist/css/bootstrap-multiselect.css" type="text/css">
 <script type="text/javascript" src="assest/dist/js/bootstrap-multiselect.js"></script>
@@ -36,7 +36,7 @@ $var->conectarse();
 		<input type="hidden" id="campo_ord" value="1">
 	<div class="row">
 	 <div class="span10">
-	   
+
 	   <!--------->
 	   <table>
 	     <tr>
@@ -96,7 +96,7 @@ $var->conectarse();
 	     </tr>
              <tr>
                 <td>
-                    <?php 
+                    <?php
                     if($esAdmin == 1)
                         {
                     ?>
@@ -123,7 +123,7 @@ $var->conectarse();
 		    <?php
 			$desde = "01-".date("m")."-".date("Y");
 			$hasta = date("d-m-Y");
-		    ?>		    
+		    ?>
 		  <input type="text" name="FechDesde" id="FechDesde" readonly size="9" value="<?php echo $desde;?>">
 		  <img src="assest/plugins/buttons/icons/calendar.png" onClick="displayCalendar(FechDesde,'dd-mm-yyyy',this);return false;" id="fDes">
 		  &nbsp;&nbsp;A&nbsp;&nbsp;
@@ -149,7 +149,7 @@ $var->conectarse();
  </div>
  <input type="hidden" name="orderByField" value=", ped.codigo ASC">
  </form>
- 
+
  <!-- Pop Clientes -->
 <div class="modal hide fade" id="ClientesPop">
   <div class="modal-header">
@@ -157,12 +157,12 @@ $var->conectarse();
     <h3>Buscador de Clientes</h3>
   </div>
   <div class="modal-body">
-    
+
 	<strong>Buscar :   </strong>  <input type="text" id="buscador" onkeyup="BuscadorDeClientes(this.value)"><br><br>
 	<div id="resultado_Cliente" style="width: 90%; min-height: 250px; max-height: 250px;">
-	
+
 	</div>
-	
+
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" onclick="ClosePop('ClientesPop')">Cerrar</a>
@@ -179,7 +179,7 @@ $var->conectarse();
     <h3>Buscador de Productos</h3>
   </div>
   <div class="modal-body">
-    
+
      <table>
 		<tr>
 			<td><strong>Buscar :   </strong>  <input type="text" id="buscadorP" onkeyup="BuscadorDeProductos(this.value, 1)"></td>
@@ -194,9 +194,9 @@ $var->conectarse();
 		</tr>
 	</table>
     <div id="resultado_Productos" style="width: 90%; min-height: 250px; max-height: 250px;">
-	
+
     </div>
-	
+
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" onclick="ClosePop('ArticulosPop')">Cerrar</a>
@@ -212,12 +212,12 @@ $var->conectarse();
     <h3>Buscador de Usuarios </h3>
   </div>
   <div class="modal-body">
-    
+
 	<strong>Buscar :   </strong>  <input type="text" id="buscadorU" onkeyup="BuscadorDeUsuarios(this.value)"><br><br>
 	<div id="resultado_Usuarios" style="width: 90%; min-height: 250px; max-height: 250px;">
-	
+
 	</div>
-	
+
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" onclick="ClosePop('UsariosPop')">Cerrar</a>
@@ -235,7 +235,7 @@ $var->conectarse();
   <div class="modal-body">
     <br>
     <div id="msj_error_pop" class="alert alert-error">
-	
+
     </div>
   </div>
   <div class="modal-footer">
@@ -264,7 +264,7 @@ $var->conectarse();
         <tr>
           <td colspan="2">
 		<div style="width: 100%; height: 200px;" id="div_seguimiento">
-			
+
 		</div>
 	  </td>
         </tr>
@@ -286,7 +286,7 @@ $var->conectarse();
   </div>
   <div class="modal-body" style="min-height: 400px;">
 	<div id="HrList" style="width: 90%; text-align: left; height: 400px; background-color: #E6E6E6;">
-	    
+
 	</div>
   </div>
   <div class="modal-footer">
@@ -304,7 +304,7 @@ $var->conectarse();
   </div>
   <div class="modal-body" style="min-height: 400px;">
 	<table id="EntList" style="width: 90%; text-align: left; background-color: #E6E6E6;">
-	    
+
 	</table>
   </div>
   <div class="modal-footer">
@@ -340,7 +340,7 @@ $var->conectarse();
     </div>
     <hr>
 	<div id="logpolimeros" style="width: 100%; max-height: 200px; overflow-y: scroll; overflow-x: hidden;">
-	    
+
 	</div>
   </div>
   <div class="modal-footer">
@@ -354,30 +354,30 @@ $var->conectarse();
 require("footer.php");
 
 ?>
- 
+
  <script>
     $( document ).ready(function() {
 	$( document ).tooltip();
     });
-    
+
     function getLogPolimero(id)
     {
 	alert(id);
 	$("#modal_polimero_log").modal('show');
     }
-    
+
     function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
     {
 	var texto = "Seguimiento de Polímero <br> Número: " + idPedido+"";
 	var detalle = "<b>Trabajo:</b>" + trabajo + "<br> <b>Nota de Pedido referencia: </b>" + npdido + "<br><b>Cliente:</b>" + cliente;
-	
+
 	$("#titlePolimeroLog").html(texto);
 	$("#detailPolimero").html(detalle);
 	$("#logpolimeros").html('');
 	$("#modal_polimero_log").modal('show');
-	
+
 	var tabla = '<table style="width: 100%; font-size: 10px;">';
-	
+
 	var data_ajax={
 		type: 'POST',
 		url: "/empaque_demo/getLogPolimero.php",
@@ -415,9 +415,9 @@ require("footer.php");
 				  },
 		dataType: 'json'
 		};
-	
+
 	$.ajax(data_ajax);
-	
+
 	var data_ajax2={
 		type: 'POST',
 		url: "/empaque_demo/getCliente.php",
@@ -455,10 +455,10 @@ require("footer.php");
 				  },
 		dataType: 'json'
 		};
-	
+
 	$.ajax(data_ajax2);
     }
-    
+
     function getEstatus(code) {
     switch (code) {
 	case "TP":
@@ -558,7 +558,7 @@ function setStatusBar(code)
     $("#status8").removeClass('label-warning');
     $("#status9").removeClass('label-warning');
     $("#status10").removeClass('label-warning');
-    
+
     $("#status1").removeClass('label-success');
     $("#status2").removeClass('label-success');
     $("#status3").removeClass('label-success');
@@ -569,17 +569,17 @@ function setStatusBar(code)
     $("#status8").removeClass('label-success');
     $("#status9").removeClass('label-success');
     $("#status10").removeClass('label-warning');
-    
+
     switch (code) {
 	case "N":
-	
+
 	case "DI":
 	case "NA":
 	    $("#status1").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Ingreso en Preprensa.");
 	    break;
 	case "C":
-	    
+
 	case "CL":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-success');
@@ -594,7 +594,7 @@ function setStatusBar(code)
 	    break;
 	case "J":
 	case "L":
-	    
+
 	case "RV":
 	case "TP":
 	    $("#status1").addClass('label-warning');
@@ -603,7 +603,7 @@ function setStatusBar(code)
 	    $("#status4").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Enviado aprob. de Borradores.");
 	    break;
-	    
+
 	case "CR":
 	case "AP":
 	case "MO":
@@ -614,7 +614,7 @@ function setStatusBar(code)
 	    $("#status5").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Borrador Aprobado.");
 	    break;
-	    
+
 	case "A":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-warning');
@@ -624,7 +624,7 @@ function setStatusBar(code)
 	    $("#status6").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Preprensa Empaque.");
 	    break;
-	    
+
 	case "G":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-warning');
@@ -635,7 +635,7 @@ function setStatusBar(code)
 	    $("#status7").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Preprensa en Proveedor.");
 	    break;
-	
+
 	case "H":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-warning');
@@ -647,7 +647,7 @@ function setStatusBar(code)
 	    $("#status8").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Confección de Polímeros.");
 	    break;
-	
+
 	case "I":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-warning');
@@ -660,7 +660,7 @@ function setStatusBar(code)
 	    $("#status9").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Polímero en Calidad.");
 	    break;
-	
+
 	case "K":
 	    $("#status1").addClass('label-warning');
 	    $("#status2").addClass('label-warning');
@@ -674,7 +674,7 @@ function setStatusBar(code)
 	    $("#status10").addClass('label-success');
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> Producción/Impresión.");
 	    break;
-	
+
 	default:
 	    $("#estadoActual").html("<strong>Estado Actual:</strong> -.");
     }
@@ -683,12 +683,12 @@ function setStatusBar(code)
 function formatDate(date)
 {
     var dates = date.split(" ");
-    
+
     var day = dates[0].split("-");
-    
+
     return day[2]+"-"+day[1]+"-"+day[0]+" "+dates[1];
 }
-    
+
     function getHojaRuta(idPedido) {
 	$("#HrList").html("");
 	var data_ajax={
@@ -696,7 +696,7 @@ function formatDate(date)
 		      url: "/empaque_demo/gethrci.php",
 		      data: { id: idPedido },
 		      success: function( data ) {
-				    
+
 				    $.each(data, function(k,v){
 					    $.each(v, function(i,j)
 						    {
@@ -710,14 +710,14 @@ function formatDate(date)
 					},
 		      dataType: 'json'
 		      };
-	      
+
 	$.ajax(data_ajax);
     }
-    
+
     function openET(idPedido)
 {
     $("#EntList").html("");
-    
+
     var data_ajax={
 		  type: 'POST',
 		  url: "/empaque_demo/getEntregas.php",
@@ -758,7 +758,7 @@ function formatDate(date)
 							    break;
 						    }
 						});
-					
+
 					 $("#EntList").append( "<tr style=\"font-size:11px;\"><td>"+kg+"</td><td>"+cant+"</td><td>"+bul+"</td><td>"+fec+"</td><td>"+us+"</td></tr>");
 					 $("#EntList").append( "<tr style=\"font-size:2px;\"><td colspan=\"5\"><hr></td></tr>");
 				});
@@ -770,19 +770,19 @@ function formatDate(date)
 				    },
 		  dataType: 'json'
 		  };
-	  
+
     $.ajax(data_ajax);
 }
   function openLogPedido(id) {
     alert(id);
   }
-  
+
   var idClienteBand = 'false';
   var idArticuBand = false;
   var idEstadosBand = false;
   var idUsuarioBand = false;
   var fechasBand = false;
-  
+
  function Principal()
  	{
 		document.reportePolimeros.action = "principal.php";
@@ -821,7 +821,7 @@ function habilitarFechas(id,desde,hasta)
 				$("#_idFecha").addClass("control-group ok");
 			}
 	}
-	
+
 function asginaValor(id, value)
 {
   switch(id)
@@ -849,7 +849,7 @@ function asginaValor(id, value)
      break;
   }
 }
-	
+
 function clienteClick()
 {
  if(idClienteBand == true)
@@ -857,7 +857,7 @@ function clienteClick()
      $("#ClientesPop").modal('show');
      setTimeout(function () { $("#buscador").focus(); }, 1000);
  }
-     
+
 }
 
 function articuloClick()
@@ -930,16 +930,16 @@ function BuscadorDeClientes(value)
 												 }
 											       }
 											      );
-										    
+
 										    fila += "</tr>";
-										    
+
 										}
-										
+
 									       );
 								fila += "</tbody></table>";
-								
+
 								$("#resultado_Cliente").html(fila);
-								
+
 							    }
 							    else
 							    {
@@ -953,16 +953,16 @@ function BuscadorDeClientes(value)
 				};
 		$.ajax(data_ajax);
 	}
-	
+
 function Seleccionado(valor)
 	{
 		//tomar id pasado y buscar los valor para los campos correspondientes al cliente
 		var id = "#"+valor+"_c";
 		var rz = "#"+valor+"_rz";
-		
+
 		$("#idCliente").val($(rz).val());
 		$("#idCli").val($(id).val());
-		
+
 		ClosePop("ClientesPop");
 	}
 
@@ -999,12 +999,12 @@ function BuscadorDeProductos(value, page)
 													//Icono
 													fila += '<tr style="cursor: pointer; background-color:'+color+'" id="'+j+'" onClick="SeleccionadoP(\''+j+'\')">';
 													fila +='<td>';
-													fila +='<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>'; 
+													fila +='<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>';
 													fila +='</td>';
 													fila +="<td>"+j+"</td>";
 													fila += '<input type="hidden" id="'+j+'_cp" value="'+j+'">';
 													idCodigo = j;
-												 } 
+												 }
 												 if(i == "Articulo")
 												 {
 													fila +='<td style="padding-left: 10px;">'+j+'</td>';
@@ -1015,19 +1015,19 @@ function BuscadorDeProductos(value, page)
 													fila +="<td>"+j+"</td>";
 													fila += '<input type="hidden" id="'+idCodigo+'_ncp" value="'+j+'">';
 												 }
-												 
+
 											       }
 											      );
-										    
+
 										    fila += "</tr>";
-										    
+
 										}
-										
+
 									       );
 								fila += "</tbody></table>";
-								
+
 								$("#resultado_Productos").html(fila);
-								
+
 							    }
 							    else
 							    {
@@ -1039,7 +1039,7 @@ function BuscadorDeProductos(value, page)
 						  },
 				dataType: 'json'
 				};
-		$.ajax(data_ajax);		
+		$.ajax(data_ajax);
 	}
 
 function SeleccionadoP(valor)
@@ -1047,13 +1047,13 @@ function SeleccionadoP(valor)
 		//tomar id pasado y buscar los valor para los campos correspondientes al producto
 		var ar = "#"+valor+"_arp";
 		//var nc = "#"+valor+"_ncp";
-		
+
 		$("#idArt").val(valor);
 		$("#idArticu").val($(ar).val());
 		//$("#descripcionProducto").val($(nc).val());
-		
+
 		ClosePop("ArticulosPop");
-	}	
+	}
 
 function BuscadorDeUsuarios(value)
 	{
@@ -1105,16 +1105,16 @@ function BuscadorDeUsuarios(value)
 												 }
 											       }
 											      );
-										    
+
 										    fila += "</tr>";
-										    
+
 										}
-										
+
 									       );
 								fila += "</tbody></table>";
-								
+
 								$("#resultado_Usuarios").html(fila);
-								
+
 							    }
 							    else
 							    {
@@ -1133,38 +1133,38 @@ function SeleccionadoU(code)
 {
 	//tomar id pasado y buscar los valor para los campos correspondientes al producto
 	 var nc = "#"+code+"_nc";
-	 
+
 	 $("#idUs").val(code);
 	 $("#idUsuario").val($(nc).val());
 	 //$("#descripcionProducto").val($(nc).val());
-	 
+
 	 ClosePop("UsariosPop");
 }
 function ClosePop(div)
 {
 	var idDiv = "#"+div;
-	$(idDiv).modal('hide');			
+	$(idDiv).modal('hide');
 }
 /***********************************************************/
 function Validar(value)
 	{
 	if(
-           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) && 
+           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) &&
            !(document.getElementById('Usuario').checked)
-          )	
+          )
 			{
 				//ninguno chequeado
 				var filtros = "";
 				//El de estados va siempre
 				var selectedValues = $('#idEstados').val();
-				
+
 				if(selectedValues == null)
 					{
 						if(filtros == "")
 							filtros = 3 + ":0";
 							else
 							filtros = filtros + "~" + 3 + ":0";
-					}else 
+					}else
 					{
 						if(filtros == "")
 							filtros = 3 + ":" + selectedValues;
@@ -1176,7 +1176,7 @@ function Validar(value)
 					filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 					else
 					filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-			
+
 				if(value === undefined)
 				    {
 					$("#orden_rep").val("Asc");
@@ -1207,7 +1207,7 @@ function Validar(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									filtros = 1 + ":" + document.getElementById('idCli').value;
 								}
@@ -1221,7 +1221,7 @@ function Validar(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									if(filtros == "")
 										filtros = 2 + ":" + document.getElementById('idArt').value;
@@ -1233,14 +1233,14 @@ function Validar(value)
 					//if(document.getElementById('Estados').checked)
 					//	{
 					var selectedValues = $('#idEstados').val();
-					
+
 					if(selectedValues == null)
 						{
 							if(filtros == "")
 								filtros = 3 + ":0";
 								else
 								filtros = filtros + "~" + 3 + ":0";
-						}else 
+						}else
 						{
 							if(filtros == "")
 								filtros = 3 + ":" + selectedValues;
@@ -1256,7 +1256,7 @@ function Validar(value)
 							    $("#msj_error_pop").html("Seleccione un usuario válido.");
 							    $("#ErrorPop").modal("show");
 							    return false;
-							}else 
+							}else
 							{
 								if(filtros == "")
 									filtros = 4 + ":" + document.getElementById('idUs').value;
@@ -1269,7 +1269,7 @@ function Validar(value)
 						filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 						else
 						filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-				
+
 					if(value === undefined)
 					    {
 						$("#orden_rep").val("Asc");
@@ -1286,31 +1286,31 @@ function Validar(value)
 					    }
 					$("#campo_ord").val(value);
 					reporteAjax('div_find','reportePedidosphp.php',filtros);
-					
-					
+
+
 				}
 	}
-	
+
 function ValidarExportacionAPdf(value)
 	{
 		debugger;
 	if(
-           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) && 
+           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) &&
            !(document.getElementById('Usuario').checked)
-          )	
+          )
 			{
 				//ninguno chequeado
 				var filtros = "";
 				//El de estados va siempre
 				var selectedValues = $('#idEstados').val();
-				
+
 				if(selectedValues == null)
 					{
 						if(filtros == "")
 							filtros = 3 + ":0";
 							else
 							filtros = filtros + "~" + 3 + ":0";
-					}else 
+					}else
 					{
 						if(filtros == "")
 							filtros = 3 + ":" + selectedValues;
@@ -1322,7 +1322,7 @@ function ValidarExportacionAPdf(value)
 					filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 					else
 					filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-			
+
 				if(value === undefined)
 				    {
 					$("#orden_rep").val("Asc");
@@ -1353,7 +1353,7 @@ function ValidarExportacionAPdf(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									filtros = 1 + ":" + document.getElementById('idCli').value;
 								}
@@ -1367,7 +1367,7 @@ function ValidarExportacionAPdf(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									if(filtros == "")
 										filtros = 2 + ":" + document.getElementById('idArt').value;
@@ -1379,14 +1379,14 @@ function ValidarExportacionAPdf(value)
 					//if(document.getElementById('Estados').checked)
 					//	{
 					var selectedValues = $('#idEstados').val();
-					
+
 					if(selectedValues == null)
 						{
 							if(filtros == "")
 								filtros = 3 + ":0";
 								else
 								filtros = filtros + "~" + 3 + ":0";
-						}else 
+						}else
 						{
 							if(filtros == "")
 								filtros = 3 + ":" + selectedValues;
@@ -1402,7 +1402,7 @@ function ValidarExportacionAPdf(value)
 							    $("#msj_error_pop").html("Seleccione un usuario válido.");
 							    $("#ErrorPop").modal("show");
 							    return false;
-							}else 
+							}else
 							{
 								if(filtros == "")
 									filtros = 4 + ":" + document.getElementById('idUs').value;
@@ -1415,7 +1415,7 @@ function ValidarExportacionAPdf(value)
 						filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 						else
 						filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-				
+
 					if(value === undefined)
 					    {
 						$("#orden_rep").val("Asc");
@@ -1432,8 +1432,8 @@ function ValidarExportacionAPdf(value)
 					    }
 					$("#campo_ord").val(value);
 					reporteAjaxPDF('archivoExcel.php',filtros);
-					
-					
+
+
 				}
 	}
 
@@ -1442,22 +1442,22 @@ function ValidarExportacion(value)
 	{
 		debugger;
 	if(
-           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) && 
+           !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) &&
            !(document.getElementById('Usuario').checked)
-          )	
+          )
 			{
 				//ninguno chequeado
 				var filtros = "";
 				//El de estados va siempre
 				var selectedValues = $('#idEstados').val();
-				
+
 				if(selectedValues == null)
 					{
 						if(filtros == "")
 							filtros = 3 + ":0";
 							else
 							filtros = filtros + "~" + 3 + ":0";
-					}else 
+					}else
 					{
 						if(filtros == "")
 							filtros = 3 + ":" + selectedValues;
@@ -1469,7 +1469,7 @@ function ValidarExportacion(value)
 					filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 					else
 					filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-			
+
 				if(value === undefined)
 				    {
 					$("#orden_rep").val("Asc");
@@ -1500,7 +1500,7 @@ function ValidarExportacion(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									filtros = 1 + ":" + document.getElementById('idCli').value;
 								}
@@ -1514,7 +1514,7 @@ function ValidarExportacion(value)
 									$("#ErrorPop").modal("show");
 									return false;
 								}
-								else 
+								else
 								{
 									if(filtros == "")
 										filtros = 2 + ":" + document.getElementById('idArt').value;
@@ -1526,14 +1526,14 @@ function ValidarExportacion(value)
 					//if(document.getElementById('Estados').checked)
 					//	{
 					var selectedValues = $('#idEstados').val();
-					
+
 					if(selectedValues == null)
 						{
 							if(filtros == "")
 								filtros = 3 + ":0";
 								else
 								filtros = filtros + "~" + 3 + ":0";
-						}else 
+						}else
 						{
 							if(filtros == "")
 								filtros = 3 + ":" + selectedValues;
@@ -1549,7 +1549,7 @@ function ValidarExportacion(value)
 							    $("#msj_error_pop").html("Seleccione un usuario válido.");
 							    $("#ErrorPop").modal("show");
 							    return false;
-							}else 
+							}else
 							{
 								if(filtros == "")
 									filtros = 4 + ":" + document.getElementById('idUs').value;
@@ -1562,7 +1562,7 @@ function ValidarExportacion(value)
 						filtros = 5  + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
 						else
 						filtros = filtros + "~" + 5 + ":" + document.getElementById('FechDesde').value + "/" + document.getElementById('FechHasta').value;
-				
+
 					if(value === undefined)
 					    {
 						$("#orden_rep").val("Asc");
@@ -1579,12 +1579,12 @@ function ValidarExportacion(value)
 					    }
 					$("#campo_ord").val(value);
 					reporteAjaxPDF('archivoPDF.php',filtros);
-					
-					
+
+
 				}
 	}
 
-	
+
 var OrderByPedido = "DESC";
 var OrderByCliente = "ASC";
 var OrderByArticulo = "ASC";
@@ -1602,21 +1602,21 @@ function orderBy(value)
 	 OrderByPedido = "DESC";
 	 else OrderByPedido = "ASC";
     break;
-   
+
    case "ped.clienteNombre":
 	OrderBy_ = ", "+value+" "+OrderByCliente;
 	if(OrderByCliente == "ASC")
 	 OrderByCliente = "DESC";
 	 else OrderByCliente = "ASC";
     break;
-   
+
    case "ped.descripcion":
 	OrderBy_ = ", "+value+" "+OrderByArticulo;
 	if(OrderByArticulo == "ASC")
 	 OrderByArticulo = "DESC";
 	 else OrderByArticulo = "ASC";
     break;
-   
+
    case "ped.femis":
 	OrderBy_ = ", "+value+" "+OrderByFechaEm;
 	if(OrderByFechaEm == "ASC")
@@ -1624,8 +1624,8 @@ function orderBy(value)
 	 else OrderByFechaEm = "ASC";
     break;
   }
-  
-  AjaxOrdenamiento('div_find', 'reportePedidosphpOrdenar.php', document.reportePolimeros.consul.value + OrderBy_);   
+
+  AjaxOrdenamiento('div_find', 'reportePedidosphpOrdenar.php', document.reportePolimeros.consul.value + OrderBy_);
 }
 
 function ImprimirReporte(sql)
@@ -1636,11 +1636,11 @@ function ImprimirReporte(sql)
             window.open("impresionComprobantes.php?documento=4&id="+sql, "PopUp", "menubar=1,width=900,height=900");
         }else
         {
-            //impresion de filtro 
+            //impresion de filtro
             window.open("impresionComprobantes.php?documento=7&id="+sql, "PopUp", "menubar=1,width=900,height=900");
         }
-	}	
-    
+	}
+
 function ExportarExcel()
 	{
 		window.open("archivoExcel.php?consulta="+document.getElementById('consulImpr').value, "PopUp", "menubar=1,width=300,height=300");
@@ -1650,34 +1650,34 @@ function ExportarExcel1(condicion)
 	{
 		window.open("archivoExcel.php?consulta="+condicion, "PopUp", "menubar=1,width=300,height=300");
 	}
-	
+
  function ImprimirNuevo()
     {
         window.open("impresionComprobantes.php?documento=7&id="+document.getElementById('consulImpr').value, "PopUp", "menubar=1,width=900,height=900");
     }
 //----------------- AJAX --------------------------------
 function nuevoAjax1()
-{ 
+{
 	/* Crea el objeto AJAX. Esta funcion es generica para cualquier utilidad de este tipo, por
 	lo que se puede copiar tal como esta aqui */
-	var xmlhttp=false; 
-	try 
-	{ 
+	var xmlhttp=false;
+	try
+	{
 		// Creacion del objeto AJAX para navegadores no IE
-		xmlhttp=new ActiveXObject("Msxml2.XMLHTTP"); 
+		xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");
 	}
 	catch(e)
-	{ 
+	{
 		try
-		{ 
-			// Creacion del objet AJAX para IE 
-			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
-		} 
+		{
+			// Creacion del objet AJAX para IE
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
 		catch(E) { xmlhttp=false; }
 	}
-	if (!xmlhttp && typeof XMLHttpRequest!='undefined') { xmlhttp=new XMLHttpRequest(); } 
+	if (!xmlhttp && typeof XMLHttpRequest!='undefined') { xmlhttp=new XMLHttpRequest(); }
 
-	return xmlhttp; 
+	return xmlhttp;
 }
 
 function reporteAjax(div, archivo, filtros)
@@ -1692,10 +1692,10 @@ function reporteAjax(div, archivo, filtros)
 	// Abro la conexión, envío cabeceras correspondientes al uso de POST y envío los datos con el método send del objeto AJAX
 	ajax.open("POST", archivo+"?order="+ $("#orden_rep").val()+"&By="+$("#campo_ord").val(), true);
 	ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	
-	
+
+
 	ajax.send("variable="+filtros);// Al parecer esto crea una variable con nombre d que luego es utilizada en la pagina a la que llama esta accion
-	
+
 	ajax.onreadystatechange=function()
 	{
 		if (ajax.readyState==4)
@@ -1718,30 +1718,30 @@ function reporteAjaxPDF(archivo, filtros)
 function Ordenamiento(parametro, orden)
 {
     var ParBus = "ORDER BY";
-    
+
     switch(parametro)
         {
         //ordenar por numero de pedido
         case "1":
-            ParBus = ParBus + " ped.npedido ";    
+            ParBus = ParBus + " ped.npedido ";
             break;
         //ordenar por cliente
         case "2":
-            ParBus = ParBus + " cli.razon_soci ";    
+            ParBus = ParBus + " cli.razon_soci ";
             break;
         //ordenar por artículo
         case "3":
-            ParBus = ParBus + " art.Articulo ";    
+            ParBus = ParBus + " art.Articulo ";
             break;
         //oredenar por fecha
         case "4":
-            ParBus = ParBus + " ped.femis ";    
+            ParBus = ParBus + " ped.femis ";
             break;
         default :
-             
+
             break;
         }
-    
+
     if(orden == "ASC")
     {
         ParBus = ParBus + " ASC ";
@@ -1751,9 +1751,9 @@ function Ordenamiento(parametro, orden)
         ParBus = ParBus + " DESC ";
     }
     alert($("#consul").val());
-    AjaxOrdenamiento('div_find', 'reportePedidosphpOrdenar.php', document.reportePolimeros.consul.value + " " + ParBus);    
+    AjaxOrdenamiento('div_find', 'reportePedidosphpOrdenar.php', document.reportePolimeros.consul.value + " " + ParBus);
 }
- 
+
 function AjaxOrdenamiento(div, archivo, consulta)
 {
 	//alert(opcion);
@@ -1766,17 +1766,17 @@ function AjaxOrdenamiento(div, archivo, consulta)
 	// Abro la conexión, envío cabeceras correspondientes al uso de POST y envío los datos con el método send del objeto AJAX
 	ajax.open("POST", archivo, true);
 	ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	
-	
+
+
 	ajax.send("variable="+consulta);// Al parecer esto crea una variable con nombre d que luego es utilizada en la pagina a la que llama esta accion
-	
+
 ajax.onreadystatechange=function()
 	{
 		if (ajax.readyState==4)
 		{
 			// Respuesta recibida. Coloco el texto plano en la capa correspondiente
 			capa.innerHTML=ajax.responseText;
-			
+
 		}
 	}
 }
