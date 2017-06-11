@@ -19,6 +19,7 @@ var campos_para_validar = [];
 					//method: "POST",
 					//url: "jsons/buscarCliente.json",
 					url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
+					//url: "buscarCliente.php",
 					data: { xinput: strng, xpage: 1 , busq: 1 },
 					success:function(data){
 						objects = [];
@@ -66,6 +67,7 @@ var campos_para_validar = [];
 				//method: "POST",
 				//url: "jsons/buscarArticulo.json",
 				url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
+				//url: "buscarProducto.php",
 				data: { xinput: strng, xpage: 1 , busq: 1 },
 				success:function(data){
 					objects = [];
@@ -100,6 +102,7 @@ var campos_para_validar = [];
 		var data_ajax={
 			method: "POST",
 			url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
+			//url: "buscarProductoFicha.php",
 			//url: "buscarArticulo.json",
 			data: {id:id},
 			dataType: "json",
@@ -173,7 +176,7 @@ var campos_para_validar = [];
 
 				});
 
-				console.debug("===> articulo ID: %o",articulo.Id.substring(0,2));
+				console.debug("===> sdsd articulo ID: %o",articulo.Id.substring(0,2));
 				//reset cant_pista
 				$("#cant_pista").val(null);
 

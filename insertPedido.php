@@ -8,6 +8,8 @@ $var->conectarse();
 //-------------------------------------------------------------------------------------
 //Variables necesarias
 
+$_REQUEST['valores'][15]=(int)$_REQUEST['valores'][15];
+
 $nombre = substr($_SESSION['Nombre'], 0, 2);                //nombre del usuario logueado
 
 $codigo = "";                   //codigo del pedido
@@ -117,7 +119,7 @@ else
         $descripcionP = $_POST['desc'];
         $tangoP = $_POST['tango'];
     }
-    
+
     if($accion == "T" || $accion == "TP")
     {
         $cantidad = (int)$_POST['cantidad'];
@@ -169,7 +171,8 @@ if($accion == "RA" || $accion == "CE")
         $resu = mysql_query($consulta);
 
         $consulta = "Update pedidos Set cantidad_entregadas = (cantidad_entregadas - ".$unidad.") Where npedido=$idPedido";
-        $resu = mysql_query($consulta);
+        die($consulta);
+        $resu = mysql_query($consulta) or die(mysql_error());
     }
 
     else
@@ -282,7 +285,8 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                     //Cantidad de Producto:
                     case "cantProd":
-                        $cantidadDeProductos = $v;
+
+                        $cantidadDeProductos = (int)$v;
                         break;
 
                     //Caras
@@ -312,16 +316,22 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                     //cantidad
                     case "cantProd":
+                        var_dump($v);
+                        die();
                         $unidades = $v;
                         break;
 
                     //precio de polimero
                     case "precioPoli":
+                        {var_dump($indice);
+                        var_dump($v);
+                        die();
                         $precioPolimero = $v;
-                        break;
+                        break;}
 
                     //tipo de unidad de medida
                     case "unidades":
+
                         $tipoDeUnidad = $v;
                         break;
 
@@ -530,6 +540,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $consulta = "Insert Into pedidos (";
                         $consulta .=                       "codigo, entrega, femis, faprob, frecep, descrip3, descripcion, codigoTango, caras, centrada, apaisada, clientefact, facturarA, destino, clienteNombre, clienteDirecc, clienteTelef, clienteCUIT, facturarANombre, prodHabitual, envasado, vencimiento, lote, estado, tieneToquelado) Values";
                         $consulta .=                       "('".$numPedido."','".$entrega."','".$femis."','".$faprob."','".$frecep."','".$descrip3."', '".$descripcion."', '".$codigoTango."', '".$caras."',$centrada, $apaisada,'".$clienteFact."','".$facturarA."','".$destino."', '".$clienteNombre."', '".$clienteDirecc."', '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',$prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I', ".$troquelado.")";
+                        //die($consulta);
                         $resu = mysql_query($consulta)or die(mysql_error());
 
                         $consulta = "Select max(npedido) from pedidos";
@@ -551,7 +562,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $detalle .=                             ")";
                         $detalle .= " Values ";
                         $detalle .=             "(";
-                        $detalle .=                 $idPedido.",".$cantidadDeProductos.",'".$precioPolimero."',".$tipoDeUnidad.",".$idFormato.",";
+                        $detalle .=                 $idPedido.",".$cantidadDeProductos.",'".$precioPolimero."sdsdssd',".$tipoDeUnidad.",".$idFormato.",";
                         $detalle .=                 $idMaterial.",'".$color."',".$idMoneda.",'".$precio."',".$idIVA.",";
                         $detalle .=                 $sentido.",".$tratado.",".$termo.",".$microp.",'".$entrega."',";
                         $detalle .=                 $unidades.",'".$distTaco."','".$diamBobina."','".$diamCanuto."','".$kgBobina."','";
@@ -562,7 +573,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $detalle .=             ")";
 
                                 //echo $detalle;
-                        $resu = mysql_query($detalle)or die(mysql_error());
+                        $resu = mysql_query($detalle)or die($detalle);
 
                         reg_log($idPedido, $estado);
 
@@ -1311,7 +1322,7 @@ else
                     Where
                             npedido=$idPedido";
 
-        $resu = mysql_query($consulta);
+        $resu = mysql_query($consulta) or die(mysql_error());
 
         reg_entregas_conFecha($idPedido, $cantidad, $bultos, $kg, $fecha);
         reg_log($idPedido, $accion);
