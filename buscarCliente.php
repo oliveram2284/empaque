@@ -3,16 +3,16 @@ include("ConexionSQL.php");
 $var = new conexionSQL();
 $cid = $var->conectarse();
 
-	
+
 	$value = $_POST['xinput'];
 	$page = 1 ; //$_POST['xpage'];
 	$min = 10 * ($page - 1);
 	$max = 10 * $page;
-	
-	$value = $value[0];
-	
+
+	//$value = $value[0];
+
 	$array = array();
-	
+
 	$consulta = 	"Select  * from
 				(
 				Select
@@ -28,14 +28,14 @@ $cid = $var->conectarse();
 					)
 					and
 					(
-					razon_soci not like '%*%' and 
-					cod_client not like '%*%' and 
+					razon_soci not like '%*%' and
+					cod_client not like '%*%' and
 					nom_com not like '%*%'
 					)
 					and
 					(
-					razon_soci not like '%(%' and 
-					cod_client not like '%(%' and 
+					razon_soci not like '%(%' and
+					cod_client not like '%(%' and
 					nom_com not like '%(%'
 					)
 				) as resultado
@@ -47,10 +47,10 @@ $cid = $var->conectarse();
 
 $cur = odbc_exec($cid,$consulta)or die(exit("Error en odbc_exec || " . htmlspecialchars(odbc_errormsg())));
 $Fields = odbc_num_rows($cur);
-	
+
 if($Fields > 0)
     {
-                
+
         while( $row = odbc_fetch_row( $cur ))
 		{
 			$array[] = array(
@@ -63,10 +63,10 @@ if($Fields > 0)
 						"id_gv14"    => utf8_encode(odbc_result($cur,'id_gva14')),
 						"telefono_2" => utf8_encode(odbc_result($cur,'telefono_2'))
 					);
-			
+
 		}
 	echo json_encode($array);
-	
+
     }
     else
     {
@@ -75,14 +75,14 @@ if($Fields > 0)
 /*
 $pagina = 10;
 		echo '<dir><input type="button" value="<<" onClick="ajaxx(buscador.value,\'div_find\',\'buscarClienteAjax.php\', 0,10, 0)">&nbsp;';
-		
+
 		for($i=1; $i<= 10; $i++)
 			{
 			 echo'<input type="button" value="'.$i.'" onClick="ajaxx(buscador.value,\'div_find\',\'buscarClienteAjax.php\', '.$i * $pagina .','.$pagina.', 0)">&nbsp;';
 			}
-		
+
 		echo'<input type="button" value=">>" onClick="ajaxx(buscador.value,\'div_find\',\'buscarClienteAjax.php\', '.$pagina.','.$pagina.', 0)">&nbsp;';
-	
+
 		echo '</dir>';
-*/		
+*/
 ?>

@@ -931,6 +931,7 @@ require("header.php");
 									</td>
 									<td>
 										<input type="text" id="cantidad"  readonly name="cantidad" o value="<?php echo ($accionPedido == 'I')? "": $rDeta['CantidadTotal'];?>" <?php echo Readonly($accionPedido);?>>
+										<br><span id="span_etiqueta" style=" font-size: 11px ! important;color:red;"></span>
 									</td>
 								</tr>
 								<tr>

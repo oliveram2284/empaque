@@ -18,8 +18,8 @@ var campos_para_validar = [];
 					type: "POST",
 					//method: "POST",
 					//url: "jsons/buscarCliente.json",
-					url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
-					//url: "buscarCliente.php",
+					//url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
+					url: "buscarCliente.php",
 					data: { xinput: strng, xpage: 1 , busq: 1 },
 					success:function(data){
 						objects = [];
@@ -66,8 +66,8 @@ var campos_para_validar = [];
 				type: "POST",
 				//method: "POST",
 				//url: "jsons/buscarArticulo.json",
-				url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
-				//url: "buscarProducto.php",
+				//url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
+				url: "buscarProducto.php",
 				data: { xinput: strng, xpage: 1 , busq: 1 },
 				success:function(data){
 					objects = [];
@@ -90,6 +90,7 @@ var campos_para_validar = [];
 			var data=map[item];
 			$("#nombreProducto").val(data.Articulo);
 			$("#articuloTangoCode").val(data.Nombre_en_Facturacion);
+			$("#descripcionProducto").val(data.Nombre_en_Facturacion);
 			get_ficha_tecnica(data.Id);
 			return data.Id;
 		}
@@ -101,8 +102,8 @@ var campos_para_validar = [];
 	function get_ficha_tecnica(id){
 		var data_ajax={
 			method: "POST",
-			url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
-			//url: "buscarProductoFicha.php",
+			//url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
+			url: "buscarProductoFicha.php",
 			//url: "buscarArticulo.json",
 			data: {id:id},
 			dataType: "json",
@@ -651,6 +652,7 @@ var campos_para_validar = [];
 
 
 		$("#formato").change(function(){
+			$("#span_etiqueta").empty().css("display", "none");
 
 			//console.debug('$("#formato").change');
 			campos_para_validar = [];
@@ -818,7 +820,7 @@ var campos_para_validar = [];
 
 						if(parseFloat(item.largo).toFixed(2)==parseFloat(largo).toFixed(2)){
 
-							tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'">';
+							tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'" >';
 							tbody_content +='<td><a href="#" data-id="'+item.id+'"  data-multiplo="'+item.multiplo+'" class=""><i class="fa fa-circle-o fa-2x " aria-hidden="true"></i></a></td>';
 							tbody_content +='<td>'+item.descripcion+'</td>';
 							tbody_content +='<td>'+parseFloat(item.largo).toFixed(1)+'</td>';
@@ -873,7 +875,7 @@ var campos_para_validar = [];
 						total_etiquetas= ( parseFloat(item.largo_cm) / parseFloat(largo_corte) ) * parseInt(pistas);
 						total_etiquetas= total_etiquetas.toFixed();
 
-						tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+total_etiquetas+'">';
+						tbody_content +='<tr data-id="'+item.id+'"  data-multiplo="'+total_etiquetas+'" data-largo="'+parseFloat(item.largo).toFixed()+'">';
 						tbody_content +='<td><a href="#" data-id="'+item.id+'"  data-multiplo="'+total_etiquetas+'" class=""><i class="fa fa-circle-o fa-2x " aria-hidden="true"></i></a></td>';
 						tbody_content +='<td>'+item.nombre+'</td>';
 						tbody_content +='<td>'+parseFloat(item.largo).toFixed(1)+'</td>';
@@ -970,15 +972,7 @@ var campos_para_validar = [];
   );
 };
 
-		/*$("#cantidad").live('keyup',function(){
-			var input=$(this).val();//$(this).val();
-			//console.debug("===> cantidad valor: %o",input);
-			//console.debug("===> cantidad Moneda: %o",Moneda(input));
-			console.debug("===> cantidad formatearNumero: %o",addCommas(input));
 
-			$(this).val(Moneda(input));
-			//$(this).val(input);
-		});*/
 
 		$("#table_cant tbody tr ").live('click',function(){
 			console.debug("===> OPTION CLICKED: %o",$(this).find('i').length );
@@ -998,7 +992,9 @@ var campos_para_validar = [];
 			$(this).addClass('label label-success');
 			$(this).find('i').attr('class','fa fa-check-circle fa-2x  label label-success');
 			var multiplo = $(this).data('multiplo');
+			var largo = $(this).data('largo');
 			$("#multiplo_etiqueta_cant").val(multiplo);
+			$("#largo_etiqueta_cant").val(largo);
 			$("#input_cant_etiqueta_pop").val(null);
 		});
 
@@ -1116,24 +1112,31 @@ var campos_para_validar = [];
 					flag=true;
 				}
 			}
+			console.debug("===> i %o",i);
 
-			medio= multiplo/2;
-			medio=medio.toFixed();
-			min_y_medio=parseInt(min)+parseInt(medio);
+			//medio= multiplo*0.5;
+			//medio=medio.toFixed();
+			min_y_medio=parseInt(min)+parseInt( multiplo*0.5);
 
 			var list_li="";
-			if( cant == min || cant == min_y_medio  || cant == max ){
-					list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
-			}else{
-				if(i==1){
-					min=0;
-				}else{
 
-					list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
-					list_li+='<li><input type="radio" value="'+min_y_medio+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min_y_medio+'</li>';
-				}
-				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida: '+max+'</li>';
+			if(cant == min || cant == max){
+				list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
+			}else if (cant == min_y_medio  ) {
+				list_li+='<li><input type="radio" value="'+cant+'" name="cantidad_opciones[]"> Cantidad Permitida: '+cant+'</li>';
+			}else if (cant < min) {
+				list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+			}else if (cant < min_y_medio) {
+				list_li+='<li><input type="radio" value="'+min+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min+'</li>';
+				list_li+='<li><input type="radio" value="'+min_y_medio+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min_y_medio+'</li>';
+			}else if(cant < max){
+
+				list_li+='<li><input type="radio" value="'+min_y_medio+'" name="cantidad_opciones[]"> Cantidad Permitida : '+min_y_medio+'</li>';
+				list_li+='<li><input type="radio" value="'+max+'" name="cantidad_opciones[]"> Cantidad Permitida : '+max+'</li>';
 			}
+
+
+
 			$(".cant_etiquetas_allowed").empty().append(list_li);
 			return false;
 		});
@@ -1155,7 +1158,16 @@ var campos_para_validar = [];
 
 		$("#etiqueta_cantidad_modal .btn-primary").click(function(){
 			//console.debug("Save bt");
+			var multiplo=$("#multiplo_etiqueta_cant").val();
+			var largo_bobina=parseFloat($("#largo_etiqueta_cant").val());
 			var radios_cants=$("#etiqueta_cantidad_modal .modal-body").find("input[type='radio']:checked");
+			console.debug("====> multiplo: %o", multiplo);
+			console.debug("====> multiplo: %o", (parseInt(radios_cants.val()) /parseInt(multiplo)));
+			var total_bobinas= (parseInt(radios_cants.val()) /parseInt(multiplo));
+			console.debug("Equivale a "+total_bobinas+" Bobinas de "+largo_bobina+" Metros.");
+			$("#span_etiqueta").html("Equivale a "+total_bobinas+" Bobinas de "+largo_bobina+" Metros.").css("display", "block");
+
+
 			console.debug("==> radios_cants: %o",radios_cants.length);
 			$(".cant_allowed").find("li.alert-danger").remove();
 			if(radios_cants.length==0){

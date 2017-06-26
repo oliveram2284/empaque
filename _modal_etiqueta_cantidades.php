@@ -22,7 +22,8 @@
   	<div class="control-group">
 	    <div class="controls">
 	    	<input type="text" id="input_cant_etiqueta_pop" class="input_cant" placeholder="Ingrese Cantidad">
-	    	<input type="hidden" id="multiplo_etiqueta_cant" >
+        <input type="hidden" id="multiplo_etiqueta_cant" >
+	    	<input type="hidden" id="largo_etiqueta_cant" >
 	    </div>
 	  </div>
     <ul class="cant_etiquetas_allowed unstyled " data-multi=""></ul>
