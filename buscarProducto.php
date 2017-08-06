@@ -79,6 +79,8 @@
 			break;
 	}
 	
+	//die($consulta);
+
 	$cur = odbc_exec($cid,$consulta)or die(exit("Error en odbc_exec || " . htmlspecialchars(odbc_errormsg())));
 	$Fields = odbc_num_rows($cur);
 

@@ -1,30 +1,43 @@
 /* CSS  */
-#fondo{background:#666;}
 
+#fondo {
+    background: #666;
+}
 
-#titulo_main{ background:#62C05B; font-size:24px;}
+#titulo_main {
+    background: #62C05B;
+    font-size: 24px;
+}
 
 #navi {
-	list-style:none;
-	margin:0;
-	padding:0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
+
 #navi li {
-	margin:2px;
-	padding:2px;
-	border:1px solid #CCCCCC;
-	float:left; //para eliminar el comportamiento de elemento de bloque(salto de linea)
-}
-#selected {background-color:#B8EF8B;}
-thead{ background-color:#B8EF8B; color:#333; border:1px;}
-.text-left{
-	color: red;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid #CCCCCC;
+    float: left; //para eliminar el comportamiento de elemento de bloque(salto de linea)
 }
 
+#selected {
+    background-color: #B8EF8B;
+}
 
+thead {
+    background-color: #B8EF8B;
+    color: #333;
+    border: 1px;
+}
 
-.input_cant{
-	font-size: 18;
-font-weight: bold;
-height: 40px;
+.text-left {
+    color: red;
+}
+
+.input_cant {
+    font-size: 18;
+    font-weight: bold;
+    height: 40px;
 }

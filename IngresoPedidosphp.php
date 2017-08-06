@@ -18,7 +18,7 @@ foreach($keys as $k)
 			$indice++;
 			break;
 		
-		case "nombreProducto"
+		case "nombreProducto";
 	}
 	echo $k."<br>";
 }
@@ -291,11 +291,11 @@ foreach($keys as $k)
 //			
 //			if( $estado == "N")
 //			{
-//				echo '<script>alert("Pedido pasado a estado de Diseño.");location.href="principal.php";</script>';
+//				echo '<script>alert("Pedido pasado a estado de Diseï¿½o.");location.href="principal.php";</script>';
 //			}
 //			else
 //			{
-//				echo '<script>alert("Pedido pasado a estado de Producción.");location.href="principal.php";</script>';
+//				echo '<script>alert("Pedido pasado a estado de Producciï¿½n.");location.href="principal.php";</script>';
 //			}
 //			break;
 //	 case "V":
@@ -444,7 +444,7 @@ foreach($keys as $k)
 //			break;
 //	
 //	case "D":
-//			$consulta = "Update pedidos Set estado ='D', version=(version+1) Where npedido=$id"; // Aca agregar versión
+//			$consulta = "Update pedidos Set estado ='D', version=(version+1) Where npedido=$id"; // Aca agregar versiï¿½n
 //			$resu = mysql_query($consulta);
 //			
 //			reg_log($id, $accion);
@@ -458,7 +458,7 @@ foreach($keys as $k)
 //			
 //			reg_log($id, $accion);
 //				
-//			echo '<script>alert("Pedido pasado a estado de Producción.");location.href="principal.php";</script>';
+//			echo '<script>alert("Pedido pasado a estado de Producciï¿½n.");location.href="principal.php";</script>';
 //			break;
 //		
 //	case "U":

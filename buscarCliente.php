@@ -6,10 +6,10 @@ $cid = $var->conectarse();
 
 	$value = $_POST['xinput'];
 	$page = 1 ; //$_POST['xpage'];
-	$min = 10 * ($page - 1);
-	$max = 10 * $page;
+	$min = 100 * ($page - 1);
+	$max = 100 * $page;
 
-	//$value = $value[0];
+	$value = $value[0];
 
 	$array = array();
 

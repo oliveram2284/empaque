@@ -101,6 +101,12 @@ require("header.php");
 
 <!-- VENTANAS EMERGENTES -->
 <!-- Vencimientos -->
+<style>	
+ ul.typeahead.dropdown-menu {
+  max-height: 250px !important;
+  overflow-y: auto !important;
+}
+</style>
 <div class="modal hide fade" id="VencPop">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -130,14 +136,14 @@ require("header.php");
 </div>
 
 <!-- Clientes -->
-<div class="modal hide fade" id="ClientesPop">
+<div class="modal modal-lg hide fade" id="ClientesPop">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Búsqueda de Clientes</h3>
   </div>
   <div class="modal-body">
     <strong>Buscar :   </strong>  <input type="text" id="buscador" onkeyup="BuscadorDeClientes(this.value)"><br><br>
-    <div id="resultado_Cliente" style="width: 90%; min-height: 250px; max-height: 250px;">
+    <div id="resultado_Cliente" style="">
 
     </div>
   </div>
@@ -333,7 +339,7 @@ require("header.php");
 								if(Readonly($accionPedido) == "readonly")
 								{
 									?>
-									<div>
+									<div >
 										<input type="text" id="tbCliente" name="nombreCliente"  data-provide="typeahead"readonly="true" value="<?php echo $row['clienteNombre'];?>">
 									</div>
 									<?php
@@ -341,8 +347,11 @@ require("header.php");
 								else
 								{
 									?>
-									<div class="control-group error">
-										<input type="text" id="tbCliente"  data-provide="typeahead"  name="nombreCliente"  value="<?php echo isset($row['clienteNombre']) ? $row['clienteNombre']:"";?>">
+									<div class="control-group error scrollable-dropdown-menu">
+										<input type="text" id="tbCliente" onclick="BuscarClientes()" name="nombreCliente" readonly="true" value="<?php echo isset($row['clienteNombre']) ? $row['clienteNombre']:"";?>">
+										<!--
+											<input type="text" id="tbCliente" class="typeahead" data-provide="typeahead"  name="nombreCliente"  value="<?php echo isset($row['clienteNombre']) ? $row['clienteNombre']:"";?>">
+										-->
 									</div>
 									<?php
 								}
@@ -424,7 +433,7 @@ require("header.php");
 								{
 									echo "
 										<div class=\"control-group error\" id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\"  value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
 										</div>
 									";
 								}
@@ -432,7 +441,7 @@ require("header.php");
 								{
 									echo "
 										<div id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\"  value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
 										</div>
 									";
 								}
@@ -443,8 +452,8 @@ require("header.php");
 								{
 									echo "
 										<div class=\"control-group error\" id=\"div_busqueda_prod\">
-											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" data-provide='typeahead' class=\"input-xlarge\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" >
-										</div>
+											<input type=\"text\" id=\"codigoProductop\" name=\"codigoProductop\" class=\"input-xlarge\" onclick=\"BuscarProductoN()\" value=\"". (isset($row['descrip3']) ? $row['descrip3']: "")."\" style=\"width: 390px;\" readonly>
+										</div>	
 									";
 								}
 								else
@@ -1450,7 +1459,7 @@ function invertirFecha($date)
 //---------------------------------------------
 
 ?>
-<script src="assest/Typeahead/bootstrap3-typeahead.min.js"></script>
+<script src="assest/Typeahead/bootstrap3-typeahead.js"></script>
 <script type="text/javascript">
 /*
 	$(function(){
@@ -1466,7 +1475,7 @@ function invertirFecha($date)
 <script src="assest/dist/js/jquery.maskMoney.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$("#cantidad").maskMoney({allowNegative: true, thousands:'.', decimal:','});
+		$("#cantidad").maskMoney({allowNegative: true, thousands:'.'});
 
 	});
 </script>
