@@ -23,14 +23,14 @@ class menu
 		foreach ($result as $key => $item) {
 
 			$menu_output.='<li class="dropdown">';
-			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($item['2']).'<b class="caret"></b></a>';
+			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($item['2']).'<b class="caret"></b></a>';
 			if(!empty($item[9])){
 
 				$level_2=$item[9];
 				$sub_menu='<ul class="dropdown-menu">';
 				foreach ($level_2 as $key => $level_2_item) {
 					//var_dump($level_2_item);
-					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.htmlentities($level_2_item['2']).'</a></li>';
+					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.utf8_encode($level_2_item['2']).'</a></li>';
 				}
 				$sub_menu.='</ul>';
 				$menu_output.=$sub_menu;
@@ -191,11 +191,11 @@ class menu
 
 							if($anterior_fue_subMenu == true)
 							{
-								echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+								echo '</ul><li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 							}
 							else
 							{
-								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 							}
 						}
 					}
@@ -273,10 +273,10 @@ class menu
 									$encabezado = $inicioCadena;
 
 									echo'<li class="dropdown">';
-									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'<b class="caret"></b></a>';
+									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($row['descripcion']).'<b class="caret"></b></a>';
 									//ahora armar cuerpo
 									echo '<ul class="dropdown-menu">';
-									echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+									echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 								}
 								else
 								{
@@ -286,7 +286,7 @@ class menu
 							else
 							{
 								//agregar item al menu
-								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 							}
 						}
 						break;
@@ -311,10 +311,10 @@ class menu
 									$encabezadoNivel2 = $inicioCadena;
 
 									echo'<li class="dropdown-submenu" style="text-align: left;">';
-									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'</a>';
+									echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($row['descripcion']).'</a>';
 									//ahora armar cuerpo
 									echo '<ul class="dropdown-menu">';
-									echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+									echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 								}
 								else
 								{
@@ -324,7 +324,7 @@ class menu
 							else
 							{
 								//agregar item al menu
-								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.htmlentities($r['descripcion']).'</a></li>';
+								echo '<li style="text-align: left;"><a href="'.$r['link'].'">'.utf8_encode($r['descripcion']).'</a></li>';
 								if($count == 2)
 									echo '</ul></li>';
 								$count++;
@@ -366,7 +366,7 @@ class menu
 			       while($row = mysql_fetch_array($resu))
 				       {
 					       echo'<li class="dropdown">';
-					       echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($row['descripcion']).'<b class="caret"></b></a>';
+					       echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($row['descripcion']).'<b class="caret"></b></a>';
 
 					       //ahora armar cuerpo
 					       echo '<ul class="dropdown-menu">';
@@ -386,7 +386,7 @@ class menu
 									if(mysql_num_rows($subMres)> 0)
 									{
 										echo '<li class="dropdown-submenu" style="text-align: left;">
-											<a tabindex="-1" href="#">'.htmlentities($r['descripcion']).'</a>
+											<a tabindex="-1" href="#">'.utf8_encode($r['descripcion']).'</a>
 												<ul class="dropdown-menu">';
 												while($sb = mysql_fetch_array($subMres))
 												{
@@ -397,16 +397,16 @@ class menu
 														$sqlCantRes = mysql_query($sqlCant);
 														if(mysql_num_rows($sqlCantRes)> 0)
 														{
-															echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'" checked> '.htmlentities($sb['descripcion']).'</a></li>';
+															echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'" checked> '.utf8_encode($sb['descripcion']).'</a></li>';
 														}
 														else
 														{
-															echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'"> '.htmlentities($sb['descripcion']).'</a></li>';
+															echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'"> '.utf8_encode($sb['descripcion']).'</a></li>';
 														}
 													}
 													else
 													{
-														echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'"> '.htmlentities($sb['descripcion']).'</a></li>';
+														echo '<li><a><input type="checkbox" id="'.$sb['id_menu'].'"> '.utf8_encode($sb['descripcion']).'</a></li>';
 													}
 												}
 										echo '		</ul>
@@ -421,16 +421,16 @@ class menu
 											$sqlCantRes = mysql_query($sqlCant);
 											if(mysql_num_rows($sqlCantRes)> 0)
 											{
-												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'" checked> '.htmlentities($r['descripcion']).'</a></li>';
+												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'" checked> '. utf8_encode($r['descripcion'])  .'</a></li>';
 											}
 											else
 											{
-												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';
+												echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.utf8_encode($r['descripcion']).'</a></li>';
 											}
 										}
 										else
 										{
-											echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.htmlentities($r['descripcion']).'</a></li>';
+											echo '<li style="text-align: left;"><a><input type="checkbox" id="'.$r['id_menu'].'"> '.utf8_encode($r['descripcion']).'</a></li>';
 										}
 
 									}
@@ -516,14 +516,14 @@ function is_allown($id_grupo=0,$id_menu=0){
 		foreach ($result as $key => $item) {
 
 			$menu_output.='<li class="dropdown">';
-			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.htmlentities($item['2']).'<b class="caret"></b></a>';
+			$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.utf8_encode($item['2']).'<b class="caret"></b></a>';
 			if(!empty($item[9])){
 
 				$level_2=$item[9];
 				$sub_menu='<ul class="dropdown-menu">';
 				foreach ($level_2 as $key => $level_2_item) {
 					//var_dump($level_2_item);
-					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.htmlentities($level_2_item['2']).'</a></li>';
+					$sub_menu.='<li><a><input type="checkbox" id="'.$level_2_item['0'].'" checked> '.utf8_encode($level_2_item['2']).'</a></li>';
 				}
 				$sub_menu.='</ul>';
 				$menu_output.=$sub_menu;

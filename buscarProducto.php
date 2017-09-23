@@ -1,6 +1,6 @@
 <?php
 	include("ConexionSQLMercedario.php");
-		
+	header('Access-Control-Allow-Origin: *'); 	
 	$var = new SQLM();
 	$cid = $var->conect();
 	

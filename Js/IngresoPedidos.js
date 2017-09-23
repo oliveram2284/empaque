@@ -1,6 +1,56 @@
 var campos_para_validar = [];
 var cliente = true;
 
+
+var fechaIn = $("#fecha1").data('fechain');
+var d = new Date();
+var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+$("#fecha1").datepicker({
+    minDate: today,
+    dateFormat: 'dd-mm-yy',
+    setDate: fechaIn
+});
+
+console.debug("==> fechaIn: %o", fechaIn);
+var seteaFechaEntrega = function() {
+    var d = new Date();
+    var formato_id = $("#formato").val();
+    var material_id = $("#material").val();
+    var data_ajax = {
+        type: "POST",
+        url: "services/DiasMaterialesFormatos.php",
+        data: { action: 5, formato_id: formato_id, material_id: material_id },
+        success: function(data) {
+            $("#fecha1").datepicker('destroy');
+            var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            if (data.result == true) {
+                today = new Date(data.date.year, data.date.month - 1, data.date.day);
+                console.debug("===> New Date: %o", today);
+                $("#fecha1").datepicker({
+                    minDate: today,
+                    dateFormat: 'dd-mm-yy'
+                });
+            } else {
+                var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+                console.debug("===> Today: %o", today);
+                $("#fecha1").datepicker({
+                    minDate: today,
+                    dateFormat: 'dd-mm-yy',
+                });
+            }
+            return false;
+        },
+        error: function(error_msg) {
+            alert("error_msg: " + error_msg);
+        },
+        dataType: 'json'
+    };
+    $.ajax(data_ajax);
+    return false;
+};
+
+
 $("#pop_close").live('click', function() {
     /*alert("ClOSE");*/
     $("#cantidad_modal").modal("hide");
@@ -161,7 +211,6 @@ function get_ficha_tecnica(id) {
         method: "POST",
         //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
         url: "buscarProductoFicha.php",
-        //url: "buscarArticulo.json",
         data: { id: id },
         dataType: "json",
         success: function(data) {
@@ -322,7 +371,9 @@ function BuscadorDeClientes(value) {
     var color = '#FFFFFF';
     var data_ajax = {
         type: 'POST',
-        url: "/empaque_demo/buscarCliente.php",
+        //url: "/empaque_demo/buscarCliente.php",
+        //url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
+        url: "buscarCliente.php",
         data: { xinput: input },
         success: function(data) {
             if (data != 0) {
@@ -442,8 +493,8 @@ function BuscadorDeProductos(value, page) {
     var color = '#FFFFFF';
     var data_ajax = {
         type: 'POST',
+        //url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
         url: "buscarProducto.php",
-        //url: "jsons/buscarArticulo.json",
         data: { xinput: value, xpage: page, busq: $('#busc').val() },
         success: function(data) {
             if (data != 0) {
@@ -508,36 +559,28 @@ function BuscadorDeProductos(value, page) {
 
 function SeleccionadoP(valor) {
 
-    console.debug("===> valor: %o", valor);
-    //reset:
     $("#ancho").val(null);
     $("#º").val(null);
     $("#micronaje").val(null);
     $("#color").val(null);
     $('#formato').prop('selectedIndex', 0);
     $('#material').prop('selectedIndex', 0);
-    //$("#formato option[value=0] ").attr('selected','selected');
-    //$("#formato").trigger('change');
-    //tomar id pasado y buscar los valor para los campos correspondientes al producto
     var ar = "#" + valor + "_arp";
     var nc = "#" + valor + "_ncp";
     $("#codigoProductop").val(valor);
     $("#nombreProducto").val($(ar).val());
     $("#descripcionProducto").val($(nc).val());
-    console.debug("===> Seleccionar");
 
     var data_ajax = {
         method: "POST",
+        //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
         url: "buscarProductoFicha.php",
-        //url: "buscarArticulo.json",
         data: { id: valor },
         dataType: "json",
         success: function(data) {
             var articulo = data.articulo;
             var ficha_tecnica_detalle = data.Fichas_Tecnica_Detalle;
-
             var color = "";
-
             var formato = data.Formato;
             var material = data.Material;
 
@@ -558,7 +601,6 @@ function SeleccionadoP(valor) {
                     confirmButtonText: "Ok",
                     html: true
                 });
-                //alert(output);
                 color = data.Color.Color;
             }
 
@@ -593,11 +635,16 @@ function SeleccionadoP(valor) {
                     i = 1;
                 }
 
-                //if(item.Nombre=='COLOR 1' && first_color!=true){
-                if (item.Nombre == 'COLOR 1') {
-                    color += item.Referencia.replace("[object Object]", "") + "  ";
-                    i = 1;
-                    first_color = true;
+
+                if (item.Id_Unidad_Medida == "80") {
+                    console.debug("COLOR MATERIAL: %o", item);
+                    color = item.Referencia.replace('-', '').trim();
+                    console.debug("COLOR MATERIAL: %o", color);
+                }
+
+                if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
+                    console.debug("=> Cantidad de Pistas: %o", item.Valor);
+                    cantidad_pistas = item.Valor;
                 }
 
             });
@@ -674,11 +721,15 @@ function chequeadoN(value) {
 $(document).ready(function() {
 
 
+    $("#material").change(function() {
+        seteaFechaEntrega();
 
+    });
 
     $("#formato").change(function() {
-        $("#span_etiqueta").empty().css("display", "none");
 
+        $("#span_etiqueta").empty().css("display", "none");
+        seteaFechaEntrega();
         //console.debug('$("#formato").change');
         campos_para_validar = [];
         $("#cantidad").val(null);

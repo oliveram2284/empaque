@@ -548,24 +548,16 @@ require("header.php");
 								{
 									?>
 									<div>
-										<input type="text" id="fecha1" name="fecha1" class="input-small" value="<?php echo $fechin; ?>" readonly>
+										<input type="text" id="fecha1" name="fecha1" class="input-small" data-fechain="<?php echo $fechin?>" value="<?php echo $fechin; ?>" readonly>
 									</div>
 									<?php
 								}
 								else
 								{
 									echo "
-									<script>
-									$(function() {
-										var d=new Date();
-										$('#fecha1').datepicker({ minDate: new Date(d.getFullYear(), d.getMonth(), d.getDate()) });
-										$('#fecha1').datepicker( 'option', 'dateFormat', 'dd-mm-yy' );
-										$('#fecha1').datepicker( 'setDate', '".$fechin."' );
-									      });
-									</script>
-
+									
 									<div class=\"control-group error\">
-										<input type=\"text\" id=\"fecha1\" name=\"fecha1\" class=\"input-small\" readonly>
+										<input type=\"text\" id=\"fecha1\" name=\"fecha1\" class=\"input-small\" data-fechain='$fechin' readonly>
 									</div>
 
 									";
