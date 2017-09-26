@@ -286,7 +286,7 @@ function get_ficha_tecnica(id) {
 
                 if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
                     console.debug("=> Cantidad de Pistas: %o", item.Valor);
-                    cantidad_pistas = item.Valor;
+                    cantidad_pistas = parseFloat(item.Valor).toFi;
                 }
 
             });
@@ -608,24 +608,29 @@ function SeleccionadoP(valor) {
             $("#ancho").val("0.0");
             $("#largo").val("0.0");
             $("#micronaje").val("0.0");
-
+            console.debug("===> Ficha Tecnica asdasdsa: %o", ficha_tecnica_detalle);
             $.each(ficha_tecnica_detalle, function(index, item) {
 
                 var i = 0;
                 if (item.Id_Unidad_Medida == '200') {
-                    $("#ancho").val(item.Valor);
+                    console.debug("===> ANCHO: %o", item.Valor);
+                    $("#ancho").val(parseFloat(item.Valor).toFixed(2));
                     i = 1;
                 }
 
                 if (item.Id_Unidad_Medida == '5000') { //.Nombre=='LARGO PT'||item.Nombre=="LARGO  PT"){
-                    $("#largo").val(item.Valor);
+                    console.debug("===> largo: %o", item.Valor);
+
+                    $("#largo").val(parseFloat(item.Valor).toFixed(2));
                     i = 1;
                 }
 
 
                 //if(item.Nombre=='MICRONAJE 1'){
                 if (item.Id_Unidad_Medida == '40') {
-                    $("#micronaje").val(item.Valor);
+                    console.debug("===> micronaje: %o", item.Valor);
+
+                    $("#micronaje").val(parseFloat(item.Valor).toFixed());
                     i = 1;
                 }
 
@@ -649,6 +654,33 @@ function SeleccionadoP(valor) {
 
             });
 
+            console.debug("===> sdsd articulo ID: %o", articulo.Id.substring(0, 2));
+            //reset cant_pista
+            $("#cant_pista").val(null);
+
+            switch (articulo.Id.substring(0, 2)) {
+                case 'L0':
+                case 'T0':
+                    {
+                        $("#micronaje").val(parseFloat(articulo.Espesor).toFixed());
+                        $("#largo").val(parseFloat(articulo.Largo).toFixed(2));
+                        break;
+                    }
+                case 'I0':
+                    {
+                        console.debug("===> articulo.Id: %o ", articulo.Id);
+                        $("#micronaje").val(parseFloat(articulo.Espesor).toFixed());
+                        $("#largo").val(parseFloat(articulo.Largo).toFixed(2));
+                        $("#cant_pista").val(cantidad_pistas);
+
+                        break;
+                    }
+
+                    break;
+                default:
+
+            }
+            /*
             console.debug("===> articulo ID: %o", articulo.Id);
             if (articulo.Id.startsWith("L0") || articulo.Id.startsWith("T0") || articulo.Id.startsWith("I0")) {
                 console.debug("====> ARTICULO: %o", articulo);
@@ -660,7 +692,7 @@ function SeleccionadoP(valor) {
                 console.debug("===> ancho: %o", $("#ancho").val());
                 console.debug("===> largo: %o", $("#largo").val());
                 console.debug("===> micronaje: %o", $("#micronaje").val());
-            }
+            }*/
 
             $("#color").val(color);
 
