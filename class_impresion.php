@@ -266,7 +266,11 @@ class impresion
 						//$cli = mysql_query($cliente) or (die(mysql_error()));
 						
 						//$cli = mysql_fetch_array($cli);
-						
+						$cambio_entrega='';
+						if($resu['entrega']!=$resu['entrega_original']){
+							$cambio_entrega='Cambio Fecha Entrega Autorizado por Gerencia';
+						}
+										
 						echo '<table width="100%">';//style="border:1px solid black;"
 						echo '<tr>
 							<td colspan="6">
@@ -301,7 +305,7 @@ class impresion
 						echo '<tr>
 							<td width="70%">
 								<br>
-								<fieldset style="height: 160px;"><legend><b>Artículo</b></legend>
+								<fieldset style="height: 170px;"><legend><b>Artículo</b></legend>
 									<table width="100%">
 										<tr>
 											<td width="150px">Tipo de Producto:</td>
@@ -333,7 +337,7 @@ class impresion
 							</td>
 							<td >
 								<br>
-								<fieldset style="height: 160px;margin-right: 5px"><legend><b>Fechas</b></legend>
+								<fieldset style="height: 170px;margin-right: 5px"><legend><b>Fechas</b></legend>
 									<table width="100%">
 										<tr style="height: 20px">
 											<td>Emisión:</td>
@@ -356,6 +360,10 @@ class impresion
 											<td>Entrega:</td>
 											<td><div style="font-size: 20px"><b>'.invertirFecha($resu2['Fecha1']).'</b></div></td>
 										</tr>
+										<tr>
+											<td colspan="2"><span style="color:#ff0000; font-size:13px;">'.$cambio_entrega.'</span>	</td>
+										</tr>
+										
 									</table>
 								</fieldset>
 							</td>

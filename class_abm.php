@@ -469,7 +469,8 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
-															hojaruta
+															hojaruta,
+
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
 															".$nombreTabla."
@@ -529,6 +530,7 @@ class abm
 															caras,
 															marcarComoDevuelta,
 															hojaruta
+
 														From
 															".$nombreTabla."
 														Where
@@ -884,7 +886,7 @@ class abm
 															poliNumero as polId,
 															caras,
 															marcarComoDevuelta,
-															hojaruta
+															hojaruta 
 														From
 															".$nombreTabla."
 														Where
@@ -892,7 +894,7 @@ class abm
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 													
 														Order By
 															codigo Limit ".($pagina * 10).",10";
-															
+													
 												$consultaCantidad = "Select
 															Count(*)
 														     From ".$nombreTabla." 
@@ -917,7 +919,7 @@ class abm
 															poliNumero as polId,
 															caras,
 															seDevolvio,
-															hojaruta
+															hojaruta 
 														From
 															".$nombreTabla."
 														Where
@@ -950,7 +952,7 @@ class abm
 															poliNumero as polId,
 															caras,
 															marcarComoDevuelta,
-															hojaruta
+															hojaruta  
 														From
 															".$nombreTabla."
 														Where
@@ -985,8 +987,8 @@ class abm
 															ImporteFactPolimero,
 															prodHabitual,
 															poliNumero as polId,
-															caras,
-															hojaruta
+															caras, 
+															hojaruta  
 														From
 															".$nombreTabla."
 														Where
@@ -1014,7 +1016,7 @@ class abm
 															poliNumero,
 															poliNumero as polId,
 															caras,
-															hojaruta
+															hojaruta  
 														From
 															".$nombreTabla."
 														Where
@@ -1039,7 +1041,7 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
-															hojaruta
+															hojaruta  
 														From
 															".$nombreTabla."
 														Where
@@ -1065,8 +1067,8 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
-															hojaruta
-														From
+															hojaruta  
+														From 
 															".$nombreTabla."
 														Where
 															(".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
@@ -1090,7 +1092,7 @@ class abm
 															prodHabitual,
 															poliNumero as polId,
 															caras,
-															hojaruta
+															hojaruta  
 														From
 															".$nombreTabla."
 														Where
@@ -1104,13 +1106,13 @@ class abm
 														     From ".$nombreTabla." 
 														     Where (calidad = 'PA' and (poliNumero = '' or poliNumero = null) and
 														     pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt."";
-												echo $consulta3;
+												
 												break;
 											
 										}
 									}
 								}
-							
+							//echo $consulta3."<br>";
 							$resu3 = mysql_query($consulta3);
 							echo"<tbody>";
 							if(mysql_num_rows($resu3) <= 0)

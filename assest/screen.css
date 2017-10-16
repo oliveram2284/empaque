@@ -1394,7 +1394,9 @@ hr.space {
 
 .currency_pesa {
     background-color: #B3E5FC;
-}ul,
+}
+
+ul,
 ol {
     margin: 0 1.5em 1.5em 0;
     padding-left: 1.5em;
@@ -2493,4 +2495,8 @@ hr.space {
 
 .currency_pesa {
     background-color: #B3E5FC;
+}
+
+.text-error {
+    color: #ff0000;
 }

@@ -278,11 +278,14 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         break;
 
                     //Fecha de entrega
-                    case "fechaEnt":
-                        $f = explode('-',$v);
-                        $entrega = $f[2].'-'.$f[1].'-'.$f[0];
+                    case "fechaEnt":   
+                        $entrega = date('Y-m-d',strtotime($v));                       
                         break;
+                    case "entrega_original":
 
+                        $entrega_original= date('Y-m-d',strtotime($v));//$f[2].'-'.$f[1].'-'.$f[0];
+                       
+                        break;
                     //Cantidad de Producto:
                     case "cantProd":
 
@@ -513,7 +516,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                 $indice++;
             }
             //-------------------------------------------------------------------------------------
-
+           
             if($troquelado == -1){
                 $troquelado = 'null';
             }
@@ -538,8 +541,8 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                         //Insertar Ecabezado
                         $consulta = "Insert Into pedidos (";
-                        $consulta .=                       "codigo, entrega, femis, faprob, frecep, descrip3, descripcion, codigoTango, caras, centrada, apaisada, clientefact, facturarA, destino, clienteNombre, clienteDirecc, clienteTelef, clienteCUIT, facturarANombre, prodHabitual, envasado, vencimiento, lote, estado, tieneToquelado) Values";
-                        $consulta .=                       "('".$numPedido."','".$entrega."','".$femis."','".$faprob."','".$frecep."','".$descrip3."', '".$descripcion."', '".$codigoTango."', '".$caras."',$centrada, $apaisada,'".$clienteFact."','".$facturarA."','".$destino."', '".$clienteNombre."', '".$clienteDirecc."', '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',$prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I', ".$troquelado.")";
+                        $consulta .=                       "codigo, entrega,entrega_original, femis, faprob, frecep, descrip3, descripcion, codigoTango, caras, centrada, apaisada, clientefact, facturarA, destino, clienteNombre, clienteDirecc, clienteTelef, clienteCUIT, facturarANombre, prodHabitual, envasado, vencimiento, lote, estado, tieneToquelado) Values";
+                        $consulta .=                       "('".$numPedido."','".$entrega."','".$entrega_original."','".$femis."','".$faprob."','".$frecep."','".$descrip3."', '".$descripcion."', '".$codigoTango."', '".$caras."',$centrada, $apaisada,'".$clienteFact."','".$facturarA."','".$destino."', '".$clienteNombre."', '".$clienteDirecc."', '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',$prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I', ".$troquelado.")";
                         //die($consulta);
                         $resu = mysql_query($consulta)or die(mysql_error());
 
@@ -602,6 +605,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         //Modificar encabezado
                         $consulta = "Update pedidos Set ";
                         $consulta .=                 "entrega = '".$entrega."', ";
+                        $consulta .=                 "entrega_original = '".$entrega_original."', ";
                         $consulta .=                 "descrip3 = '$descrip3', ";
                         $consulta .=                 "descripcion = '".$descripcion."', ";
                         $consulta .=                 "codigoTango = '".$codigoTango."', ";
@@ -696,6 +700,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         //Modificar encabezado
                         $consulta = "Update pedidos Set ";
                         $consulta .=                 "entrega = '".$entrega."', ";
+                        $consulta .=                 "entrega_original = '".$entrega_original."', ";                        
                         $consulta .=                 "descrip3 = '$descrip3', ";
                         $consulta .=                 "descripcion = '".$descripcion."', ";
                         $consulta .=                 "codigoTango = '".$codigoTango."', ";
@@ -781,6 +786,8 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         //Modificar encabezado
                         $consulta = "Update pedidos Set ";
                         $consulta .=                 "entrega = '".$entrega."', ";
+                        $consulta .=                 "entrega_original = '".$entrega_original."', ";
+                        
                         $consulta .=                 "descrip3 = '$descrip3', ";
                         $consulta .=                 "descripcion = '".$descripcion."', ";
                         $consulta .=                 "codigoTango = '".$codigoTango."', ";

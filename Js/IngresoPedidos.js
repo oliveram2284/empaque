@@ -1,8 +1,18 @@
+var hostname = $(location).attr('hostname');
+var host_url_ajax = '';
+if (hostname == 'empaque.dev') {
+    host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
+}
+console.debug("===> LOCATION: %o", $(location).attr('hostname'));
+console.debug("===> host_url_ajax: %o", host_url_ajax);
+
+
 var campos_para_validar = [];
 var cliente = true;
 
 
 var fechaIn = $("#fecha1").data('fechain');
+console.debug("===> fechaIn: %o", fechaIn);
 var d = new Date();
 var today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -72,7 +82,7 @@ $("#tbCliente").typeahead({
             //method: "POST",
             //url: "jsons/buscarCliente.json",
             //url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
-            url: "buscarCliente.php",
+            url: host_url_ajax + "buscarCliente.php",
             data: { xinput: strng, xpage: 1, busq: 1 },
             success: function(data) {
                 console.debug("===> data client: %o", data.length);
@@ -167,7 +177,7 @@ $("#codigoProductop").typeahead({
             //method: "POST",
             //url: "jsons/buscarArticulo.json",
             //url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
-            url: "buscarProducto.php",
+            url: host_url_ajax + "buscarProducto.php",
             data: {
                 xinput: strng,
                 xpage: 1,
@@ -210,7 +220,7 @@ function get_ficha_tecnica(id) {
     var data_ajax = {
         method: "POST",
         //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
-        url: "buscarProductoFicha.php",
+        url: host_url_ajax + "buscarProductoFicha.php",
         data: { id: id },
         dataType: "json",
         success: function(data) {
@@ -373,7 +383,7 @@ function BuscadorDeClientes(value) {
         type: 'POST',
         //url: "/empaque_demo/buscarCliente.php",
         //url: "http://190.3.7.29:301/empaque_demo/buscarCliente.php",
-        url: "buscarCliente.php",
+        url: host_url_ajax + "buscarCliente.php",
         data: { xinput: input },
         success: function(data) {
             if (data != 0) {
@@ -494,7 +504,7 @@ function BuscadorDeProductos(value, page) {
     var data_ajax = {
         type: 'POST',
         //url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
-        url: "buscarProducto.php",
+        url: host_url_ajax + "buscarProducto.php",
         data: { xinput: value, xpage: page, busq: $('#busc').val() },
         success: function(data) {
             if (data != 0) {
@@ -574,7 +584,7 @@ function SeleccionadoP(valor) {
     var data_ajax = {
         method: "POST",
         //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
-        url: "buscarProductoFicha.php",
+        url: host_url_ajax + "buscarProductoFicha.php",
         data: { id: valor },
         dataType: "json",
         success: function(data) {
@@ -1728,7 +1738,7 @@ function guardar_1() {
                     break;
 
                 case "#troquelado":
-                    debugger;
+                    //debugger;
                     if ($("#troquelado").val() == "-1") {
                         $('#msj_error_pop').html("<strong>Seleccione si el producto tiene troquelado.</strong>");
                         $('#MensajesPop').modal('show');
@@ -2014,6 +2024,19 @@ function guardar_1() {
     title.push("lote");
     //--------------------------------------
 
+    if ($(".bs-docs-date").find("#fecha_entrega_original").length != 0) {
+        var fecha_entrega_original = $(".bs-docs-date").find("#fecha_entrega_original");
+        if (fecha_entrega_original.val() == null || fecha_entrega_original.val() == '') {
+            input.push($("#fecha1").val());
+        } else {
+            input.push(fecha_entrega_original.val());
+        }
+        title.push("entrega_original");
+    } else {
+        input.push($("#fecha1").val());
+        title.push("entrega_original");
+    }
+
     var IdPed = $('#idPedido').val();
     var Accion = $('#accionPedido').val();
 
@@ -2023,13 +2046,11 @@ function guardar_1() {
     } else {
         input.push(0);
     }
-    //alert(Accion);
 
     if (Accion != "I" && Accion != "E" && Accion != "A" && Accion != "P" && Accion != "CL" && Accion != "N") {
         return;
     }
-    console.debug("==> inputs: %o", input);
-    console.debug("==> title: %o", title);
+
     var data_ajax = {
         type: 'POST',
         url: "insertPedido.php",

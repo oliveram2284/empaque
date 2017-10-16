@@ -538,12 +538,29 @@ require("header.php");
 						<td>
 							<?php
 								$fechin = "";
+								$show_fecha_original=false;
+								
+								if(isset($row) && $row['entrega_original']!=null ){
+
+									if($row['entrega_original'] != $row['entrega']){
+										$show_fecha_original=true;
+									}
+									$fecha_entrega_original=$row['entrega_original'];
+								}else{
+									$show_fecha_original=isset($row);
+									$fecha_entrega_original=(isset($row) )?  date('d-m-Y',strtotime($row['entrega'])):'';
+								}
+
+								
+								
+								
 								if($accionPedido != 'I')
 								{
 									$fechin = explode('-',$row['entrega']);
-									$fechin = $fechin[2].'-'.$fechin[1].'-'.$fechin[0];
+									//$fechin = $fechin[2].'-'.$fechin[1].'-'.$fechin[0];
+									$fechin = date('d-m-Y',strtotime($row['entrega']));//$fechin[2].'-'.$fechin[1].'-'.$fechin[0];
 								}
-
+								//var_dump
 								if (Readonly($accionPedido) == "readonly")
 								{
 									?>
@@ -557,12 +574,18 @@ require("header.php");
 									echo "
 									
 									<div class=\"control-group error\">
-										<input type=\"text\" id=\"fecha1\" name=\"fecha1\" class=\"input-small\" data-fechain='$fechin' readonly>
+										<input type=\"text\" id=\"fecha1\" name=\"fecha1\" class=\"input-small\" data-fechain='$fechin'  value='$fechin' readonly>
 									</div>
 
 									";
 								}
+								
 							?>
+							<?php if($show_fecha_original):?>
+								<label class="text-error ">Fecha Original de Entrega: <?php echo $fecha_entrega_original?></label>
+							<?php endif;?>
+							<input type="hidden" name="fecha_entrega_original" id="fecha_entrega_original" value="<?php echo $fecha_entrega_original?>">
+							
 						</td>
 					</tr>
 				</table>

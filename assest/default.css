@@ -41,3 +41,7 @@ thead {
     font-weight: bold;
     height: 40px;
 }
+
+.text-error {
+    color: #ff0000;
+}
