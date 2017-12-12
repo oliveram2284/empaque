@@ -7,8 +7,12 @@ $var->conectarse();
 
 //-------------------------------------------------------------------------------------
 //Variables necesarias
+if(isset($_REQUEST['valores'])){
+    $_REQUEST['valores'][15]=(int)$_REQUEST['valores'][15];
+}else{
+    $_REQUEST['valores'][15]=0;
+}
 
-$_REQUEST['valores'][15]=(int)$_REQUEST['valores'][15];
 
 $nombre = substr($_SESSION['Nombre'], 0, 2);                //nombre del usuario logueado
 

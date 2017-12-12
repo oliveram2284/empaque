@@ -217,6 +217,7 @@ $("#codigoProductop").typeahead({
 
 
 function get_ficha_tecnica(id) {
+    console.debug("====> GET FICHA URL: %o", host_url_ajax + "buscarProductoFicha.php");
     var data_ajax = {
         method: "POST",
         //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
