@@ -1490,7 +1490,7 @@ function invertirFecha($date)
 <script src="assest/dist/js/jquery.maskMoney.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$("#cantidad").maskMoney({allowNegative: true, thousands:'.'});
+		$("#cantidad").maskMoney({allowNegative: true, decimal:"", thousands:'.', precision:0});
 
 	});
 </script>

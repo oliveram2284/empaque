@@ -1,7 +1,9 @@
 var hostname = $(location).attr('hostname');
 var host_url_ajax = '';
 if (hostname == 'empaque.dev') {
-    host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
+    //host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
+    host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
+
 }
 console.debug("===> LOCATION: %o", $(location).attr('hostname'));
 console.debug("===> host_url_ajax: %o", host_url_ajax);
