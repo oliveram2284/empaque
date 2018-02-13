@@ -20,43 +20,51 @@ $var->conectarse();
  ?>
  
  <!-- Include Bootstrap Multiselect CSS, JS -->
+ <link rel="stylesheet" href="assest/font-awesome/css/font-awesome.css">
 <link rel="stylesheet" href="assest/dist/css/bootstrap-multiselect.css" type="text/css">
 <script type="text/javascript" src="assest/dist/js/bootstrap-multiselect.js"></script>
+<link rel='stylesheet' href='assest/fullcalendar/fullcalendar.css' />
+<link rel='stylesheet' href='assest/fullcalendar/bootstrap_fullcalendar.css' />
 <!-------------------------------------------->
 
  <form id="adminPriori" name="adminPriori" method="post">
- <div class="container">
+ 	<div class="container">
         <div class="well"  id="titulo_main">
-                <div class="page-header">
-					<h2>
-					      Administrar Prioridades
-					</h2>
+			<div class="page-header">
+				<h2>
+						Administrar Prioridades
+				</h2>
+			</div>
+			<div class="row">
+				<div class="span3">
+					<input type="button" class="btn btn-danger" value="Atrás" onClick="Principal()">
+					<input type="button" value="&nbsp;Nuevo Viaje&nbsp;" class="btn btn-success" onClick="nuevo()">
 				</div>
-	<div class="row">
-		<div class="span3">
-			<input type="button" class="btn btn-danger" value="Atrás" onClick="Principal()">
-			<input type="button" value="&nbsp;Nuevo Viaje&nbsp;" class="btn btn-success" onClick="nuevo()">
+			</div>
+			<br>
+
+			
+
+
+			<div class="row">
+				<div class="span10" id="calendar">					
+					
+				</div>
+			</div>
+			<div class="row hidden">
+	 			<div class="span10">
+	    			<div id="ViajesContent">
+    	
+    				</div>
+	 			</div>
+			</div> 	
 		</div>
 	</div>
-	<br>
-	<div class="row">
-	</div>
-	<div class="row">
-	 <div class="span10">
-	    <div id="ViajesContent">
-    	
-    	</div>
-	 </div>
-	</div>
-	
-
- </div>
-
  </form>
  
 
  <!-- Pop Calendarío -->
-<div class="modal hide fade" id="ListadoDePrioridades" style="width: 900px; margin-left: -450px; margin-top: -400px;">
+<div class="modal hide fade" id="ListadoDePrioridades" style="">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Autorizar Listado de Prioridades</h3>
@@ -164,11 +172,149 @@ $var->conectarse();
 
 <!--------- End Pop Trasnporte -->
 
+<script src='assest/fullcalendar/lib/moment.min.js'></script>
+<script src='assest/fullcalendar/fullcalendar.js'></script> 
+<script src='assest/fullcalendar/locale-all.js'></script>
 <?php
 
 require("footer.php");
 
 ?>
+
+<script>
+$(document).ready(function() {
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+		locale: 'es',
+		editable:true,
+		left:   'today',
+		center: 'title',
+		right:  'prev,next',	
+		events: function(start, end, timezone, callback) {
+			var d = $('#calendar').fullCalendar('getDate');
+			var   date=moment(d).format('YYYY-MM-DD');
+			$.ajax({
+				url: 'services/viajes.php',
+				dataType: 'json',
+				data: {
+					action: 1,
+					date:date
+				},
+				success: function(doc) {
+					//console.debug("====> doc: %o",doc);
+					var events = [];
+					$.each(doc.result,function(index,item){
+						events.push({
+							title: item.destino_description,							
+							date: item.fecha,
+							color: item.destino_color.toLowerCase(),   // a non-ajax option
+							borderColor:item.destino_color.toLowerCase(),
+            				textColor: '#f9f9f9',
+							tooltip: '- Empresa: '+item.transporte_razon_sosial+' <br> - Destino: '+item.destino_description+'  ',
+							event_data:item
+						});
+					});
+					callback(events);
+				}
+			});
+		},
+		eventMouseover: function (data, event, view) {
+			//console.log(data.event_data);
+            tooltip =''; 
+			tooltip+='<div class="tooltiptopicevent" style="width:auto;height:auto;background:#dff9cc; border:1px solid #fff; position:absolute;z-index:10001;padding:10px 10px 10px 10px ;  line-height: 200%;">';
+			tooltip+= '- Empresa: ' +data.event_data.transporte_razon_sosial+ '<br> - Destino: ' + data.event_data.destino_description + '</br>' + '- Horario Salida: ' + data.event_data.horaSalida+':'+data.event_data.minutoSalida + '</div>';
+
+
+            $("body").append(tooltip);
+            $(this).mouseover(function (e) {
+                $(this).css('z-index', 10000);
+                $('.tooltiptopicevent').fadeIn('500');
+                $('.tooltiptopicevent').fadeTo('10', 1.9);
+            }).mousemove(function (e) {
+                $('.tooltiptopicevent').css('top', e.pageY + 10);
+                $('.tooltiptopicevent').css('left', e.pageX + 20);
+            });
+
+
+        },
+		eventRender: function( event, element, view ) {
+			if(event.event_data.todos > 0){				
+				if(event.event_data.todos==event.event_data.aprobados){
+					element.find(".fc-title").prepend('<i class="fa fa-circle" aria-hidden="true" style="color:green;"></i>  ');
+				}else{
+					element.find(".fc-title").prepend('<i class="fa fa-circle" aria-hidden="true" style="color:red;"></i>  ');
+				}
+			}			
+		},
+        eventMouseout: function (data, event, view) {
+            $(this).css('z-index', 8);
+
+            $('.tooltiptopicevent').remove();
+
+        },
+        dayClick: function () {			
+            tooltip.hide();
+        },
+        eventResizeStart: function () {
+            tooltip.hide()
+        },
+        eventDragStart: function () {
+            tooltip.hide()
+        },
+        viewDisplay: function () {
+            tooltip.hide()
+        },
+		eventClick: function(calEvent, jsEvent, view) {		
+			// change the border color just for fun
+			//$(this).css('border-color', 'red');
+			console.log(calEvent.event_data);
+			id_= calEvent.event_data.idViaje;
+			idUltimoViaje = id_;
+			console.log(id_);
+			var data_ajax={
+						type: 'POST',
+						url: "/empaque_demo/listadoDePrioridadesAd.php",
+						data: { id: id_ },
+						success: function( data ) {
+							console.debug("data: %o",data);
+							$("#PrioridadesContent_").html(data);
+							$("#ListadoDePrioridades").modal('show');
+						},
+						error: function(data){
+							console.debug("ERROR: %o",data);
+							
+								$("#PrioridadesContent_").html(data.responseText);
+								},
+						 dataType: "html",
+						};
+				$.ajax(data_ajax);
+
+		}
+		
+		/*eventSources: [
+			{
+            url: 'services/viajes.php',
+            type: 'POST',
+            data: {
+                action: 1
+            },
+            error: function() {
+                alert('there was an error while fetching events!');
+            },
+            color: 'yellow',   // a non-ajax option
+            textColor: 'black' // a non-ajax option
+        }
+
+        // any other sources...
+
+    	]*/
+	        // put your options and callbacks here
+    })
+
+});
+</script>
  
  <script>
     $( document ).ready(function() {
@@ -225,21 +371,25 @@ function AbrirCalendario(mesx, ano){
 var idUltimoViaje = 0;
 function AbrirPorViaje(id_){
 	idUltimoViaje = id_;
+	console.log(id_);
 	var data_ajax={
 				type: 'POST',
 				url: "/empaque_demo/listadoDePrioridadesAd.php",
 				data: { id: id_ },
 				success: function( data ) {
-								$("#PrioridadesContent_").html(data);
-								
-							  },
+					console.debug("data: %o",data);
+					$("#PrioridadesContent_").html(data);
+					$("#ListadoDePrioridades").modal('show');
+				},
 				error: function(data){
+					console.debug("data: %o",data);
+					
 						   $("#PrioridadesContent_").html(data.responseText);
 						  },
-				dataType: 'text/html'
+				dataType: 'html'
 				};
 		$.ajax(data_ajax);
-	$("#ListadoDePrioridades").modal('show');
+	
 }
 
 function Autorizar(codigo ,id, viaje)

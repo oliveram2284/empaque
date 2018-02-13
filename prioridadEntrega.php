@@ -21,7 +21,9 @@ $var->conectarse();
  
  <!-- Include Bootstrap Multiselect CSS, JS -->
 <link rel="stylesheet" href="assest/dist/css/bootstrap-multiselect.css" type="text/css">
+
 <script type="text/javascript" src="assest/dist/js/bootstrap-multiselect.js"></script>
+<link rel='stylesheet' href='assest/fullcalendar/fullcalendar.css' />
 <!-------------------------------------------->
 
  <form id="reportePolimeros" name="reportePolimeros" method="post">
@@ -453,7 +455,8 @@ $var->conectarse();
 </div>
 
 <!--------- End Pop Clientes -->
-
+<script src='assest/fullcalendar/lib/moment.min.js'></script>
+<script src='assest/fullcalendar/fullcalendar.js'></script> 
 <?php
 
 require("footer.php");
@@ -461,6 +464,12 @@ require("footer.php");
 ?>
  
  <script>
+ $(function(){
+	console.debug("===> LOAD CALENDAR");
+	$('#calendar').fullCalendar({
+        // put your options and callbacks here
+    });
+})
     $( document ).ready(function() {
 	$( document ).tooltip();
     });

@@ -24,7 +24,7 @@ $meses=array(1=>"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
 ?>
  
 
-	<style>
+	<style>/*
 		#calendar {
 			font-family:Arial;
 			font-size:12px;
@@ -49,7 +49,7 @@ $meses=array(1=>"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
 		}
 		#calendar .hoy {
 			background-color:#D0F5A9;
-		}
+		}*/
 	</style>
 
 <?php $html = '';
