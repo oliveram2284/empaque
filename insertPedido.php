@@ -292,8 +292,8 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         break;
                     //Cantidad de Producto:
                     case "cantProd":
-
-                        $cantidadDeProductos = (int)$v;
+                        $cantidadDeProductos = (int)str_ireplace('.','',$v);                        
+                       // die();
                         break;
 
                     //Caras
@@ -323,8 +323,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                     //cantidad
                     case "cantProd":
-                        var_dump($v);
-                        die();
+                       
                         $unidades = $v;
                         break;
 
@@ -547,7 +546,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $consulta = "Insert Into pedidos (";
                         $consulta .=                       "codigo, entrega,entrega_original, femis, faprob, frecep, descrip3, descripcion, codigoTango, caras, centrada, apaisada, clientefact, facturarA, destino, clienteNombre, clienteDirecc, clienteTelef, clienteCUIT, facturarANombre, prodHabitual, envasado, vencimiento, lote, estado, tieneToquelado) Values";
                         $consulta .=                       "('".$numPedido."','".$entrega."','".$entrega_original."','".$femis."','".$faprob."','".$frecep."','".$descrip3."', '".$descripcion."', '".$codigoTango."', '".$caras."',$centrada, $apaisada,'".$clienteFact."','".$facturarA."','".$destino."', '".$clienteNombre."', '".$clienteDirecc."', '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',$prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I', ".$troquelado.")";
-                        //die($consulta);
+                       // die($consulta);
                         $resu = mysql_query($consulta)or die(mysql_error());
 
                         $consulta = "Select max(npedido) from pedidos";
@@ -569,7 +568,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $detalle .=                             ")";
                         $detalle .= " Values ";
                         $detalle .=             "(";
-                        $detalle .=                 $idPedido.",".$cantidadDeProductos.",'".$precioPolimero."sdsdssd',".$tipoDeUnidad.",".$idFormato.",";
+                        $detalle .=                 $idPedido.",".$cantidadDeProductos.",'".$precioPolimero."',".$tipoDeUnidad.",".$idFormato.",";
                         $detalle .=                 $idMaterial.",'".$color."',".$idMoneda.",'".$precio."',".$idIVA.",";
                         $detalle .=                 $sentido.",".$tratado.",".$termo.",".$microp.",'".$entrega."',";
                         $detalle .=                 $unidades.",'".$distTaco."','".$diamBobina."','".$diamCanuto."','".$kgBobina."','";
@@ -580,6 +579,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $detalle .=             ")";
 
                                 //echo $detalle;
+                        die($detalle);
                         $resu = mysql_query($detalle)or die($detalle);
 
                         reg_log($idPedido, $estado);

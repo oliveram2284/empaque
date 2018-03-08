@@ -9,6 +9,15 @@ console.debug("===> LOCATION: %o", $(location).attr('hostname'));
 console.debug("===> host_url_ajax: %o", host_url_ajax);
 
 
+$(function() {
+    console.log("====> LOAD OK");
+    var accionPedido = $("#accionPedido").val();
+    console.log(accionPedido);
+    $("#formato").trigger('change');
+
+    //get_ficha_tecnica(id);
+});
+
 var campos_para_validar = [];
 var cliente = true;
 
@@ -234,6 +243,7 @@ function get_ficha_tecnica(id) {
 
             var formato = data.Formato;
             var material = data.Material;
+
 
             $("#ancho").val(null);
             $("#largo").val(null);
@@ -868,10 +878,15 @@ $(document).ready(function() {
                     break;
                 }
 
-            case '23':
+
+                //case '22':
+                // case '23':
+            case '13':
+            case '14':
+            case '15':
                 {
                     console.debug("==> procesa_cantidades_bolsa ")
-                    //console.debug("===> cant_pista: %o",$("#cant_pista").val().length);
+                    console.debug("===> cant_pista: %o", $("#cant_pista").val().length);
                     procesa_cantidades_bolsa(id_formato, largo);
                     return false;
                     break;
@@ -879,7 +894,7 @@ $(document).ready(function() {
 
             default:
                 {
-                    //alert("Formato Incorrecto:  "+id_formato+"");
+                    alert("Formato Incorrecto:  " + id_formato + "");
                     $("#cantidad").removeAttr("readonly");
                     return false;
                     break;
@@ -939,7 +954,8 @@ $(document).ready(function() {
                 var tbody_content = "";
                 $.each(data.result, function(index, item) {
 
-
+                    console.debug("====> index: %o", index);
+                    console.debug("====> item: %o", item);
                     if (parseFloat(item.largo).toFixed(2) == parseFloat(largo).toFixed(2)) {
 
                         tbody_content += '<tr data-id="' + item.id + '"  data-multiplo="' + item.multiplo + '" >';
@@ -1189,15 +1205,11 @@ $(document).ready(function() {
 
     $("#input_cant_etiqueta_pop").live('keyup', function(event) {
         console.debug("==> input_cant_etiqueta_pop: %o", $(this).val());
-        if (event.which >= 37 && event.which <= 40) return;
-        $(this).val(function(index, value) {
-            return value
-                .replace(/\D/g, "")
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        });
-        var cant = parseInt($(this).val().replace(".", "")); ///$(this).val().replace(".","");
+
+        var cant = $(this).val().split('.').join("");
+        var cant = parseInt(cant);
         var multiplo = $("#multiplo_etiqueta_cant").val();
-        console.debug("==> cant: %o", cant);
+
         min = 0;
         max = multiplo;
         i = 1;
@@ -1262,7 +1274,7 @@ $(document).ready(function() {
         var radios_cants = $("#etiqueta_cantidad_modal .modal-body").find("input[type='radio']:checked");
         console.debug("====> multiplo: %o", multiplo);
         console.debug("====> multiplo: %o", (parseInt(radios_cants.val()) / parseInt(multiplo)));
-        var total_bobinas = (parseInt(radios_cants.val()) / parseInt(multiplo));
+        var total_bobinas = (parseInt(radios_cants.val()) / parseInt(multiplo)).toFixed(2);
         console.debug("Equivale a " + total_bobinas + " Bobinas de " + largo_bobina + " Metros.");
         $("#span_etiqueta").html("Equivale a " + total_bobinas + " Bobinas de " + largo_bobina + " Metros.").css("display", "block");
 
