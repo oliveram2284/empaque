@@ -1475,12 +1475,12 @@ function invertirFecha($date)
 
 ?>
 <script src="assest/Typeahead/bootstrap3-typeahead.js"></script>
-
-<script type="text/javascript" src="Js/IngresoPedidos.js"></script>
-<script src="assest/dist/js/jquery.maskMoney.min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		$("#cantidad").maskMoney({allowNegative: true, decimal:"", thousands:'.', precision:0});
 		$('#input_cant_etiqueta_pop').maskMoney({allowNegative: true, decimal:"", thousands:'.', precision:0});
 	});
 </script>
+<script type="text/javascript" src="Js/IngresoPedidos.js"></script>
+<script src="assest/dist/js/jquery.maskMoney.min.js"></script>
+

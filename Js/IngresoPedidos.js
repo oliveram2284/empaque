@@ -3,19 +3,22 @@ var host_url_ajax = '';
 if (hostname == 'empaque.dev') {
     //host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
     host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
-
 }
-console.debug("===> LOCATION: %o", $(location).attr('hostname'));
-console.debug("===> host_url_ajax: %o", host_url_ajax);
+//console.debug("===> LOCATION: %o", $(location).attr('hostname'));
+//console.debug("===> host_url_ajax: %o", host_url_ajax);
 
 
 $(function() {
     console.log("====> LOAD OK");
     var accionPedido = $("#accionPedido").val();
-    console.log(accionPedido);
-    $("#formato").trigger('change');
+    if (accionPedido != 'I') {
+        console.log(accionPedido);
+        console.log($("#cantidad").val());
+        $("#cantidad").maskMoney('mask', $("#cantidad").val());
+        get_ficha_tecnica($("#codigoProductop").val());
+        $("#moneda").trigger('change');
+    }
 
-    //get_ficha_tecnica(id);
 });
 
 var campos_para_validar = [];
@@ -229,6 +232,7 @@ $("#codigoProductop").typeahead({
 
 function get_ficha_tecnica(id) {
     console.debug("====> GET FICHA URL: %o", host_url_ajax + "buscarProductoFicha.php");
+
     var data_ajax = {
         method: "POST",
         //url: "http://190.3.7.29:301/empaque_demo/buscarProductoFicha.php",
@@ -236,125 +240,172 @@ function get_ficha_tecnica(id) {
         data: { id: id },
         dataType: "json",
         success: function(data) {
+
             var articulo = data.articulo;
             var ficha_tecnica_detalle = data.Fichas_Tecnica_Detalle;
-
             var color = "";
-
             var formato = data.Formato;
             var material = data.Material;
 
-
-            $("#ancho").val(null);
-            $("#largo").val(null);
-            $("#micronaje").val(null);
-            $("#color").val(null);
-            $("#fuelle").val(null);
-            $("#origen").removeAttr("readonly");
-            $("#cantidad").val(null).attr("readonly", true);
-
-            if (ficha_tecnica_detalle.length < 1) {
-                var output = "<p style='font-size:20px; color:#000000'>El Articulo <b style='color:red'> " + valor + " </b> <br> No posee Ficha Técnica en Mercedario.<br> Por favor, ingrese datos manualmente<p>";
-                swal({
-                    title: "Advertencia!",
-                    text: output,
-                    type: "warning",
-                    confirmButtonText: "Ok",
-                    html: true
-                });
-                //alert(output);
-                color = data.Color.Color;
-            }
-
-            var first_color = false;
-            var cantidad_pistas = null;
-            $.each(ficha_tecnica_detalle, function(index, item) {
-
-                var i = 0;
-                if (item.Id_Unidad_Medida == '200') {
-                    $("#ancho").val(item.Valor);
-                    i = 1;
-                }
-
-                if (item.Id_Unidad_Medida == '5000') { //.Nombre=='LARGO PT'||item.Nombre=="LARGO  PT"){
-                    $("#largo").val(item.Valor);
-                    i = 1;
-                }
-
-                //if(item.Nombre=='MICRONAJE 1'){
-                if (item.Id_Unidad_Medida == '40') {
-                    $("#micronaje").val(item.Valor);
-                    i = 1;
-                }
-
-                if (item.Nombre == 'FUELLE 1') {
-                    $("#fuelle").val(item.Valor);
-                    i = 1;
-                }
-
-
-
-                //if(item.Nombre=='COLOR 1' && first_color!=true){
-                /*if (item.Nombre == 'COLOR 1') {
-                    color += item.Referencia.replace("[object Object]", "") + "  ";
-                    i = 1;
-                    first_color = true;
-                }*/
-
-                if (item.Id_Unidad_Medida == "80") {
-                    console.debug("COLOR MATERIAL: %o", item);
-                    color = item.Referencia.replace('-', '').trim();
-                    console.debug("COLOR MATERIAL: %o", color);
-                }
-
-                if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
-                    console.debug("=> Cantidad de Pistas: %o", item.Valor);
-                    cantidad_pistas = parseFloat(item.Valor).toFi;
-                }
-
-            });
-
-            console.debug("===> sdsd articulo ID: %o", articulo.Id.substring(0, 2));
-            //reset cant_pista
-            $("#cant_pista").val(null);
-
-            switch (articulo.Id.substring(0, 2)) {
-                case 'L0':
-                case 'T0':
+            switch ($("#accionPedido").val()) {
+                case 'A':
+                case 'E':
                     {
-                        $("#micronaje").val(articulo.Espesor);
-                        $("#largo").val(articulo.Largo);
-                        break;
-                    }
-                case 'I0':
-                    {
-                        console.debug("===> articulo.Id: %o ", articulo.Id);
-                        $("#micronaje").val(articulo.Espesor);
-                        $("#largo").val(articulo.Largo);
-                        $("#cant_pista").val(cantidad_pistas);
+                        console.log("===> buscarProductoFicha");
+                        console.log(ficha_tecnica_detalle);
+
+                        if (ficha_tecnica_detalle.length < 1) {
+                            var output = "<p style='font-size:20px; color:#000000'>El Articulo <b style='color:red'> " + valor + " </b> <br> No posee Ficha Técnica en Mercedario.<br> Por favor, ingrese datos manualmente<p>";
+                            swal({
+                                title: "Advertencia!",
+                                text: output,
+                                type: "warning",
+                                confirmButtonText: "Ok",
+                                html: true
+                            });
+                            //color = data.Color.Color;
+                        }
+                        var first_color = false;
+                        var cantidad_pistas = null;
+                        $.each(ficha_tecnica_detalle, function(index, item) {
+
+                            if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
+                                console.debug("=> Cantidad de Pistas: %o", item.Valor);
+                                cantidad_pistas = parseFloat(item.Valor).toFixed(0);
+
+                                if (articulo.Id.substring(0, 2) == 'I0') {
+                                    $("#cant_pista").val(cantidad_pistas);
+                                }
+                            }
+
+                        });
+
 
                         break;
                     }
+                case 'I':
+                    {
 
-                    break;
+
+                        $("#ancho").val(null);
+                        $("#largo").val(null);
+                        $("#micronaje").val(null);
+                        $("#color").val(null);
+                        $("#fuelle").val(null);
+                        $("#origen").removeAttr("readonly");
+                        $("#cantidad").val(null).attr("readonly", true);
+
+                        if (ficha_tecnica_detalle.length < 1) {
+                            var output = "<p style='font-size:20px; color:#000000'>El Articulo <b style='color:red'> " + valor + " </b> <br> No posee Ficha Técnica en Mercedario.<br> Por favor, ingrese datos manualmente<p>";
+                            swal({
+                                title: "Advertencia!",
+                                text: output,
+                                type: "warning",
+                                confirmButtonText: "Ok",
+                                html: true
+                            });
+                            //alert(output);
+                            color = data.Color.Color;
+                        }
+
+                        var first_color = false;
+                        var cantidad_pistas = null;
+                        $.each(ficha_tecnica_detalle, function(index, item) {
+
+                            var i = 0;
+                            if (item.Id_Unidad_Medida == '200') {
+                                $("#ancho").val(item.Valor);
+                                i = 1;
+                            }
+
+                            if (item.Id_Unidad_Medida == '5000') { //.Nombre=='LARGO PT'||item.Nombre=="LARGO  PT"){
+                                $("#largo").val(item.Valor);
+                                i = 1;
+                            }
+
+                            //if(item.Nombre=='MICRONAJE 1'){
+                            if (item.Id_Unidad_Medida == '40') {
+                                $("#micronaje").val(item.Valor);
+                                i = 1;
+                            }
+
+                            if (item.Nombre == 'FUELLE 1') {
+                                $("#fuelle").val(item.Valor);
+                                i = 1;
+                            }
+
+
+
+                            //if(item.Nombre=='COLOR 1' && first_color!=true){
+                            /*if (item.Nombre == 'COLOR 1') {
+                                color += item.Referencia.replace("[object Object]", "") + "  ";
+                                i = 1;
+                                first_color = true;
+                            }*/
+
+                            if (item.Id_Unidad_Medida == "80") {
+                                console.debug("COLOR MATERIAL: %o", item);
+                                color = item.Referencia.replace('-', '').trim();
+                                console.debug("COLOR MATERIAL: %o", color);
+                            }
+
+                            if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
+                                console.debug("=> Cantidad de Pistas: %o", item.Valor);
+                                cantidad_pistas = parseFloat(item.Valor).toFi;
+                            }
+
+                        });
+
+                        console.debug("===> sdsd articulo ID: %o", articulo.Id.substring(0, 2));
+                        //reset cant_pista
+                        $("#cant_pista").val(null);
+
+                        switch (articulo.Id.substring(0, 2)) {
+                            case 'L0':
+                            case 'T0':
+                                {
+                                    $("#micronaje").val(articulo.Espesor);
+                                    $("#largo").val(articulo.Largo);
+                                    break;
+                                }
+                            case 'I0':
+                                {
+                                    console.debug("===> articulo.Id: %o ", articulo.Id);
+                                    $("#micronaje").val(articulo.Espesor);
+                                    $("#largo").val(articulo.Largo);
+                                    $("#cant_pista").val(cantidad_pistas);
+
+                                    break;
+                                }
+
+                                break;
+                            default:
+
+                        }
+                        /*if(articulo.Id.startsWith("L0") || articulo.Id.startsWith("T0")){
+                        		$("#micronaje").val(articulo.Espesor);
+                        }*/
+
+                        $("#color").val(color);
+
+                        if (formato != null) {
+                            console.debug("===> formato.formato_i: %o", formato.formato_id);
+                            $("#formato").removeAttr("selected");
+                            $("#formato option[value=" + formato.formato_id + "] ").attr("selected", "selected");
+                        }
+                        if (material != null) {
+                            $("#material option[value=" + material.material_id + "] ").attr("selected", "selected");
+                            $("#material").trigger("change");
+                        }
+                        break;
+                    }
                 default:
+                    {
 
+                        break;
+                    }
             }
-            /*if(articulo.Id.startsWith("L0") || articulo.Id.startsWith("T0")){
-            		$("#micronaje").val(articulo.Espesor);
-            }*/
 
-            $("#color").val(color);
-
-            if (formato != null) {
-                console.debug("===> formato.formato_i: %o", formato.formato_id);
-                $("#formato").removeAttr("selected");
-                $("#formato option[value=" + formato.formato_id + "] ").attr("selected", "selected");
-            }
-            if (material != null) {
-                $("#material option[value=" + material.material_id + "] ").attr("selected", "selected");
-                $("#material").trigger("change");
-            }
 
         },
         error: function(error_msg) {
