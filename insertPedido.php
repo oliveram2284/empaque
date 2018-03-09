@@ -579,7 +579,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $detalle .=             ")";
 
                                 //echo $detalle;
-                        die($detalle);
+                        //die($detalle);
                         $resu = mysql_query($detalle)or die($detalle);
 
                         reg_log($idPedido, $estado);

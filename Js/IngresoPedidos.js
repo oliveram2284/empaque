@@ -945,7 +945,7 @@ $(document).ready(function() {
 
             default:
                 {
-                    alert("Formato Incorrecto:  " + id_formato + "");
+                    //alert("Formato Incorrecto:  " + id_formato + "");
                     $("#cantidad").removeAttr("readonly");
                     return false;
                     break;
