@@ -1,15 +1,15 @@
-var hostname = $(location).attr('hostname');
-var host_url_ajax = '';
-if (hostname == 'empaque.dev') {
-    //host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
-    host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
-}
 //console.debug("===> LOCATION: %o", $(location).attr('hostname'));
 //console.debug("===> host_url_ajax: %o", host_url_ajax);
 
-
+console.log("====> LOAD OK");
+var hostname = $(location).attr('hostname');
+var host_url_ajax = '';
+if (hostname == 'empaque.des') {
+    //host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
+    host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
+}
 $(function() {
-    console.log("====> LOAD OK");
+
     var accionPedido = $("#accionPedido").val();
     if (accionPedido != 'I') {
         console.log(accionPedido);
@@ -351,7 +351,7 @@ function get_ficha_tecnica(id) {
 
                             if (item.Nombre == 'CANT. DE PISTAS' || item.Id_Unidad_Medida == "4005") {
                                 console.debug("=> Cantidad de Pistas: %o", item.Valor);
-                                cantidad_pistas = parseFloat(item.Valor).toFi;
+                                cantidad_pistas = parseFloat(item.Valor).toFixed(2);
                             }
 
                         });
@@ -563,7 +563,7 @@ function BuscarProductoN() {
 }
 
 function BuscadorDeProductos(value, page) {
-
+    console.log(host_url_ajax);
     var color = '#FFFFFF';
     var data_ajax = {
         type: 'POST',
