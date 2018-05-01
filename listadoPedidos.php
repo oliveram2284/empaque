@@ -1425,19 +1425,16 @@ function ValidarMotivo()
     url: "insertPedido.php",
     data: { 
     	action: $("#statusAction").val(),
-			id: $('#idPed').val(),
-			motive: $('#motivo').val(),
-			status: $("#statusNow").val(),			
-			hojaruta: hojaruta,
-			estaImpreso: estaImpreso,
-			mot: motivos
-		},
-    success: function( data ) {					
-    	
-    	
+		id: $('#idPed').val(),
+		motive: $('#motivo').val(),
+		status: $("#statusNow").val(),			
+		hojaruta: hojaruta,
+		estaImpreso: estaImpreso,
+		mot: motivos
+	},
+    success: function( data ) {		 
     	$("#modal_rehacer").modal('hide');		
-
-    	location.reload();                                
+		location.reload();                                
     },
     error: function(){
     	//alert("Error de conexión.");
@@ -1606,19 +1603,19 @@ $( "td.td_dev" ).live('click',function(the_event){
 $(document).on('click','td.td_dev',function(the_event){
 	var data = $(this).data();
 	console.debug("===> DATA: %o",data);
-
+  	//return false;
 	$("#statusNow").val('P');
-  $("#statusAction").val(data.action);
-  msj = "<b style=\"font-size: 13px; margin-left: 20px;\">Esta seguro de pasar el pedido seleccionado al estado de devolución ?</b>";
-  msj_h = "Devolver Pedido";
-  getMotives('D', 'div_motives');
+  	$("#statusAction").val(data.action);
+ 	msj = "<b style=\"font-size: 13px; margin-left: 20px;\">Esta seguro de pasar el pedido seleccionado al estado de devolución ?</b>";
+  	msj_h = "Devolver Pedido";
+  	getMotives('D', 'div_motives');
 
 	$('#idPed').val(data.id);
 	console.debug("===> rh: %o",data.rh);
 	if(data.rh!=''){
 		//$("#tieneHojaRuta").prop('checked', true);
-		$('#dev_HojaRuta').val(data.rh)
-;	}else{
+		$('#dev_HojaRuta').val(data.rh);	
+	}else{
 		//$("#tieneHojaRuta").prop('checked', false);
 		$('#dev_HojaRuta').val(null);	
 	}

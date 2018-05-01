@@ -1,19 +1,20 @@
 <?php
+error_reporting(0);
 class conexion
 	{
 	  var $server = "localhost";
 	  var $user = "root";//mi000652_mauri o root
 	  var $pass = "";//12345Mauriper
 	  var $links;
-	
-	  function conectarse()   
+
+	  function conectarse()
   	{
 		 	if(!($this->links =mysql_connect($this->server,$this->user,$this->pass)))
 		 	{
 			 	return 1;
-			} //si no se muestra ningun mensaje es que se realizo la conexion 
-				
-		
+			} //si no se muestra ningun mensaje es que se realizo la conexion
+
+
 
 			if(strrpos($_SERVER['REQUEST_URI'], 'empaque_demo')!==false){
 				//var_dump("mi000652_empaque_demo");
@@ -28,15 +29,15 @@ class conexion
 	 			{
 	    		return 1;
 	 			}
-	 			
+
 			}
 
-		 	
+
 		}
-		
+
 	function cerrar_conexion()
 	{
-	 mysql_close($this->links); //cierra la conexion 
+	 mysql_close($this->links); //cierra la conexion
 	}
-}		
+}
 ?>
