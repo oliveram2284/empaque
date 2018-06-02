@@ -1293,7 +1293,7 @@ function Validar(value)
 
 function ValidarExportacionAPdf(value)
 	{
-		debugger;
+		//debugger;
 	if(
            !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) &&
            !(document.getElementById('Usuario').checked)
@@ -1438,9 +1438,8 @@ function ValidarExportacionAPdf(value)
 	}
 
 
-function ValidarExportacion(value)
-	{
-		debugger;
+function ValidarExportacion(value){
+	//debugger;
 	if(
            !(document.getElementById('Cliente').checked) && !(document.getElementById('Articu').checked) &&
            !(document.getElementById('Usuario').checked)

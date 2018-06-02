@@ -1,10 +1,12 @@
 ﻿<?php
-header('Content-type: application/vnd.ms-excel');
-header("Content-Disposition: attachment; filename=reportedetrabajospendientes.xls");
-header("Pragma: no-cache");
-header("Expires: 0");
-
 session_start();
+/** Error reporting */
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+require_once 'library/PHPExcel/PHPExcel/IOFactory.php';
+require_once 'library/PHPExcel/PHPExcel.php';
 
 $esAdmin = $_SESSION['admin'];
 
@@ -294,6 +296,9 @@ if($sql != "")
 		{
 		echo "<b><i>Filtro no v&aacute;lido.</i></b>";	
 		}
+
+
+	
 //--------------- FUNCIONES -------------------
 function armarSemaforo($diferencia)
 {

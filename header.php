@@ -27,7 +27,10 @@
 
   <link type="text/css" rel="stylesheet" href="assest/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css?random=20051112" media="screen">
   <script type="text/javascript" src="assest/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>
-
+  <link rel="stylesheet" type="text/css" href="assest/DataTables/datatables.css"/>
+ 
+ <script type="text/javascript" src="assest/DataTables/datatables.js"></script>
+ 
   <!----------->
   <link rel="stylesheet" href="assest/style_style/css/otherStyle.css">
   <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> -->

@@ -17,6 +17,9 @@ include("class_sesion.php");
 require("header.php");
 
 ?>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="assest/dist/css/bootstrap-multiselect.css" type="text/css">
+<!-------------------------------------------->
 
 <input type="hidden" id="onlyEdit">
 <!-- Modal para cargar el numero de hoja de ruta -->
@@ -1263,7 +1266,7 @@ require("footer.php");
 	if ($("#buscador_txt").val() != "") {
 	    var accion = $("#actionValue").val();
 	    var query = $("#buscador_txt").val();
-	    window.location.replace("../empaque_demo/listadoPedidos.php?accion="+accion+"&page=0&query="+query+"");
+	    window.location.replace("..listadoPedidos.php?accion="+accion+"&page=0&query="+query+"");
 	}
     }
   });
@@ -1301,7 +1304,7 @@ function BuscadorDeProductos(value, page)
 	  
 	  var data_ajax={
 			  type: 'POST',
-			  url: "/empaque_demo/buscarProducto.php",
+			  url: "buscarProducto.php",
 			  data: { xinput: value, xpage: page , busq: $('#busc').val() },
 			  success: function( data ) {
 						      if(data != 0)
@@ -1421,7 +1424,7 @@ function ValidarMotivo()
 	
 	var data_ajax={
     type: 'POST',
-    //url: "/empaque_demo/insertPedido.php",
+    //url: "insertPedido.php",
     url: "insertPedido.php",
     data: { 
     	action: $("#statusAction").val(),
@@ -1650,7 +1653,7 @@ function getMotives(value, div)
 	$("#"+div+"").html("");
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque_demo/getMotives.php",
+                        url: "getMotives.php",
                         data: { val: value},
                         success: function( data ) {
 					
@@ -1696,7 +1699,7 @@ function ValidarMotivoCalidad(estado)
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque_demo/insertPedido.php",
+                        url: "insertPedido.php",
                         data: { action: estado, id: $('#idPed').val()},
                         success: function( data ) {
 					$("#modal_calidad").modal('hide');
@@ -1797,7 +1800,7 @@ function ValidarMotivoDiseño()
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque_demo/insertPedido.php",
+                        url: "insertPedido.php",
                         data: {
 				action: 	'CA',
 				id: 		$('#idPed').val(),
@@ -1876,7 +1879,7 @@ function ValidarCalidadPolimero()
 	
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/insertPedido.php",
+		  url: "insertPedido.php",
 		  data: { action: acction, id: $('#idPed').val(), observation: obs},
 		  success: function( data ) {
 				  $("#modal_aprovacion").modal('hide');
@@ -1903,7 +1906,7 @@ function ValidarRecibirPolimero()
   
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/insertPedido.php",
+		  url: "insertPedido.php",
 		  data: { action: "PR", id: $('#idPed').val()},
 		  success: function( data ) {
 				  $("#modal_aprovacion").modal('hide');
@@ -1938,7 +1941,7 @@ function AsociarPolimero()
 
   var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/insertPedido.php",
+		  url: "insertPedido.php",
 		  data: { action: "P1", id: $('#idPed').val(), nume: $("#numPolim").val()},
 		  success: function( data ) {
 				  $("#modal_asosiacion").modal('hide');
@@ -1970,7 +1973,7 @@ function BuscadorDeProveedores(value)
 		
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque_demo/buscarProveedor.php",
+				url: "buscarProveedor.php",
 				data: { xinput: input },
 				success: function( data ) {
 							    if(data != 0)
@@ -2052,7 +2055,7 @@ function SeleccionadoP(valor)
 		//Load calidades
 		var data_ajax={
 				type: 'POST',
-				url: "/empaque_demo/loadCalidades.php",
+				url: "loadCalidades.php",
 				data: { xinput: valor },
 				success: function( data ) {
 							    if(data != 0)
@@ -2140,7 +2143,7 @@ function openET()
     
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/getEntregas.php",
+		  url: "getEntregas.php",
 		  data: { id: $('#idPed').val() },
 		  success: function( data ) {
 				$("#EntList").append('<tr><th width="70">Kg.</th><th width="70">Un.</th><th width="70">Bu.</th><th>Fecha</th><th>Usuario</th></tr>');
@@ -2213,7 +2216,7 @@ function SetImpresion(Id,Status)
 {
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/setImpresionPedido.php",
+		  url: "setImpresionPedido.php",
 		  data: { id: Id, status: Status},
 		  success: function( data ) {
 				location.reload();
@@ -2232,7 +2235,7 @@ function ValidarEditPrecio()
     if ($("#nprecio").val() != "") {
 	var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/editPrice.php",
+		  url: "editPrice.php",
 		  data: {
 			    id: $('#idPed').val(),
 			    precio: $("#nprecio").val(),
@@ -2752,7 +2755,7 @@ function ValidarPolimeroNuevo()
 	
 	var data_ajax={
                         type: 'POST',
-                        url: "/empaque_demo/insertPolimero.php",
+                        url: "insertPolimero.php",
                         data: {
 				xidProveedor	: idProveedor,
 				xLineatura	: Lineatura,
@@ -2885,7 +2888,7 @@ function AbrirDisenioById(id, code, cli, prod, action)
     
     var data_ajax={
                         type: 'POST',
-                        url: "/empaque_demo/getPolimero.php",
+                        url: "getPolimero.php",
                         data: { ntpId : id },
                         success: function( data ) {
 					$("#poliColores").val(data[0]['colores']);
@@ -3167,7 +3170,7 @@ function SaveEditHRCI()
      
      var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/setEdithrci.php",
+		  url: "setEdithrci.php",
 		  data: { id: GlobalIdPedido, val: hojas},
 		  success: function( data ) {
 				 $("#modal_edithrci").modal('hide');  
@@ -3195,7 +3198,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
 	
 	var data_ajax={
 		type: 'POST',
-		url: "/empaque_demo/getLogPolimero.php",
+		url: "getLogPolimero.php",
 		data: {
 			xId : idPolimero
 		      },
@@ -3235,7 +3238,7 @@ function openLog(idPolimero, idPedido, trabajo, npdido, cliente)
 	
 	//var data_ajax2={
 	//	type: 'POST',
-	//	url: "/empaque_demo/getCliente.php",
+	//	url: "getCliente.php",
 	//	data: {
 	//		xId : idPolimero
 	//	      },
@@ -3513,7 +3516,7 @@ function ReactivarPedido(id) {
 function reactivarP() {
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/insertPedido.php",
+		  url: "insertPedido.php",
 		  data: {
 			    id: reactivar,
 			    action: 'RA'
@@ -3540,7 +3543,7 @@ function ContraEntrega(id) {
 function reactivarP_ce(){
     var data_ajax={
 		  type: 'POST',
-		  url: "/empaque_demo/insertPedido.php",
+		  url: "insertPedido.php",
 		  data: {
 			    id: contraEntrega,
 			    action: 'CE',
