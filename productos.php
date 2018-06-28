@@ -13,29 +13,52 @@ require("header.php");
 
     z-index: 100000;
   }
-  @media (min-width: 1200px){
+    @media (min-width: 1200px){
       
-.span6 {
-    width: 45%;
-}
+        .span6 {
+            width: 45%;
+        }
 
-.modal-body {
-    max-height: 500px;
-    padding: 15px;
-    overflow-y: auto;
-}
+        .modal-body {
+            max-height: 500px;
+            padding: 15px;
+            overflow-y: auto;
+        }
 
- .modal.fade.in {
-    top: 40%;
-}
+        .modal.fade.in {
+            top: 40%;
+        }
 
-.modal {
-    top: 50%;
-    left: 25%;
-    width: 90%;
-}
-  }
+        .modal {
+            top: 50%;
+            left: 25%;
+            width: 900px;
+        }
+        
+    }
 
+    .span6{
+        border: 1px solid #dddddd;
+        min-height: 320px;              
+    }
+    /* #articulo_detalle{
+        border: 1px solid #dddddd;
+    }*/
+    #articulo_detalle li{
+        
+        padding: 10px;
+    }
+    #articulo_detalle li strong{
+        font-size: 13px;
+        text-transform: uppercase;
+        min-width: 80px !important;
+        padding-right: 15px;
+    }
+    
+    #ficha_tabla table tbody td{
+        height:30px !important;
+        border:1px solid red;
+    }
  
   </style>
 
@@ -71,6 +94,23 @@ require("header.php");
         <br>
         <div class="row">
           <div class="span10">
+          <table>
+		<tr>
+			<td><strong>Buscar :   </strong>  <input type="text" id="buscadorP" onkeyup="BuscadorDeProductos(this.value, 1)"></td>
+			<td>
+				<div class="btn-group" data-toggle="buttons-radio" style="margin-top: -8px;">
+					<button type="button" class="btn btn-primary active" onclick="setear(1)">  </button>
+					<button type="button" class="btn btn-primary" onclick="setear(2)">+</button>
+					<button type="button" class="btn btn-primary" onclick="setear(3)">-</button>
+					<button type="button" class="btn btn-primary" onclick="setear(4)">+ -</button>
+	    		        </div>
+			</td>
+		</tr>
+	</table>
+    <div id="resultado_Productos" >
+
+    </div>
+            <!--
             <table class="table table-hover table-bordered text-center" class="display" style="width:100%" id="tableProductos">
               <thead>
                 <tr>
@@ -82,63 +122,14 @@ require("header.php");
               </thead>
               <tbody >                
               </tbody>
-            </table>
+            </table> -->
           </div>
         </div>
       </div>
     </center>
   </div>
 
-
-<!-- Modal -->
-<div id="modal_Ficha" class="modal hide fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Ficha Técnica: </h3>
-  </div>
-  <div class="modal-body  text-center">
-    <div class="row">
-        <div class="span6">
-            <h3>Datos Artículo</h3>
-            <ul id="articulo_detalle"  class="unstyled ">
-            </ul>
-        </div>
-        <div class="span6 text-center">
-            <img src="assest/images/no-image.jpg" alt="" class="img-rounded img-responsive">
-        </div>
-    </div>
-    <div class="row">
-        <div class="span12 text-center">
-            <h3>Ficha Técnica</h3>
-            <table id="ficha_tabla" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <td>id</td>
-                        <td>Id_Unidad_Medida</td>
-                        <td>Valor</td>
-                        <td>Referencia</td>
-                        <td>Id_Maquina</td>
-                        <td>Id_Matriz</td>
-                        <td>Nombre</td>
-                        <td>Detalle</td>
-                        <td>Unidad</td>
-                        <td>Tipo</td>
-                        <td>Id_Sector</td>
-                        <td>Id_Ubicacion</td>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
-    <!-- <button class="btn btn-primary">Save changes</button> -->
-  </div>
-</div>
-
+<?php include_once('_modal_ficha_tecnica.php')?>
 <script type="text/javascript">
     $(function(){
         console.log("=====> Carga de Listado de Productos  <=====");
@@ -232,31 +223,20 @@ require("header.php");
             $("#modal_Ficha").find("ul#articulo_detalle").empty().html(_art_detalle_list);
             
             
-            var _ficha_tabla_row='';
-            
-            $.each(data.Fichas_Tecnica_Detalle,function(index,item){
-                //console.debug("====> Fichas_Tecnica_Detalle item: %o - %o",index,item);
-
-               // if(item.Detalle=='Atributo'){
-                    console.debug("====> Fichas_Tecnica_Detalle item: %o - %o",index,item.Detalle);
-                    _ficha_tabla_row+='<tr>';
-                    console.table(item);
-                    $.each(item,function(sindex,sitem){
-                        _ficha_tabla_row+='<td>'+sitem+'</td>';
-                        /*console.log(sindex);
-                        console.table(sitem);*/
-                    });
-                    _ficha_tabla_row+='</tr>';
-                    
-                //}
-                
-                
+            var _ficha_tabla_row='';            
+            $.each(data.Fichas_Tecnica_Detalle,function(index,item){               
+                _ficha_tabla_row+='<tr>';
+                _ficha_tabla_row+='<td style="width:100px;">'+ ((item.Nombre != null )? item.Nombre:'')+'</td>';
+                _ficha_tabla_row+='<td style="width:150px;">'+ ((item.Detalle != null)? item.Detalle:'')+'</td>';                
+                _ficha_tabla_row+='<td style="">'+ ((item.Valor != null)? item.Valor:'')+'</td>';
+                _ficha_tabla_row+='<td style="">'+ ((item.Unidad != null)? item.Unidad:'')+'</td>';
+                _ficha_tabla_row+='</tr>';   
             })
             console.debug(_ficha_tabla_row);
             $("#modal_Ficha").find("table#ficha_tabla tbody").empty().html(_ficha_tabla_row);
             
            
-            
+            $("#modal_Ficha").find(".btn.btn-info").hide();    
             $('#modal_Ficha').modal('show');
 		  },
 		  error:function(error_msg){
@@ -265,4 +245,76 @@ require("header.php");
 		};
 		$.ajax(data_ajax);
     }
+
+    function BuscadorDeProductos(value, page) {
+    console.log(host_url_ajax);
+    var color = '#FFFFFF';
+    var data_ajax = {
+        type: 'POST',
+        //url: "http://190.3.7.29:301/empaque_demo/buscarProducto.php",
+        url: host_url_ajax + "buscarProducto.php",
+        data: { xinput: value, xpage: page, busq: 1 },
+        success: function(data) {
+            if (data != 0) {
+                var fila = '<table class="table table-bordered table-condensed" >';
+                fila += '<thead><th style="width: 20px;"></th><th style="width: 70px;">Código</th><th style="width: 500px;">Artículo</th><th>Código Producto</th></tr></thead>';
+                fila += "<tbody>";
+                $.each(data, function(k, v) {
+                        console.debug("===> PRODUCTOS: %o - %o", k, v);
+                        if (color == '#A9F5A9') {
+                            color = '#FFFFFF';
+                        } else {
+                            color = '#A9F5A9';
+                        }
+                        //Datos de cada cliente
+                        var idCodigo = "";
+                        $.each(v, function(i, j) {
+                            if (i == "Id") {
+                                //Icono
+                                fila += '<tr style="cursor: pointer; background-color:' + color + '" id="' + j + '" onClick="SeleccionadoP(\'' + j + '\')">';
+                                fila += '<td>';
+                                fila += '<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>';
+                                fila += '</td>';
+                                fila += "<td>" + j + "</td>";
+                                fila += '<input type="hidden" id="' + j + '_cp" value="' + j + '">';
+                                idCodigo = j;
+                            }
+                            if (i == "Articulo") {
+                                fila += '<td style="padding-left: 10px;">' + j + '</td>';
+                                fila += '<input type="hidden" id="' + idCodigo + '_arp" value="' + j + '">';
+                            }
+                            if (i == "Nombre_en_Facturacion") {
+                                fila += "<td>" + j + "</td>";
+                                fila += '<input type="hidden" id="' + idCodigo + '_ncp" value="' + j + '">';
+                            }
+
+
+                        });
+                        fila += '<td> <a class="btn btn-mini btn-info" href="#" data-code="' + v.Id + '"><i class="icon-search"></i> Ficha Técnica</a> </td>';
+
+                        fila += "</tr>";
+
+                    }
+
+                );
+                fila += "</tbody></table>";
+
+                $("#resultado_Productos").html(fila);
+
+            } else {
+                $("#resultado_Productos").html('<strong style="color: red;">No se encontraron resultados</strong>');
+            }
+        },
+        error: function() {
+            swal({
+                title: "Error!",
+                text: "Error de conexión.",
+                type: "error",
+                confirmButtonText: "Cerrar"
+            });
+        },
+        dataType: 'json'
+    };
+    $.ajax(data_ajax);
+}
 </script>
