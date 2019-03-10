@@ -2175,6 +2175,18 @@ $("#moneda").on('change', function() {
 });
 
 
+$("#precio").change(function() {
+    if ($(this).val().length == 0) {
+        return false;
+    }
+    console.log(" PRECIO CHANGE: %o", $(this).val());
+    var temp = $(this).val();
+    console.log(" PRECIO CHANGE: %o", parseFloat(temp).toFixed(5));
+    $(this).val(parseFloat(temp).toFixed(5));
+
+});
+
+
 function update_formato_material() {
 
     var id = $("#codigoProductop").val();
