@@ -1454,6 +1454,7 @@ require("header.php");
 </div>
 
 <?php include_once('_modal_etiqueta_cantidades.php')?>
+<?php include_once('_modal_ficha_tecnica.php')?>
 
 
 </div>

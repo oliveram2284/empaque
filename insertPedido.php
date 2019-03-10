@@ -1025,18 +1025,13 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                 case "D":
 
-                    //var_dump($_POST);
-                    $edit_hojaRuta=(isset($_POST['hojaruta']))?",hojaruta=".$_POST['hojaruta']:"";
+                    //var_dump($_POST);                    
+                    $edit_hojaRuta=(isset($_POST['hojaruta']) && $_POST['hojaruta']!='')?",hojaruta=".$_POST['hojaruta']:'';
                     $edit_estaImpreso=(isset($_POST['estaImpreso']))?",estaImpreso=".$_POST['estaImpreso']:"0";
-
-                    $consulta = "Update pedidos Set estado ='D', version=(version+1), seDevolvio = 'P', marcarComoDevuelta = '1', estaImpreso = 0 $edit_hojaRuta $edit_estaImpreso Where npedido=$idPedido"; // Aca agregar versión
-
-
+                    $consulta = "UPDATE pedidos SET estado ='D', version='".($version+1)."', seDevolvio = 'P', marcarComoDevuelta = '1' $edit_hojaRuta $edit_estaImpreso WHERE npedido=$idPedido"; // Aca agregar versión
                     $resu = mysql_query($consulta);
-
-                    //reg_log($idPedido, "D");
-
                     reg_log_2($idPedido, $accion, $motive, $statusNow, $mot);
+
                     break;
 
                 case "CL":

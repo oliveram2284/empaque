@@ -576,6 +576,7 @@ function BuscadorDeProductos(value, page) {
                 fila += '<thead><th style="width: 20px;"></th><th style="width: 70px;">Código</th><th style="width: 500px;">Artículo</th><th>Código Producto</th></tr></thead>';
                 fila += "<tbody>";
                 $.each(data, function(k, v) {
+                        console.debug("===> PRODUCTOS: %o - %o", k, v);
                         if (color == '#A9F5A9') {
                             color = '#FFFFFF';
                         } else {
@@ -586,7 +587,7 @@ function BuscadorDeProductos(value, page) {
                         $.each(v, function(i, j) {
                             if (i == "Id") {
                                 //Icono
-                                fila += '<tr style="cursor: pointer; background-color:' + color + '" id="' + j + '" onClick="SeleccionadoP(\'' + j + '\')">';
+                                fila += '<tr style="cursor: pointer; background-color:' + color + '" id="' + j + '" data-pid="' + j + '">';
                                 fila += '<td>';
                                 fila += '<img src="./assest/plugins/buttons/icons/accept.png" width="15" heigth="15" title="Seleccionar"/>';
                                 fila += '</td>';
@@ -603,7 +604,9 @@ function BuscadorDeProductos(value, page) {
                                 fila += '<input type="hidden" id="' + idCodigo + '_ncp" value="' + j + '">';
                             }
 
+
                         });
+                        fila += '<td> <a class="btn btn-mini btn-info" href="#" data-code="' + v.Id + '"><i class="icon-search"></i></a> </td>';
 
                         fila += "</tr>";
 
@@ -631,8 +634,11 @@ function BuscadorDeProductos(value, page) {
     $.ajax(data_ajax);
 }
 
-function SeleccionadoP(valor) {
-
+//function SeleccionadoP(valor) {
+$(document).on('click', '#resultado_Productos table tbody tr td', function() {
+    var valor = $(this).parents('tr').data('pid');
+    console.debug("====> pidsdsd: %o", valor);
+    //return false;
     $("#ancho").val(null);
     $("#º").val(null);
     $("#micronaje").val(null);
@@ -788,7 +794,7 @@ function SeleccionadoP(valor) {
     };
     $.ajax(data_ajax);
     ClosePop("ProductosPop");
-}
+});
 
 function chequeadoN(value) {
 
@@ -922,9 +928,14 @@ $(document).ready(function() {
                 }
             case '6':
                 {
-                    console.debug("===> cant_pista: %o", $("#cant_pista").val().length);
-                    var pistas = ($("#cant_pista").val().length > 0) ? $("#cant_pista").val() : 0;
-                    procesa_cantidades_etiqueta(id_formato, largo, pistas);
+                    if ($(document).find("#chkN").is(":checked")) {
+                        $("#cantidad").removeAttr("readonly");
+                    } else {
+                        console.debug("===> cant_pista: %o", $("#cant_pista").val().length);
+                        var pistas = ($("#cant_pista").val().length > 0) ? $("#cant_pista").val() : 0;
+                        procesa_cantidades_etiqueta(id_formato, largo, pistas);
+                    }
+
                     return false;
                     break;
                 }
@@ -2314,3 +2325,80 @@ function decimal(campo) {
     }
 }
 //_________________________________________________________//
+
+
+
+
+$(document).on('click', '.btn-info', function() {
+    console.debug("====> btn-info clicked: code= %o ", $(this).data());
+    var code = $(this).data('code');
+    loadFichaTecnica(code);
+
+
+
+
+    return false;
+})
+
+var hostname = $(location).attr('hostname');
+var host_url_ajax = '';
+if (hostname == 'empaque.des') {
+    //host_url_ajax = 'http://190.3.7.29:301/empaque_demo/';
+    host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
+}
+
+function loadFichaTecnica(code) {
+    console.debug("====> loadFichaTecnica: code= %o ", code);
+    var data_ajax = {
+        method: "POST",
+        url: host_url_ajax + "buscarProductoFicha.php",
+        data: { id: code },
+        dataType: "json",
+        success: function(data) {
+
+            console.debug("===> FICHA TECNICA: %o", data);
+
+
+            var _art_detalle_list = '';
+            _art_detalle_list += '<li class="text-left"><strong>Código: </strong>' + data.articulo.Id + '</li>';
+            _art_detalle_list += '<li class="text-left"><strong>Descripcíon: </strong>' + data.articulo.Articulo + '</li>';
+            _art_detalle_list += '<li class="text-left" ><strong>Ancho: </strong>' + data.articulo.Ancho + '</li>';
+            _art_detalle_list += '<li class="text-left"><strong>Largo: </strong>' + data.articulo.Largo + '</li>';
+            _art_detalle_list += '<li class="text-left"><strong>Espesor: </strong>' + data.articulo.Espesor + '</li>';
+            _art_detalle_list += '<li class="text-left"><strong>Color: </strong>' + data.Color.Color + '</li>';
+            $("#modal_Ficha").find("ul#articulo_detalle").empty().html(_art_detalle_list);
+
+
+            var _ficha_tabla_row = '';
+            $.each(data.Fichas_Tecnica_Detalle, function(index, item) {
+                _ficha_tabla_row += '<tr>';
+                _ficha_tabla_row += '<td>' + ((item.Nombre != null) ? item.Nombre : '') + '</td>';
+                _ficha_tabla_row += '<td>' + ((item.Detalle != null) ? item.Detalle : '') + '</td>';
+                _ficha_tabla_row += '<td>' + ((item.Valor != null) ? item.Valor : '') + '</td>';
+                _ficha_tabla_row += '<td>' + ((item.Unidad != null) ? item.Unidad : '') + '</td>';
+                _ficha_tabla_row += '</tr>';
+            })
+            console.debug(_ficha_tabla_row);
+            $("#modal_Ficha").find("table#ficha_tabla tbody").empty().html(_ficha_tabla_row);
+
+
+            $("#modal_Ficha").find(".btn_select").attr('data-code', code);
+            $("#modal_Ficha").find(".btn_select").show();
+            $('#modal_Ficha').modal('show');
+
+        },
+        error: function(error_msg) {
+            alert("error_msg: " + error_msg);
+        }
+    };
+    $.ajax(data_ajax);
+}
+
+$(document).on('click', "#modal_Ficha .btn_select", function() {
+    var code = $(this).data('code');
+    console.debug("#modal_Ficha .btn_select %o", $(this).data('code'));
+    $('#modal_Ficha').modal('hide');
+    console.debug("====> #resultado_Productos table tr#" + code + " td", $(document).find("#resultado_Productos table tr#" + code + " td").first().length);
+    $(document).find("#resultado_Productos table tr#" + code + " td").first().trigger('click');
+    return false;
+});
