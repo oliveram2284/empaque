@@ -77,7 +77,7 @@ function cierra()
 
 switch($_POST['oper'])
 	{
-	 case 'V': { 
+	 case 'V': { 	
 	 			valida($_POST['user'],$_POST['pass']);
 				break;
 				}
