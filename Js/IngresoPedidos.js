@@ -557,8 +557,12 @@ function BuscarProductoN() {
     if ($("#chkH").is(':checked')) {
         $("#buscadorP").val("");
         $("#resultado_Productos").html("");
-        $('#ProductosPop').modal('show');
+        //$('#ProductosPop').modal('show');
+
+        $("#motivo").attr('disabled', false)
         setTimeout(function() { $("#buscadorP").focus(); }, 1000);
+    } else {
+        $("#motivo").attr('disabled', true)
     }
 }
 
@@ -809,11 +813,14 @@ function chequeadoN(value) {
     }
 
     if (value == "si") {
+        console.log("===> PRODUCTO NUEVO");
         $("#codigoProductop").val("");
         $("#nombreProducto").val("");
         $('#nombreProducto').removeAttr('readonly');
         $("#descripcionProducto").val("");
         $("#div_busqueda_prod").removeClass("control-group error");
+
+        $(".new_art_section").show();
         //$("#observaciones").removeAttr('readonly');
     } else {
         $("#div_busqueda_prod").addClass("control-group");
@@ -824,8 +831,36 @@ function chequeadoN(value) {
         $("#nombreProducto").val("");
         //$('#observaciones').val('');
         //$('#observaciones').attr('readonly', true);
+
+        // $(".new_art_section").hide();
     }
 }
+
+$("#chkH").change(function() {
+    console.log("fin chkH");
+    $("#chkH,#chkN").parents('.checkbox.inline').removeClass('checked');
+    $(this).parents('.checkbox.inline').addClass('checked');
+
+    $("#motivo").attr('disabled', true);
+    $("#reemplaza_si").attr('disabled', true);
+    $("#reemplaza_no").attr('disabled', true);
+
+    $("#polimero_cliente").attr('disabled', true).val(null);
+    $("#polimero_empaque").attr('disabled', true).val(null);
+
+});
+
+$("#chkN").change(function() {
+    console.log("fin chkN");
+    $("#chkH,#chkN").parents('.checkbox.inline').removeClass('checked');
+    $(this).parents('.checkbox.inline').addClass('checked');
+    $("#motivo").attr('disabled', false);
+    $("#reemplaza_si").attr('disabled', false);
+    $("#reemplaza_no").attr('disabled', false);
+    $("#polimero_cliente").attr('disabled', false).val(null);
+    $("#polimero_empaque").attr('disabled', false).val(null);
+
+});
 
 
 
@@ -1470,6 +1505,32 @@ function BuscarProducto() {
     return false;
 }
 
+$("#polimero_cliente").change(function() {
+    var polim_cli = $(this).val();
+    var polim_emp = 0;
+    if (polim_cli < 100) {
+        polim_emp = 100 - polim_cli;
+    } else if (polim_cli > 100) {
+        polim_cli = 100;
+        polim_emp = 0;
+    }
+    $(this).val(polim_cli);
+    $("#polimero_empaque").val(polim_emp);
+});
+
+$("#polimero_empaque").change(function() {
+    var polim_cli = $(this).val();
+    var polim_emp = 0;
+    if (polim_cli < 100) {
+        polim_emp = 100 - polim_cli;
+    } else if (polim_cli > 100) {
+        polim_cli = 100;
+        polim_emp = 0;
+    }
+    $(this).val(polim_cli);
+    $("#polimero_cliente").val(polim_emp);
+});
+
 function guardar_1() {
 
 
@@ -1532,6 +1593,7 @@ function guardar_1() {
     //debugger;
     //if($("#arti").val() == "no")
     if ($("#chkH").is(':checked') == true) {
+
         //el producto no es nuevo
         if ($("#nombreProducto").val() == "") {
             $('#msj_error_pop').html("<strong>Seleccione un artículo.</strong>");
@@ -1570,6 +1632,7 @@ function guardar_1() {
                 title.push("codProd");
             }
 
+
             input.push($("#nombreProducto").val());
             title.push("nomProd");
 
@@ -1578,6 +1641,51 @@ function guardar_1() {
 
             input.push("si");
             title.push("habitual");
+
+            console.log("=>> MOTIVO: %o", $('#motivo').val());
+
+            if ($('#motivo').val() == '') {
+                $('#msj_error_pop').html("<strong>Debe Seleccionar un Motivo.</strong>");
+                $('#MensajesPop').modal('show');
+                $('#motivo').focus();
+                $('#btn_save').removeAttr('disabled');
+                $('#btn_CI').removeAttr('disabled');
+                return false;
+            } else {
+                input.push($("#motivo").val());
+                title.push("motivo");
+            }
+
+            if (!$('#reemplaza_si').is(':checked') && !$('#reemplaza_no').is(':checked')) {
+                $('#msj_error_pop').html("<strong>Debe Seleccionar una opción de 'Reemplaza Anterior Producto?'.</strong>");
+                $('#MensajesPop').modal('show');
+                $('#motivo').focus();
+                $('#btn_save').removeAttr('disabled');
+                $('#btn_CI').removeAttr('disabled');
+            } else {
+
+                input.push(($('#reemplaza_si').is(':checked')) ? 1 : 0);
+                title.push("reemplazar");
+            }
+
+
+            if ($('#polimero_cliente').val().length == 0 || $("#polimero_empaque").val().length == 0) {
+                $('#msj_error_pop').html("<strong>Debe Ingresar Polimero a cardo de.. .</strong>");
+                $('#MensajesPop').modal('show');
+                $('#motivo').focus();
+                $('#btn_save').removeAttr('disabled');
+                $('#btn_CI').removeAttr('disabled');
+                return false;
+            } else {
+                input.push($("#polimero_cliente").val());
+                title.push("polimero_cliente");
+
+                input.push($("#polimero_empaque").val());
+                title.push("polimero_empaque");
+            }
+
+
+
         }
     }
 
@@ -1637,6 +1745,17 @@ function guardar_1() {
         title.push("precio");
     }
 
+
+    if ($("#chkN").is(':checked') && $("#precio_origen").val() == '') {
+        $('#msj_error_pop').html("<strong>Seleccione Precio Origen.</strong>");
+        $('#MensajesPop').modal('show');
+        $('#btn_save').removeAttr('disabled');
+        $('#btn_CI').removeAttr('disabled');
+        return false;
+    } else {
+        input.push($("#precio_origen").val());
+        title.push("precio_origen");
+    }
     if ($("#condicionPago").val() == "0") {
         $('#msj_error_pop').html("<strong>Seleccione la condición de IVA.</strong>");
         $('#MensajesPop').modal('show');
@@ -2127,6 +2246,7 @@ function guardar_1() {
     if (Accion != "I" && Accion != "E" && Accion != "A" && Accion != "P" && Accion != "CL" && Accion != "N") {
         return;
     }
+
 
     var data_ajax = {
         type: 'POST',

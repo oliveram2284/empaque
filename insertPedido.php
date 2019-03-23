@@ -7,6 +7,10 @@ $var->conectarse();
 
 //-------------------------------------------------------------------------------------
 //Variables necesarias
+
+
+//print_r($_POST);
+//die("FIN");
 if(isset($_REQUEST['valores'])){
     $_REQUEST['valores'][15]=(int)$_REQUEST['valores'][15];
 }else{
@@ -99,6 +103,14 @@ $mail3           = "";           //Mail para protocolo
 $mail4           = "";           //Mail para protocolo
 $mail5           = "";           //Mail para protocolo
 $troquelado      = 'null';         //Tiene troquelado
+$motivo =0;
+$reemplazar =0;
+$polimero_cliente =0;
+$polimero_empaque =0;
+$precio_origen =0;
+
+
+
 //-------------------------------------------------------------------------------------
 //Parametros recibidos
 $idPedido = $_POST['id'];
@@ -365,7 +377,9 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                     case "precio":
                         $precio = $v;
                         break;
+                    
 
+                   
                     //condicion de IVA
                     case "condIVA":
                         $idIVA = $v;
@@ -515,6 +529,28 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                     case "troquelado":
                         $troquelado = $v;
                         break;
+
+
+                     //motivo origen
+                    case "motivo":
+                    $motivo = $v;
+                    break;
+                        
+                        
+                    //precio origen
+                    case "precio_origen":
+                        $precio_origen = $v;
+                        break;
+                    case "polimero_cliente":
+                        $polimero_cliente=$v;
+                        break;
+
+                    case "polimero_empaque":
+                        $polimero_empaque=$v;
+                        break;
+                    case "reemplazar":
+                        $reemplazar=$v;
+                        break;
                 }
                 $indice++;
             }
@@ -541,12 +577,28 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                             $descrip3 = get_new_code();
                         }
                         //-------------------------------------------------------------------------------------
-
+                        
                         //Insertar Ecabezado
                         $consulta = "Insert Into pedidos (";
-                        $consulta .=                       "codigo, entrega,entrega_original, femis, faprob, frecep, descrip3, descripcion, codigoTango, caras, centrada, apaisada, clientefact, facturarA, destino, clienteNombre, clienteDirecc, clienteTelef, clienteCUIT, facturarANombre, prodHabitual, envasado, vencimiento, lote, estado, tieneToquelado) Values";
-                        $consulta .=                       "('".$numPedido."','".$entrega."','".$entrega_original."','".$femis."','".$faprob."','".$frecep."','".$descrip3."', '".$descripcion."', '".$codigoTango."', '".$caras."',$centrada, $apaisada,'".$clienteFact."','".$facturarA."','".$destino."', '".$clienteNombre."', '".$clienteDirecc."', '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',$prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I', ".$troquelado.")";
-                       // die($consulta);
+                        $consulta .= "codigo, entrega,entrega_original, 
+                        femis, faprob, frecep, descrip3, descripcion, 
+                        codigoTango, caras, centrada, apaisada, clientefact, 
+                        facturarA, destino, clienteNombre, clienteDirecc, 
+                        clienteTelef, clienteCUIT, facturarANombre, prodHabitual, 
+                        envasado, vencimiento, lote, estado, tieneToquelado, 
+                        motivo_nuevo_id,reemplaza_anterior,polimero_porcentaje_cli,
+                        polimero_porcentaje_emp,precio_nuevo_id) Values";
+                        $consulta .="(
+                            '".$numPedido."','".$entrega."','".$entrega_original."',
+                            '".$femis."','".$faprob."','".$frecep."','".$descrip3."','".$descripcion."', '".$codigoTango."', '".$caras."'
+                            ,$centrada, $apaisada,'".$clienteFact."','".$facturarA."',
+                            '".$destino."', '".$clienteNombre."', '".$clienteDirecc."', 
+                            '".$clienteTelef."', '".$clienteCUIT."', '".$facturarANombre."',
+                            $prodHabitual, '".$env."', '".$ven."', '".$lote."', 'I',".$troquelado.",
+                            '".$motivo."','".$reemplazar."','".$polimero_cliente."',
+                            '".$polimero_empaque."','".$precio_origen."'
+                            )";
+                        //die($consulta);
                         $resu = mysql_query($consulta)or die(mysql_error());
 
                         $consulta = "Select max(npedido) from pedidos";

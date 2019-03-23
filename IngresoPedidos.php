@@ -310,8 +310,8 @@ require("header.php");
 	<!-- Datos del pedido -->
 	<input type="hidden" id="idPedido" name="idPedido" value="<?php echo $idPedido; ?>"/>
 
-	<div class="row">
-		<div class="span10">
+	<div class="row-fluid">
+		<div class="span12">
 			<div class="bs-docs-example">
 				<table style="width: 90%">
 					<tr>
@@ -408,23 +408,28 @@ require("header.php");
 	<input type="hidden" id="envia_protocolo" value="">
 
 	<!-- detalle del producto -->
-	<div class="row">
-		<div class="span6">
-			<div class="bs-docs-article">
-				<table style="width: 90%">
-					<tr>
+	<div class="row-fluid">
+		<div class="span8 ">
+			<div class="bs-docs-article" style="padding-left:10px;">
+				<table style="width: 100%">
+					<tr class="" style=" width: 40%;">
 						<td>
+							
+						</td>
+						<td>
+						<label class="checkbox inline checked">
 							<input type="hidden" id="versionNP" name="versionNP" value="<?php echo isset($row['version']) ? $row['version'] : "1";?>">
 							<input type="hidden" id="esNuevoNP" name="esNuevoNP" value="<?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 0 ? 0 : 1) : 0; ?>">
 							<input type="hidden" id="arti" name="arti" value="<?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 0 ? "no" : "si") : "no"; ?>">
-							<input type="radio" name="nuevoP" id="chkH" value="si" onClick="chequeadoN('no')" <?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 0 ? "checked" : "") : "checked"; ?> <?php IsEnabled($accionPedido);?>>Habitual
-						</td>
-						<td>
-							<input type="radio" name="nuevoP" id="chkN" value="no" onClick="chequeadoN('si')" <?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 1 ? "checked" : "") : ""; ?> <?php IsEnabled($accionPedido);?>>Nuevo
+							<input type="radio" name="nuevoP" id="chkH" value="si" onClick="chequeadoN('no')" <?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 0 ? "checked" : "") : "checked"; ?> <?php IsEnabled($accionPedido);?>>  Habitual
+								</label>
+						<label class="checkbox inline ">
+							<input type="radio" name="nuevoP" id="chkN" value="no" onClick="chequeadoN('si')" <?php echo isset($row['prodHabitual']) ? ($row['prodHabitual'] == 1 ? "checked" : "") : ""; ?> <?php IsEnabled($accionPedido);?>>  Nuevo
+						</label>
 						</td>
 					</tr>
 					<tr>
-						<td><label>Código: </label></td>
+						<td style="width:200px;"><label>Código: </label></td>
 						<td>
 							<?php
 							if(isset($row['prodHabitual']))
@@ -464,11 +469,18 @@ require("header.php");
 										</div>
 									";
 								}
+
+								
 							}
+
+							
 							?>
 
 						</td>
 					</tr>
+				
+				
+					
 					<tr>
 						<td><label>Artículo: </label></td>
 						<td colspan="2">
@@ -501,10 +513,56 @@ require("header.php");
 						<td><label>Código Tango: </label></td>
 						<td><input type="text" id="descripcionProducto" class="input-xlarge" name="descripcionProducto" value="<?php echo isset($row['codigoTango']) ? $row['codigoTango']: "";?>" style="width: 390px;" readonly></td>
 					</tr>
+						<tr class="new_art_section" >
+						<td><label for="motivo" >Motivo</label></td>
+						<td>							
+							<div class="control-group " id="Motivo">
+								<select  id='motivo' name='motivo' class="input-xlarge" style="width:100%" disabled>
+									<option value="">Seleccionar</option>
+									<option value='1'>Nuevo - Completamente</option>
+									<option value='2'>Nuevo - Modificación</option>
+									<option value='3'>Nuevo - Cambia Color</option>
+									<option value='4'>Nuevo - Cambia RENSPA</option>
+									<option value='5'>Nuevo - Otro</option>
+								</select>								
+							</div>
+						</td>
+					</tr>
+					<tr class="new_art_section" >
+						<td><label for="reemplaza_si">Reemplaza Anterior Producto?</label></td>
+						<td>
+							<label class="checkbox inline">  
+								<input type="radio" id="reemplaza_si" name="reemplaza" value="1" disabled>   SI 
+						</label>
+							<label class="checkbox inline">  
+
+								<input type="radio" id="reemplaza_no" name="reemplaza" value="0" disabled>   NO
+							</label>
+						</td>
+					</tr>
+					<tr class="new_art_section" style="">
+						<td>
+							<label for="polimero_cliente">Polimero a Cargo de: </label>
+						</td>
+						<td>
+							<div class="row-fluid"> 
+								<div class="span5 ">													    								
+										<input type="text" id="polimero_cliente" name="polimero_parte[cli]" class="input-small" placeholder="Cliente" value="" disabled> 
+										<b>Cliente %</b>				
+								</div>
+								
+								<div class="span6">
+									<input type="text" id="polimero_empaque"  name="polimero_parte[emp]" class="input-small" placeholder="Empaque" value="" disabled>
+									<b>Empaque SA %</b>			
+								</div>
+
+							</div>
+						</td>
+					</tr>
 				</table>
 			</div>
 		</div>
-		<div class="span6" style="">
+		<div class="span4" style="">
 			<div class="bs-docs-date">
 				<table>
 					<tr>
@@ -589,15 +647,20 @@ require("header.php");
 						</td>
 					</tr>
 				</table>
+
+				
 			</div>
+			
 
 		</div>
+
+		
 	</div>
 
-	<div class="row">
-		<div class="span10">
+	<div class="row-fluid">
+		<div class="span12">
 			<div class="bs-docs-detail">
-				<div class="row">
+				<div class="row-fluid">
 					<div class="span6">
 						<div class="bs-docs-product">
 							<table style="width: 100%">
@@ -734,7 +797,9 @@ require("header.php");
 										<input type="text" id="color" name="color" onKeyUp="alfanumerico(color)" value="<?php echo ($accionPedido == 'I')? "": $rDeta['ColorMaterial'];?>" <?php IsEnabled($accionPedido);?>>
 									</td>
 								</tr>
-                <tr>
+				
+				
+								<tr>
 									<td>
 										Origen:
 									</td>
@@ -849,104 +914,8 @@ require("header.php");
 							</table>
 						</div>
 					</div>
+
 					<div class="span6">
-						<div class="bs-docs-bobinado">
-							<table style="width: 100%">
-								<tr>
-									<td>
-										Sentido:
-									</td>
-									<td>
-										<select name="bobinado" id="bobinado" <?php IsEnabled($accionPedido);?>>
-											<option value="2" <?php echo ($accionPedido == 'I')? "selected": ($rDeta['Bobinado'] == 2) ? "selected": "";?>>Ninguno</option>
-											<option value="1" <?php echo ($accionPedido == 'I')? "": ($rDeta['Bobinado'] == 1) ? "selected": "";?>>De Pie</option>
-											<option value="0" <?php echo ($accionPedido == 'I')? "": ($rDeta['Bobinado'] == 0) ? "selected": "";?>>De Cabeza</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Tratado:
-									</td>
-									<td>
-										<select name="fuera" id="fuera" <?php IsEnabled($accionPedido);?>>
-											<option value="2" <?php echo ($accionPedido == 'I')? "selected": ($rDeta['BobinadoFuera'] == 2) ? "selected": "";?>>Ninguno</option>
-											<option value="1" <?php echo ($accionPedido == 'I')? "": ($rDeta['BobinadoFuera'] == 1) ? "selected": "";?>>Por Fuera</option>
-											<option value="0" <?php echo ($accionPedido == 'I')? "": ($rDeta['BobinadoFuera'] == 0) ? "selected": "";?>>Por Dentro</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Dist. de Taco:
-									</td>
-									<td>
-										<input type="text" name="distancia" id="distancia" onKeyUp="decimal(distancia)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DistanciaTaco'];?>" <?php IsEnabled($accionPedido);?>>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Diam. de Bobina:
-									</td>
-									<td>
-										<input type="text" name="bobina" id="bobina" onKeyUp="decimal(bobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DiametroBobina'];?>" <?php IsEnabled($accionPedido);?>>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Diam. de Canuto:
-									</td>
-									<td>
-										<input type="text" name="canuto" id="canuto" onKeyUp="decimal(canuto)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DiametroCanuto'];?>" <?php IsEnabled($accionPedido);?>>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Kg. x Bobina:
-									</td>
-									<td>
-										<input type="text" name="kgBobina" id="kgBobina" onKeyUp="decimal(kgBobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['KgBobina'];?>" <?php IsEnabled($accionPedido);?>>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Mts. x Bobina:
-									</td>
-									<td>
-										<input type="text" name="mtsBobina" id="mtsBobina" onKeyUp="decimal(mtsBobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['MtsBobina'];?>" <?php IsEnabled($accionPedido);?>>
-									</td>
-								</tr>
-							</table>
-						</div>
-
-						<div class="bs-docs-observacio">
-							<?php
-							$readonly = " readonly ";
-
-							if($accionPedido != "I")
-							{
-								$readonly = "  ";
-							}
-
-							if(Readonly($accionPedido) == "readonly")
-							   {
-								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px" readonly="readonly"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea> <?php
-							   }
-							   else
-							   {
-								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea><?php
-							   }
-
-							?>
-
-						</div>
-					</div>
-				</div>
-
-
-
-				<div class="row" style="text-align: center">
-					<div class="span4">
 						<div class="bs-docs-volumen">
 							<table style="width: 100%">
 								<tr>
@@ -1050,10 +1019,100 @@ require("header.php");
 										</select>
 									</td>
 								</tr>
+								<tr class="new_art_section" style="display:none;">
+									<td>Precio Origen: </td>
+									<td>
+										<select  id='precio_origen' name='precio_origen' class="input-xlarges" style="width:100%" Readonly>
+												<option value="">Seleccionar</option>
+												<option value="1">Acuerdo Cliente</option>
+												<option value="2">Lista de Precios</option>
+												<option value="3">Gerencia</option>
+										</select>	
+									</td>
+								</tr>
 							</table>
 						</div>
 					</div>
-					<div class="span4 offset1">
+					
+					<div class="span6">
+						<div class="bs-docs-bobinado">
+							<table style="width: 100%">
+								<tr>
+									<td>
+										Sentido:
+									</td>
+									<td>
+										<select name="bobinado" id="bobinado" <?php IsEnabled($accionPedido);?>>
+											<option value="2" <?php echo ($accionPedido == 'I')? "selected": ($rDeta['Bobinado'] == 2) ? "selected": "";?>>Ninguno</option>
+											<option value="1" <?php echo ($accionPedido == 'I')? "": ($rDeta['Bobinado'] == 1) ? "selected": "";?>>De Pie</option>
+											<option value="0" <?php echo ($accionPedido == 'I')? "": ($rDeta['Bobinado'] == 0) ? "selected": "";?>>De Cabeza</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Tratado:
+									</td>
+									<td>
+										<select name="fuera" id="fuera" <?php IsEnabled($accionPedido);?>>
+											<option value="2" <?php echo ($accionPedido == 'I')? "selected": ($rDeta['BobinadoFuera'] == 2) ? "selected": "";?>>Ninguno</option>
+											<option value="1" <?php echo ($accionPedido == 'I')? "": ($rDeta['BobinadoFuera'] == 1) ? "selected": "";?>>Por Fuera</option>
+											<option value="0" <?php echo ($accionPedido == 'I')? "": ($rDeta['BobinadoFuera'] == 0) ? "selected": "";?>>Por Dentro</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Dist. de Taco:
+									</td>
+									<td>
+										<input type="text" name="distancia" id="distancia" onKeyUp="decimal(distancia)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DistanciaTaco'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Diam. de Bobina:
+									</td>
+									<td>
+										<input type="text" name="bobina" id="bobina" onKeyUp="decimal(bobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DiametroBobina'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Diam. de Canuto:
+									</td>
+									<td>
+										<input type="text" name="canuto" id="canuto" onKeyUp="decimal(canuto)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['DiametroCanuto'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Kg. x Bobina:
+									</td>
+									<td>
+										<input type="text" name="kgBobina" id="kgBobina" onKeyUp="decimal(kgBobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['KgBobina'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Mts. x Bobina:
+									</td>
+									<td>
+										<input type="text" name="mtsBobina" id="mtsBobina" onKeyUp="decimal(mtsBobina)" value="<?php echo ($accionPedido == 'I')? "" : $rDeta['MtsBobina'];?>" <?php IsEnabled($accionPedido);?>>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						
+					</div>
+				</div>
+
+
+
+				<div class="row-fluid" style="">
+					
+					<div class="span6">
 						<div class="bs-docs-print">
 							<table style="width: 100%">
 								<tr>
@@ -1092,10 +1151,33 @@ require("header.php");
 							</table>
 						</div>
 					</div>
+					<div class="span6">
+						<div class="bs-docs-observacio">
+							<?php
+							$readonly = " readonly ";
+
+							if($accionPedido != "I")
+							{
+								$readonly = "  ";
+							}
+
+							if(Readonly($accionPedido) == "readonly")
+							   {
+								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px" readonly="readonly"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea> <?php
+							   }
+							   else
+							   {
+								?><textarea name="observaciones" id="observaciones" rows="3" style="width: 300px"><?php echo ($accionPedido == 'I')? "" : $rDeta['Obseervaciones'];?></textarea><?php
+							   }
+
+							?>
+
+						</div>
+					</div>
 				</div>
 
-				<div class="row">
-					<div class="span9">
+				<div class="row-fluid">
+					<div class="span12">
 						<div class="bs-docs-laminado">
 							<table style="width: 100%">
 								<tr>
