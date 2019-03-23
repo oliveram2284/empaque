@@ -8,9 +8,6 @@ $var->conectarse();
 //-------------------------------------------------------------------------------------
 //Variables necesarias
 
-
-//print_r($_POST);
-//die("FIN");
 if(isset($_REQUEST['valores'])){
     $_REQUEST['valores'][15]=(int)$_REQUEST['valores'][15];
 }else{
@@ -108,6 +105,7 @@ $reemplazar =0;
 $polimero_cliente =0;
 $polimero_empaque =0;
 $precio_origen =0;
+$costo_aprobado =0;
 
 
 
@@ -115,8 +113,11 @@ $precio_origen =0;
 //Parametros recibidos
 $idPedido = $_POST['id'];
 $accion = $_POST['action'];
+
+
 if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $accion != "TP" && $accion != "R" && $accion != "RR" && $accion != "RN" && $accion != "NO" && $accion != "CA" && $accion != "PO" && $accion != "PA" && $accion != "PX" && $accion != "PR" && $accion != "P1" && $accion != "D" && $accion != 'C' && $accion != 'NC' && $accion != 'RA' && $accion != "CE")
 {
+ 
     $valores = $_POST['valores'];
     $titulos = $_POST['titulos'];
 
@@ -124,6 +125,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 }
 else
 {
+
     if($accion == "U" || $accion == "UA" || $accion == "EH")
     {
         $hoja = $_POST['hoja'];
@@ -172,6 +174,8 @@ else
         $medidas        = $_POST['medidas'];
         $marcas         = $_POST['marcas'];
     }
+
+    
 }
 
 if($accion == "RA" || $accion == "CE")
@@ -207,8 +211,11 @@ if($accion == "RA" || $accion == "CE")
 //Insertar un nuevo pedido
 if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $accion != "TP" && $accion != "R" && $accion != "RR" && $accion != "NO" && $accion != "RN" && $accion != "CA" && $accion != "PO" && $accion != "PA" && $accion != "PX" && $accion != "PR" && $accion != "P1")
 {
-    if($idPedido == 0 || ($accion == "E" && $idPedido != 0) || ($accion == "A" && $idPedido != 0) || ($accion == "P" && $idPedido != 0))
+
+    if($idPedido == 0 || ($accion == "E" && $idPedido != 0) || ($accion == "A" && $idPedido != 0) || ($accion == "P" && $idPedido != 0) || ($accion == "AC" && $idPedido != 0))
         {
+
+            
             foreach($valores as $v)
             {
                 switch($titulos[$indice])
@@ -551,11 +558,18 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                     case "reemplazar":
                         $reemplazar=$v;
                         break;
+
+                     case "costo_aprobado":
+                        $costo_aprobado=$v;
+                        break;
                 }
                 $indice++;
             }
             //-------------------------------------------------------------------------------------
            
+
+            
+       
             if($troquelado == -1){
                 $troquelado = 'null';
             }
@@ -681,11 +695,16 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $consulta .=                 "envasado = '".$env."', ";
                         $consulta .=                 "vencimiento = '".$ven."', ";
                         $consulta .=                 "lote = '".$lote."' , ";
-                        $consulta .=                 "tieneToquelado = ".$troquelado." ";
+                        $consulta .=                 "tieneToquelado = ".$troquelado.", ";
+                        $consulta .=                 "motivo_nuevo_id = ".$motivo.", ";
+                        $consulta .=                 "reemplaza_anterior = ".$reemplazar.", ";
+                        $consulta .=                 "polimero_porcentaje_cli = ".$polimero_cliente.", ";
+                        $consulta .=                 "polimero_porcentaje_emp = ".$polimero_empaque.", ";
+                        $consulta .=                 "precio_nuevo_id = ".$precio_origen." ";
                         $consulta .= "Where npedido=$idPedido";
-
+                        
                         $resu = mysql_query($consulta);
-
+                        //die($consulta);
                         //Insertar detalle del pedido
                         $detalle  = "Update pedidosdetalle set ";
                         $detalle .=                        "CantidadTotal   = ".$cantidadDeProductos.",
@@ -993,13 +1012,24 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                             }
                         }
 
-                        $resu = mysql_query($consulta);
-
+                       
                         reg_log($idPedido, $estado);
+                         break;
                     }
-                    break;
+                   
+                case 'AC':{
+                    //APROBAR COSTO DE ARTICULO NUEVO
+                    if($costo_aprobado==1){
+                        $consulta = "Update pedidos Set costo_aprobado =".$costo_aprobado." , estado ='AC' Where npedido=$idPedido";                         
+                        $resu = mysql_query($consulta);
+                        reg_log($idPedido, 'AC');
+                    }
+                    
+                    break;   
+                }      
+               
+                
             }
-
         }
         else
         {
@@ -1032,6 +1062,15 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                 case "AP":
                     $consulta = "Update pedidos Set estado ='AP', fecestadoap = CURDATE() Where npedido=$idPedido";
+                    $resu = mysql_query($consulta);
+
+                    reg_log($idPedido, "AP");
+                    break;
+
+                case "AC":
+                    $consulta = "Update pedidos Set estado ='AP', fecestadoap = CURDATE() Where npedido=$idPedido";
+                    print_r($costo_aprobado);
+                    die($consulta);
                     $resu = mysql_query($consulta);
 
                     reg_log($idPedido, "AP");
@@ -1231,6 +1270,10 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 }
 else
 {
+
+    if($accion == "AC"){
+        die("fin");
+    }
     if($accion == "U")
     {
         $consulta = "Update pedidos Set estado ='U', hojaruta='NN', feccurso= CURDATE() Where npedido=$idPedido";

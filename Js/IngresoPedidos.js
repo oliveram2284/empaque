@@ -409,7 +409,7 @@ function get_ficha_tecnica(id) {
 
         },
         error: function(error_msg) {
-            alert("error_msg: " + error_msg);
+            //alert("error_msg: " + error_msg);
         }
     };
     $.ajax(data_ajax);
@@ -558,7 +558,6 @@ function BuscarProductoN() {
         $("#buscadorP").val("");
         $("#resultado_Productos").html("");
         //$('#ProductosPop').modal('show');
-
         $("#motivo").attr('disabled', false)
         setTimeout(function() { $("#buscadorP").focus(); }, 1000);
     } else {
@@ -820,7 +819,7 @@ function chequeadoN(value) {
         $("#descripcionProducto").val("");
         $("#div_busqueda_prod").removeClass("control-group error");
 
-        $(".new_art_section").show();
+        //$(".new_art_section").show();
         //$("#observaciones").removeAttr('readonly');
     } else {
         $("#div_busqueda_prod").addClass("control-group");
@@ -842,6 +841,7 @@ $("#chkH").change(function() {
     $(this).parents('.checkbox.inline').addClass('checked');
 
     $("#motivo").attr('disabled', true);
+    $("#precio_origen").attr('disabled', true);
     $("#reemplaza_si").attr('disabled', true);
     $("#reemplaza_no").attr('disabled', true);
 
@@ -855,6 +855,8 @@ $("#chkN").change(function() {
     $("#chkH,#chkN").parents('.checkbox.inline').removeClass('checked');
     $(this).parents('.checkbox.inline').addClass('checked');
     $("#motivo").attr('disabled', false);
+    $("#precio_origen").attr('disabled', false);
+
     $("#reemplaza_si").attr('disabled', false);
     $("#reemplaza_no").attr('disabled', false);
     $("#polimero_cliente").attr('disabled', false).val(null);
@@ -1451,6 +1453,16 @@ function abrir_venc() {
 
 function EnabledButtonCI() {
     if ($("#esCI").is(':checked')) {
+        $("#btn_save").css("display", "none");
+        $("#btn_CI").css("display", "block");
+    } else {
+        $("#btn_CI").css("display", "none");
+        $("#btn_save").css("display", "block");
+    }
+}
+
+function AprobarCosto() {
+    if ($("#apCosto").is(':checked')) {
         $("#btn_save").css("display", "none");
         $("#btn_CI").css("display", "block");
     } else {
@@ -2243,7 +2255,22 @@ function guardar_1() {
         input.push(0);
     }
 
-    if (Accion != "I" && Accion != "E" && Accion != "A" && Accion != "P" && Accion != "CL" && Accion != "N") {
+
+    if ($("#apCosto").is(':checked')) {
+        title.push("costo_aprobado");
+        input.push(1);
+    } else {
+        title.push("costo_aprobado");
+        input.push(0);
+    }
+
+
+    console.log("==> apCosto: %o", $("#apCosto").is(':checked'));
+
+
+
+    console.log("====> ACCION: %o", Accion);
+    if (Accion != "I" && Accion != "E" && Accion != "A" && Accion != "AC" && Accion != "P" && Accion != "CL" && Accion != "N") {
         return;
     }
 
@@ -2520,7 +2547,7 @@ function loadFichaTecnica(code) {
 
         },
         error: function(error_msg) {
-            alert("error_msg: " + error_msg);
+            //alert("error_msg: " + error_msg);
         }
     };
     $.ajax(data_ajax);

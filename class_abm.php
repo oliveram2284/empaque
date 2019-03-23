@@ -298,7 +298,8 @@ class abm
 										echo "<th style=\"width: 60px;\">Emisión<th>Editar</th><th>Motivos</th></tr></thead>";
 										break;	
 								 case "A": //Recibidos
-								 		echo "<th style=\"width: 60px;\">Recepción</th><th>Producción</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
+								 case "AC": //Recibidos
+								 		echo "<th style=\"width: 60px;\">Recepción</th><th>Aprobar Costo</th><th>Producción</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
 										break;
 								 case "P": //produccion 
 										echo "<th style=\"width: 60px;\">Producción</th>
@@ -386,7 +387,7 @@ class abm
 										break;
 									
 									case "A":
-										$accionConsulta = " (estado ='A' or estado = 'D' or estado = 'RN') ";
+										$accionConsulta = " (estado ='A' or estado = 'D' or estado = 'RN'  or estado = 'AC') ";
 										break;
 									
 									case "P":
@@ -495,6 +496,7 @@ class abm
 															Date_format( frecep, '%d-%m-%Y' ) as fecha,
 															prodHabitual,
 															poliNumero as polId,
+															costo_aprobado,
 															caras,
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
@@ -856,8 +858,10 @@ class abm
 												break;
 											
 											case 'A':
+											case 'AC':
+											
 												$consulta3 = "Select $campos, razon_soci, descripcion as Articulo,estado, Date_format( frecep, '%d-%m-%Y' ) as fecha,
-															poliNumero as polId, caras from ".$nombreTabla." 
+															poliNumero as polId, caras,costo_aprobado from ".$nombreTabla." 
 													  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
 													   
 													  where (".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." order by codigo Limit ".($pagina * 10).",10";
@@ -1305,10 +1309,20 @@ class abm
 																</td>';
 																else echo '<td></td>';
 														break;	
-												
-												  case "A": //aceptados
-														echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','P')\" style=\"text-align: center\">
+													case "AC":		
+													case "A": //aceptados
+														if($row_1['prodHabitual']==1 && $row_1['costo_aprobado']==0){
+															echo '<td onClick="AbrirVentanaPedido('.$row_1[0].',\'AC\')"style="text-align: center"> 
+															<img src="./assest/plugins/buttons/icons/tick.png" width="15" heigth="15" />
+															</td>';
+															echo '<td style="text-align: center"> <b>-</b></td>';
+														}else{
+															echo '<td style="text-align: center" > <b>-</b> </td>';
+															echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','P')\" style=\"text-align: center\">
 															<img src=\"./assest/plugins/buttons/icons/tick.png\" width=\"15\" heigth=\"15\" /></td>";
+														}
+													
+														
 														echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','".$accion."')\" style=\"text-align: center\" width=\"50px;\">
 															<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
 														echo "<td onClick=\"AbrirPopPedidosCancel('$row_1[0]','C')\" style=\"text-align: center\">

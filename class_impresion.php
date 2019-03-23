@@ -305,7 +305,7 @@ class impresion
 						echo '<tr>
 							<td width="70%">
 								<br>
-								<fieldset style="height: 170px;"><legend><b>Artículo</b></legend>
+								<fieldset style="height: 180px;"><legend><b>Artículo</b></legend>
 									<table width="100%">
 										<tr>
 											<td width="150px">Tipo de Producto:</td>
@@ -332,12 +332,25 @@ class impresion
 											<td>Código Tango</td>
 											<td><div style="font-size: 17px"><b>'.$resu['codigoTango'].'</b></div></td>
 										</tr>
+										<tr>
+											<td>Motivo: </td>
+											<td><div style="font-size: 17px"><b>'.obtenerMotivo($resu['motivo_nuevo_id']).'</b></div></td>
+										</tr>
+										<tr>
+											<td>Reemplaza Ant. Producto?: </td>
+											<td><div style="font-size: 17px"><b>'.(($resu['reemplaza_anterior']==1)?'SI':'NO').'</b></div></td>
+
+										</tr>
+										<tr>
+											<td>Polimero a Cargo de: </td>
+											<td><div style="font-size: 17px"><b>Cliente: '.$resu['polimero_porcentaje_cli'].'</b> / <b>Empaque: '.$resu['polimero_porcentaje_emp'].'</b></div></td>
+										</tr>
 									</table>
 								</fieldset>
 							</td>
 							<td >
 								<br>
-								<fieldset style="height: 170px;margin-right: 5px"><legend><b>Fechas</b></legend>
+								<fieldset style="height: 180px;margin-right: 5px"><legend><b>Fechas</b></legend>
 									<table width="100%">
 										<tr style="height: 20px">
 											<td>Emisión:</td>
@@ -378,11 +391,11 @@ class impresion
 									<table width="100%">
 										<tr>
 											<td width="50%" valign="top">
-												<fieldset style="margin-right: 5px; height: 90px;"><legend><b>Volúmen de Pedido</b></legend>
+												<fieldset style="margin-right: 5px; height: 100px;"><legend><b>Volúmen de Pedido</b></legend>
 													<table width="100%">
 														<tr>
 															<td width="50%">Cantidad:</td>
-															<td><b>'.$resu2['CantidadTotal'].'</b></td>
+															<td><b>'.number_format($resu2['CantidadTotal'],0,',','.').'</b></td>
 														</tr>
 														<tr>
 															<td>Unidades:</td>
@@ -390,13 +403,18 @@ class impresion
 														</tr>
 														<tr>
 															<td>Precio:</td>
-															<td><b>'.obtenerDato($resu2['Moneda'],'monedas','idMoneda','descripcion').' '.$resu2['PrecioImporte'].' '.obtenerDato($resu2['IVA'],'condicioniva','idIVA','descripcion').'</b></td>
+															<td><b>'.obtenerDato($resu2['Moneda'],'monedas','idMoneda','descripcion').' '.number_format($resu2['PrecioImporte'],5,',','.').' '.obtenerDato($resu2['IVA'],'condicioniva','idIVA','descripcion').'</b></td>
+														</tr>
+
+														<tr>
+															<td>Precio Origen:</td>
+															<td><b>'.obtenerPrecioNuevo($resu['precio_nuevo_id']).'</b></td>
 														</tr>
 													</table>
 												</fieldset>
 											</td>
 											<td valign="top">
-												<fieldset style="margin-right: 5px; height: 90px;"><legend><b>Datos de Impresión</b></legend>
+												<fieldset style="margin-right: 5px; height: 100px;"><legend><b>Datos de Impresión</b></legend>
 													<table width="100%">
 														<tr>
 															<td width="50%">Caras:</td>
@@ -1154,6 +1172,38 @@ class impresion
 	}
 
 ///funciones -------------
+
+function obtenerMotivo($id){
+
+	$precio_origenes=array(
+		1=>'Nuevo - Completamente',
+		2=>'Nuevo - Modificación',
+		3=>'Nuevo - Cambia Color',
+		4=>'Nuevo - Cambia RENSPA',
+		5=>'Nuevo - Otro',
+	);
+
+	foreach ($precio_origenes as $key => $item) {
+		if($key==$id){
+			return $item;
+		}
+	}
+}
+
+function obtenerPrecioNuevo($id){
+
+	$precio_origenes=array(
+		1=>'Acuerdo Cliente',
+		2=>'Lista de Precios',
+		3=>'Gerencia',
+	);
+
+	foreach ($precio_origenes as $key => $item) {
+		if($key==$id){
+			return $item;
+		}
+	}
+}
 
 function obtenerDato($id,$tabla,$campo,$campoRetorno)
 		{

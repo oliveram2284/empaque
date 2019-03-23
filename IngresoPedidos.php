@@ -44,6 +44,7 @@ $idPedido = $_GET['valor1'];
 		case "D":
 		case "B":
 		case "AP":
+		case "AC":
 		case "SI":
 		case "NO":
 		case "DI":
@@ -63,6 +64,7 @@ $idPedido = $_GET['valor1'];
 				//$consulta = "Select * from ";
 				break;
 	}
+
 
 function Readonly($accion)
 {
@@ -261,7 +263,9 @@ require("header.php");
 						case "A":
 							echo "<h2>Recepción de Pedido</h2>";
 							break;
-
+						case "AC":
+							echo "<h2>Aprobar Costo</h2>";
+							break;
 						case "R":
 							echo "<h2>Rehacer Pedido</h2>";
 							break;
@@ -517,13 +521,13 @@ require("header.php");
 						<td><label for="motivo" >Motivo</label></td>
 						<td>							
 							<div class="control-group " id="Motivo">
-								<select  id='motivo' name='motivo' class="input-xlarge" style="width:100%" disabled>
+								<select  id='motivo' name='motivo' class="input-xlarge" style="width:100%" <?php echo (!isset($row['motivo_nuevo_id']))?'disabled':''; ?>>
 									<option value="">Seleccionar</option>
-									<option value='1'>Nuevo - Completamente</option>
-									<option value='2'>Nuevo - Modificación</option>
-									<option value='3'>Nuevo - Cambia Color</option>
-									<option value='4'>Nuevo - Cambia RENSPA</option>
-									<option value='5'>Nuevo - Otro</option>
+									<option value='1' <?php echo ($row['motivo_nuevo_id']==1)?'selected':''; ?> >Nuevo - Completamente</option>
+									<option value='2' <?php echo ($row['motivo_nuevo_id']==2)?'selected':''; ?>>Nuevo - Modificación</option>
+									<option value='3' <?php echo ($row['motivo_nuevo_id']==3)?'selected':''; ?>>Nuevo - Cambia Color</option>
+									<option value='4' <?php echo ($row['motivo_nuevo_id']==4)?'selected':''; ?>>Nuevo - Cambia RENSPA</option>
+									<option value='5' <?php echo ($row['motivo_nuevo_id']==5)?'selected':''; ?>>Nuevo - Otro</option>
 								</select>								
 							</div>
 						</td>
@@ -532,11 +536,11 @@ require("header.php");
 						<td><label for="reemplaza_si">Reemplaza Anterior Producto?</label></td>
 						<td>
 							<label class="checkbox inline">  
-								<input type="radio" id="reemplaza_si" name="reemplaza" value="1" disabled>   SI 
+								<input type="radio" id="reemplaza_si" name="reemplaza" value="1" <?php echo (!isset($row['reemplaza_anterior']))?'disabled':''; ?>  <?php echo ($row['reemplaza_anterior']==1)?'checked':' '; ?> >   SI 
 						</label>
 							<label class="checkbox inline">  
 
-								<input type="radio" id="reemplaza_no" name="reemplaza" value="0" disabled>   NO
+								<input type="radio" id="reemplaza_no" name="reemplaza" value="0" <?php echo (!isset($row['reemplaza_anterior']))?'disabled':''; ?> <?php echo ($row['reemplaza_anterior']==0)?'checked':''; ?> >   NO
 							</label>
 						</td>
 					</tr>
@@ -547,12 +551,12 @@ require("header.php");
 						<td>
 							<div class="row-fluid"> 
 								<div class="span5 ">													    								
-										<input type="text" id="polimero_cliente" name="polimero_parte[cli]" class="input-small" placeholder="Cliente" value="" disabled> 
+										<input type="text" id="polimero_cliente" name="polimero_parte[cli]" class="input-small" placeholder="Cliente" value="<?php echo (isset($row['polimero_porcentaje_cli']))?$row['polimero_porcentaje_cli']:'' ?>" <?php echo (!isset($row['polimero_porcentaje_cli']))?'disabled':''; ?>> 
 										<b>Cliente %</b>				
 								</div>
 								
 								<div class="span6">
-									<input type="text" id="polimero_empaque"  name="polimero_parte[emp]" class="input-small" placeholder="Empaque" value="" disabled>
+									<input type="text" id="polimero_empaque"  name="polimero_parte[emp]" class="input-small" placeholder="Empaque" value="<?php echo (isset($row['polimero_porcentaje_emp']))?$row['polimero_porcentaje_emp']:'' ?>" <?php echo (!isset($row['polimero_porcentaje_emp']))?'disabled':''; ?>>
 									<b>Empaque SA %</b>			
 								</div>
 
@@ -1019,14 +1023,14 @@ require("header.php");
 										</select>
 									</td>
 								</tr>
-								<tr class="new_art_section" style="display:none;">
+								<tr class="new_art_section" style="">
 									<td>Precio Origen: </td>
 									<td>
-										<select  id='precio_origen' name='precio_origen' class="input-xlarges" style="width:100%" Readonly>
+										<select  id='precio_origen' name='precio_origen' class="input-xlarges" style="width:100%" <?php echo (!isset($row['motivo_nuevo_id']))?'disabled':''; ?>>
 												<option value="">Seleccionar</option>
-												<option value="1">Acuerdo Cliente</option>
-												<option value="2">Lista de Precios</option>
-												<option value="3">Gerencia</option>
+												<option value="1" <?php echo ($row['precio_nuevo_id']==1)?'selected':''; ?>>Acuerdo Cliente</option>
+												<option value="2" <?php echo ($row['precio_nuevo_id']==2)?'selected':''; ?>>Lista de Precios</option>
+												<option value="3" <?php echo ($row['precio_nuevo_id']==3)?'selected':''; ?>>Gerencia</option>
 										</select>	
 									</td>
 								</tr>
@@ -1411,9 +1415,31 @@ require("header.php");
 							</table>
 							</div>
 						</div>
+						
 
 						<?php
 					}
+
+				if($accionPedido == "AC"){
+					?>
+					<div class="row">
+							<div class="span4 text-left" style="margin-left: 50;">
+							<table>
+								<tr>
+									<td style="padding-right: 20px;">
+										APROBAR COSTO:
+									</td>
+									<td>
+										<input type="checkbox" id="apCosto" name="costo_aprobado" value="1">
+									</td>
+								</tr>
+							</table>
+							</div>
+						</div>
+					<?php
+				}
+
+
 				}
 				?>
 				<input type="hidden" id="CI_values" value="">
@@ -1448,6 +1474,9 @@ require("header.php");
 				break;
 		case "A":
 				echo '<input type="hidden" id="accionPedido" name="accionPedido" value="A">';
+				break;
+		case "AC":
+				echo '<input type="hidden" id="accionPedido" name="accionPedido" value="AC">';
 				break;
 		case "P":
 				echo '<input type="hidden" id="accionPedido" name="accionPedido" value="P">';
