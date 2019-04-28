@@ -223,8 +223,7 @@ class abm
 					}
 			}
 			
-		function listadoPedido($accion,$nombre, $pagina, $query)
-			{
+		function listadoPedido($accion,$nombre, $pagina, $query){
 			 $esAdmin = $_SESSION['admin'];
 			 $var = new conexion();
 			 $var->conectarse();
@@ -236,8 +235,7 @@ class abm
 			 if(mysql_num_rows($resu) != 1)
 			 	{
 					echo'<script>alert("Error en lectura de tabla.");location.href="principal.php";</script>';
-				}else
-					{
+				}else{
 					 $row = mysql_fetch_array($resu); 
 					 $consulta2 = "Select * from tbl_campostablas where id_tabla ='".$row['id_tabla']."' order by orden ";
 					 $resu2 = mysql_query($consulta2) or die(mysql_error());
@@ -251,7 +249,7 @@ class abm
 							echo '<div id="div_find">';
 							
 							echo '<div style="min-height: 430px;">';
-							echo '<table class="table table-hover"> <thead><tr>';
+							echo '<table id="listadoPedidos_table" class="table table-hover"> <thead><tr>';
 							//campos que se muestran
 							$campos = "";
 							//--
@@ -271,24 +269,18 @@ class abm
  							//area encabezado
 							
 							echo '<th></th>';												
-							 while($row = mysql_fetch_array($resu2))
-							 	{
-								 if($row['visible'] == 1)
-								 	{
-									 echo '<th>'.htmlentities($row['nombreMuestra']).'</th>';
-									 if($row['tipo'] == "date")
-										{ 
-										    $campos .= ",Date_format( ".$row['nombreCampo'].", '%d-%m-%Y' ) AS ".$row['nombreCampo'];
-										}
-										else
-										{
-										    $campos .= ",".$row['nombreCampo'];    
-										}
-									}else
-										{
-										 echo '';
-										}
+						  while($row = mysql_fetch_array($resu2)){
+								if($row['visible'] == 1){
+									echo '<th>'.htmlentities($row['nombreMuestra']).'</th>';
+									if($row['tipo'] == "date"){ 
+										  $campos .= ",Date_format( ".$row['nombreCampo'].", '%d-%m-%Y' ) AS ".$row['nombreCampo'];
+									}else{
+										$campos .= ",".$row['nombreCampo'];    
+									}
+								}else{
+									echo '';
 								}
+							}
 							switch($accion)
 								{
 								 case "I": //ingresados o generados
@@ -306,7 +298,7 @@ class abm
 										      <th style=\"width: 60px;\">Hora</th>
 										      <th>Poner en Curso</th>
 										      <th>Devolver</th>
-										      <th></th><th></th><th></th></tr></thead>";
+										      <th></th><th></th><th></th><th></th></tr></thead>";
 										break;
 								 case "V": //aprobados
 								 case "U": //curso
@@ -364,15 +356,22 @@ class abm
 										      <th style=\"text-align: center\" width=\"50px;\"></th></tr></thead>";
 										break;
 								case "TN": //Trabajos Nuevos
-										echo "<th style=\"text-align: center\">Estado</th><th></th><th></th></tr></thead>";
+										echo "<th style=\"text-align: center\">Estado</th><th></th><th></th<th></th><th></th><th></th><th></th></tr></thead>";
 										break;
 								case "DE": //devoluciones
-									echo "<th></th><th></th><th style=\"text-align: center\">Motivo</th><th></th></tr></thead>";
+									echo "<th></th><th></th><th style=\"text-align: center\">Motivo</th><th></th><th></th></tr></thead>";
+									break;
+							
+								case "TO":{
+									echo "<th></th>
+									</tr></thead>";
+									break;
 								}
+
+							}
 							//area  cuerpo
 							$search_by_txt = "";
-							if($query != "")
-							{
+							if($query != ""){
 								$search_by_txt = " and (codigo like '%".$query."%' ";
 								$search_by_txt .= " or clienteNombre like '%".$query."%' ";
 								$search_by_txt .= " or descripcion like '%".$query."%') ";
@@ -380,74 +379,73 @@ class abm
 							
 							$cantidad = 0;
 							$accionConsulta = "";
-								switch($accion)
-								{
-									case "I":
-										$accionConsulta = " (estado ='".$accion."' or estado = 'R' or estado = 'E' or estado = 'RR') ";
-										break;
-									
-									case "A":
-										$accionConsulta = " (estado ='A' or estado = 'D' or estado = 'RN'  or estado = 'AC') ";
-										break;
-									
-									case "P":
-										$accionConsulta = " ((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '1') or
-												    ((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '') or
-												    ((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '2') ";
-										break;
-									
-									case "U":
-										$accionConsulta = " (estado ='".$accion."' or estado = 'TP' or estado = 'RA') and (polimeroEnFacturacion = '2' or polimeroEnFacturacion = '' or polimeroEnFacturacion = '1')";
-										break;
-									
-									case "EH":
-										$accionConsulta = " estado ='U' and (polimeroEnFacturacion = '2' or polimeroEnFacturacion = '' or polimeroEnFacturacion = '1')";
-										break;
-									
-									case "N":
-										$accionConsulta = " (estado ='".$accion."' or estado = 'NS' or estado = 'AP' or estado = 'SI' or estado = 'NO' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PX' or estado = 'U' or estado = 'MO' or estado = 'RV' or estado = 'DI' or estado = 'CL' or estado = 'NC' or estado = 'CP' or (estado = 'CA' and calidad = 'CA')) and (calidad != 'PR' and calidad != 'PA') and (estado != 'U' and calidad !='X')";
-										break;
-									case "TN":
-										$accionConsulta = " (estado ='N' or estado = 'NS' or estado = 'AP' or estado = 'SI' or estado = 'NO' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PX' or estado = 'U' or estado = 'MO' or estado = 'RV' or estado = 'DI' or estado = 'CL' or estado = 'NC' or estado = 'CP' or (estado = 'CA' and calidad = 'CA')) and (calidad != 'PR' and calidad != 'PA') and (estado != 'U' and calidad !='X')";
-										break;
-									
-									case "PA":
-										$accionConsulta = " (estado = 'T') ";
-										break;
-									
-									case "E":
-										$accionConsulta = "(estado != 'T' and estado != 'C')";
-										break;
-									
-									case "AP":
-										$accionConsulta = "(estado = 'AP' or estado = 'RV')";
-										break;
-									
-									case "CL":
-										$accionConsulta = "estado = '".$accion."'";
-										break;
-									
-									case "TO":
-										$accionConsulta = "estado != '1'";
-										break;
-									
-									case "DE":
-										$accionConsulta = "estado = 'D'";
-										break;
-									
-									default:
-										$accionConsulta = "estado ='".$accion."'";
-										break;
-								}
+							switch($accion){
+								case "I":
+									$accionConsulta = " (estado ='".$accion."' or estado = 'R' or estado = 'E' or estado = 'RR') ";
+									break;
+								
+								case "A":
+									$accionConsulta = " (estado ='A' or estado = 'D' or estado = 'RN'  or estado = 'AC') ";
+									break;
+								
+								case "P":
+									$accionConsulta = " ((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '1') or
+													((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '') or
+													((estado ='".$accion."' or estado = 'NS' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PR') ) and (polimeroEnFacturacion = '2') ";
+									break;
+								
+								case "U":
+									$accionConsulta = " (estado ='".$accion."' or estado = 'TP' or estado = 'RA') and (polimeroEnFacturacion = '2' or polimeroEnFacturacion = '' or polimeroEnFacturacion = '1')";
+									break;
+								
+								case "EH":
+									$accionConsulta = " estado ='U' and (polimeroEnFacturacion = '2' or polimeroEnFacturacion = '' or polimeroEnFacturacion = '1')";
+									break;
+								
+								case "N":
+									$accionConsulta = " (estado ='".$accion."' or estado = 'NS' or estado = 'AP' or estado = 'SI' or estado = 'NO' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PX' or estado = 'U' or estado = 'MO' or estado = 'RV' or estado = 'DI' or estado = 'CL' or estado = 'NC' or estado = 'CP' or (estado = 'CA' and calidad = 'CA')) and (calidad != 'PR' and calidad != 'PA') and (estado != 'U' and calidad !='X')";
+									break;
+								case "TN":
+									//$accionConsulta = " (estado ='N' or estado = 'NS' or estado = 'AP' or estado = 'SI' or estado = 'NO' or estado = 'B' or estado = 'PO' or estado = 'PA' or estado = 'PX' or estado = 'U' or estado = 'MO' or estado = 'RV' or estado = 'DI' or estado = 'CL' or estado = 'NC' or estado = 'CP' or (estado = 'CA' and calidad = 'CA')) and (calidad != 'PR' and calidad != 'PA') and (estado != 'U' and calidad !='X')";
+									$accionConsulta = "(estado IN('N','NS','AP','SI','NO','B','PO','PO','PA','PX','U','MO','RV','DI','CL','NC','CP') or (estado='CA' and calidad='CA')) and (calidad!='PR' and calidad!='PA') and (estado != 'U' and calidad !='X')";
+									break;
+								
+								case "PA":
+									$accionConsulta = " (estado = 'T') ";
+									break;
+								
+								case "E":
+									$accionConsulta = "(estado != 'T' and estado != 'C')";
+									break;
+								
+								case "AP":
+									$accionConsulta = "(estado = 'AP' or estado = 'RV')";
+									break;
+								
+								case "CL":
+									$accionConsulta = "estado = '".$accion."'";
+									break;
+								
+								case "TO":
+									$accionConsulta = "estado != '1'";
+									break;
+								
+								case "DE":
+									$accionConsulta = "estado = 'D'";
+									break;
+								
+								default:
+									$accionConsulta = "estado ='".$accion."'";
+									break;
+							}
 							
-							if($esAdmin == 1)
-								{												  
+							if($esAdmin == 1){												  
 									if($accion == 'V')
 									{
 									$consulta3 = "Select $campos, razon_soci, descripcion as Articulo,estado, caras from ".$nombreTabla." 
 												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
 												   
-												  where (estado='$accion' or estado='TP') order by codigo Limit ".($pagina * 10).",10";
+												  where (estado='$accion' or estado='TP') order by codigo ";
 												  
 									$consultaCantidad = "Select count(*) from ".$nombreTabla." 
 												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
@@ -478,7 +476,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													  
 												$consultaCantidad = "Select
 															Count(*)
@@ -487,6 +485,7 @@ class abm
 												break;
 											
 											case 'A':
+											/*
 												$consulta3 = "Select
 															npedido, 
 															codigo,
@@ -504,8 +503,26 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
-													  
+															codigo ";
+												*/
+													$consulta3 = "Select
+															npedido, 
+															codigo,
+															clienteNombre,
+															descripcion as Articulo,
+															estado,
+															Date_format( frecep, '%d-%m-%Y' ) as fecha,
+															prodHabitual,
+															poliNumero as polId,
+															costo_aprobado,
+															caras,
+															1 as devolucion
+														From
+															".$nombreTabla." 
+														Where
+															(".$accionConsulta.") ".$search_by_txt." 
+														Order By
+															codigo ";	  
 												$consultaCantidad = "Select
 															Count(*)
 														     From ".$nombreTabla." 
@@ -538,7 +555,7 @@ class abm
 														Where
 															(".$accionConsulta." and version >=2) ".$search_by_txt."
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -570,7 +587,7 @@ class abm
 														Where
 															(seDevolvio is not null and estado != 'C' )".$search_by_txt."
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -601,7 +618,7 @@ class abm
 														Where
 															(".$accionConsulta." and version <= 1) ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -635,7 +652,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
  														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -660,7 +677,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -683,7 +700,7 @@ class abm
 														Where
 															calidad = 'PO' ".$search_by_txt."
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -707,7 +724,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -731,7 +748,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -753,9 +770,10 @@ class abm
 														From
 															".$nombreTabla."
 														Where
-															(".$accionConsulta.") ".$search_by_txt." 
+															(".$accionConsulta.") ".$search_by_txt."   
+														 and YEAR(femis)>='".date('Y',strtotime("-1 year"))."'
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													  
 												$consultaCantidad = "Select
 															Count(*)
@@ -778,7 +796,7 @@ class abm
 														Where
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													  
 												$consultaCantidad = "Select
 															Count(*)
@@ -801,7 +819,7 @@ class abm
 														Where
 															(calidad = 'PA' and (poliNumero = '' or poliNumero = null)) ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -819,7 +837,7 @@ class abm
 															poliNumero as polId, caras from ".$nombreTabla." 
 												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
 												   
-												  where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."' order by codigo Limit ".($pagina * 10).",10";
+												  where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."' order by codigo ";
 												  
 									$consultaCantidad = "Select count(*) from ".$nombreTabla." 
 												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
@@ -848,7 +866,7 @@ class abm
 														Where
 															(".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													  
 												$consultaCantidad = "Select
 															Count(*)
@@ -864,7 +882,7 @@ class abm
 															poliNumero as polId, caras,costo_aprobado from ".$nombreTabla." 
 													  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
 													   
-													  where (".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." order by codigo Limit ".($pagina * 10).",10";
+													  where (".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." order by codigo ";
 													  
 												$consultaCantidad = "Select count(*) from ".$nombreTabla." 
 															INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
@@ -897,7 +915,7 @@ class abm
 															(".$accionConsulta." and version >= 2 and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 													
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													
 												$consultaCantidad = "Select
 															Count(*)
@@ -930,7 +948,7 @@ class abm
 															(seDevolvio is not null and estado != 'C' and 
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 													
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 															
 												$consultaCantidad = "Select
 															Count(*)
@@ -963,7 +981,7 @@ class abm
 															(".$accionConsulta." and version <= 1 and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt."
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -999,7 +1017,7 @@ class abm
 															(".$accionConsulta." and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -1027,7 +1045,7 @@ class abm
 															(".$accionConsulta." and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -1052,7 +1070,7 @@ class abm
 															(".$accionConsulta." and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -1075,9 +1093,9 @@ class abm
 														From 
 															".$nombreTabla."
 														Where
-															(".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
+															(".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt."  and YEAR(femis)>='".date('Y',strtotime("-1 year"))."'
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 													  
 												$consultaCantidad = "Select
 															Count(*)
@@ -1103,7 +1121,7 @@ class abm
 															(calidad = 'PA' and (poliNumero = '' or poliNumero = null) and
 															pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt." 
 														Order By
-															codigo Limit ".($pagina * 10).",10";
+															codigo ";
 																  
 												$consultaCantidad = "Select
 															Count(*)
@@ -1116,8 +1134,9 @@ class abm
 										}
 									}
 								}
-							//echo $consulta3."<br>";
+							//echo($consulta3."<br>");
 							$resu3 = mysql_query($consulta3);
+							//die("fofdf");
 							echo"<tbody>";
 							if(mysql_num_rows($resu3) <= 0)
 								{
@@ -1392,12 +1411,12 @@ class abm
 															}
 														}
 														echo '<td style="text-align: center;">
-															<img src="assest/plugins/buttons/icons/zoom.png" width="20" heigth="20" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;">
+															<img src="assest/plugins/buttons/icons/zoom.png" width="40" heigth="40" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;">
 														      </td>';
 														break;
 												  case "EH"://Editar hoja de rutas
 														echo '<td style="text-align: center"><img src="./assest/plugins/buttons/icons/pencil.png" onClick="AbrirPop('.$row_1[0].',\'EH\')" style="cursor: pointer;" width="15" heigth="15" title="Editar HR/CI"/></td>';
-														echo '<td style="text-align: center;" width="50px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
+														echo '<td style="text-align: center;" width="50px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;"></td>';
 														break;
 												  case "T": //terminados
 														echo "<td style=\"text-align: center\" onClick=\"ReactivarPedido('$row_1[0]')\" ><img src=\"./assest/plugins/buttons/icons/pencil.png\" width=\"15\" heigth=\"15\" style=\"cursor:pointer\"/></td>";
@@ -1429,14 +1448,14 @@ class abm
 																	<img src=\"./assest/plugins/buttons/icons/note.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
 																}
 																
-																echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
+																echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="40px" heigth="40px"></td>';
 															}
 															else
 															{
 																if($row_1['estado'] == 'AP' || $row_1['estado'] == 'RV')
 																{
 																	echo '<td colspan="5" style="text-align: center; color: blue;">Esperando aprobación de producción</td>';
-																	echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
+																	echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="40px" heigth="40px"></td>';
 																}
 																else
 																{
@@ -1455,7 +1474,7 @@ class abm
 																		<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
 																		echo "<td onClick=\"AbrirMotivos('$row_1[0]')\" style=\"text-align: center\" width=\"50px;\">
 																			<img src=\"./assest/plugins/buttons/icons/note.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-																		echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
+																		echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="40px" heigth="40px"></td>';
 																		
 																	}
 																	else
@@ -1475,7 +1494,7 @@ class abm
 																			}
 																			echo "<td onClick=\"AbrirMotivos('$row_1[0]')\" style=\"text-align: center\" width=\"50px;\">
 																			<img src=\"./assest/plugins/buttons/icons/note.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-																			echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
+																			echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;" width="40px" heigth="40px"></td>';
 																		}
 																		
 																		if($row_1['estado'] == 'CA' && $row_1['calidad'] != 'CA')
@@ -1625,7 +1644,7 @@ class abm
 															}
 															
 															echo '<td style="text-align: center;">
-															<img src="assest/plugins/buttons/icons/zoom.png" width="20" heigth="20" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;">
+															<img src="assest/plugins/buttons/icons/zoom.png" width="40" heigth="40" onClick="ImprimirReporte(\''.$row_1[0].'\')" style="cursor: pointer;">
 														      </td>';
 														      if($row_1['poliNumero'] != '' && $row_1['poliNumero'] != 0)
 															echo '<td style="text-align: center;" width="30px;"><img src="assest/plugins/buttons/icons/printer.png" onClick="ImprimirPolimero(\''.$row_1['poliNumero'].'\')" style="cursor: pointer;" width="15px" heigth="15px"></td>';
@@ -1748,6 +1767,7 @@ class abm
 							 echo '<input type="hidden" name="idPedido"><input type="hidden" name="accionPedido">';
 							 
 							 //------Paginación----
+							 /*
 							 if($pagina == 0)
 							 {
 								echo '<button class="btn btn-info" type="button" disabled title="Anterior"><i class="icon-chevron-left icon-white"></i></button>   Página ';
@@ -1783,7 +1803,7 @@ class abm
 										<i class="icon-chevron-right icon-white"></i>
 								        </button>
 								      </a>';
-							 }
+							 }*/
 							 
 							 echo '</div>';
 							 
@@ -1876,7 +1896,7 @@ class abm
 			
 			$_list = "SELECT po.*, pe.codigo, pe.descripcion, pe.clienteNombre FROM polimeros AS po
 			          JOIN pedidos AS pe ON po.idPedido = pe.npedido WHERE (".$estado.") ".$search_by_txt."
-				  order by pe.codigo Limit ".($pagina * 10).",10";
+				  order by pe.codigo ";
 			
 			$_rows = mysql_query($_list);
 			 

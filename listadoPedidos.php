@@ -8,6 +8,7 @@ if(!$_SESSION['Nombre'])
     header('Location: index.php'); 
 }
 include("conexion.php");
+include("diccionario/diccionario.php");
 
 $var = new conexion();
 $var->conectarse();
@@ -1097,68 +1098,12 @@ require("header.php");
 
 	<br>
 	<div class="well"> <!-- Contenerdor margen de Pantalla standarizado -->
+	
 			<div class="row">
 				<div class="span6 offset2">
 					  <div class="page-header">
 					  <h2>
-                        <?php 
-                        switch($_GET['accion'])
-                        {
-                            case "I":
-                                    echo "Pedidos Emitidos";
-                                    break;
-                            case "A":
-                                    echo "Pedidos Recibidos";
-                                    break;
-			    case "P":
-				    echo "Pedidos en Adm. de Producción";
-				    break;
-                            case "V":
-                                    echo "Pedidos Aprobados";
-                                    break;
-                            case "T":
-                                    echo "Pedidos Terminados";
-                                    break;
-			    case "N":
-                                    echo "Pedidos para Diseño";
-                                    break;
-			    case "EP":
-				    echo "Pedidos Terminados Parcialmente";
-				    break;
-			    case "U":
-				    echo "Pedidos en Curso";
-				    break;
-			    case "AP":
-				    echo "Aprobación de Productos para diseño";
-				    break;
-			    case "PO":
-				    echo "Aprobación de Calidad de Polímero";
-				    break;
-			    case "PA":
-				    echo "Asociar Pedido con Polímero";
-				    break;
-			    case "E":
-				    echo "Editar Precio";
-				    break;
-			    case "CL":
-				    echo "Aprobación por Cliente";
-				    break;
-			    case "TN":
-				    echo "Trabajos Nuevos";
-				    break;
-			    case "TO":
-				    echo "Todos los Pedidos";
-				    break;
-			    case "EH":
-				    echo "Editar HR / CI";
-				    break;
-			    case "DE":
-				    echo "Devoluciones";
-				    break;
-                            default :
-                                    echo "Operacion No Registrada";
-                        }
-                        ?>
+                        <?php echo _listadoTitle($_GET['accion'])?>
 					</h2>
 					</div>
 				</div>
@@ -1179,7 +1124,7 @@ require("header.php");
 					}
 					?>
 				</div>
-				<div class="offset5 span2">
+				<div class="offset5 span2 hidden">
 				    <input type="text" placeholder="Buscar..." id="buscador_txt" value="<?php echo (!isset($_GET['query'])) ? '' : $_GET['query'];?>">
 				</div>
 			</div>
@@ -1187,13 +1132,14 @@ require("header.php");
 			<div class="row">
 				<div class="span10">
 					<form name="listado" method="post">
+
 					<?php
-					include("class_abm.php");
 					
+					include("class_abm.php");					
 					$tabla = new abm();
-					$tabla->listadoPedido($_GET['accion'],$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);
-					
+					$tabla->listadoPedido($_GET['accion'],$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);				
 					?>
+					
 					</form>
 				</div>
 			</div>
@@ -3563,6 +3509,30 @@ function reactivarP_ce(){
 	  
 	$.ajax(data_ajax);
 }
+
+
+$(function(){
+	console.log("LISTADO DE PEDIDOS ");
+
+	var listadoPedidos_table=$("#listadoPedidos_table");
+	$("#listadoPedidos_table").DataTable({
+		 pageLength: 25,
+		 "language": {
+            "lengthMenu": "Ver _MENU_ filas por página",
+            "zeroRecords": "No hay registros",
+            "info": "Mostrando página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+            "sSearch": "Buscar:  ",
+            "oPaginate": {
+                "sFirst":'Primera',
+                "sLast":'Ultima',
+                "sNext": "Sig.",
+                "sPrevious": "Ant."
+            }
+        },
+	});
+});
 
 </script>
 
