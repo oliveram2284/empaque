@@ -1960,3 +1960,18 @@ body .ui-tooltip {
     margin: 0px;
     margin-right: 5px;
 }
+
+#listado_todos tbody td {
+    padding: 5px 2px;
+    font-size: 12px;
+}
+
+#listado_todos tbody td.fcol {
+    width: 100px;
+    text-align: center;
+}
+
+#listado_todos tbody td.lcol {
+    width: 50px;
+    text-align: center;
+}

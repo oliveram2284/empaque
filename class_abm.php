@@ -1134,7 +1134,7 @@ class abm
 										}
 									}
 								}
-							//echo($consulta3."<br>");
+							echo($consulta3."<br>");
 							$resu3 = mysql_query($consulta3);
 							//die("fofdf");
 							echo"<tbody>";

@@ -1133,13 +1133,24 @@ require("header.php");
 				<div class="span10">
 					<form name="listado" method="post">
 
-					<?php
-					
-					include("class_abm.php");					
-					$tabla = new abm();
-					$tabla->listadoPedido($_GET['accion'],$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);				
-					?>
-					
+					<?php if($_GET['accion']!='TO'){
+							include("class_abm.php");					
+							$tabla = new abm();
+							$tabla->listadoPedido($_GET['accion'],$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);				
+							
+					 }else{?>
+						<table id="listado_todos">
+							<thead>
+								<tr>
+								<th>Código</th></th>
+								<th>Cliente</th>
+								<th>Producto</th>
+								<th></th>
+								</tr>
+							</thead>
+						</table>
+					 <?php } ?>
+
 					</form>
 				</div>
 			</div>
@@ -3531,6 +3542,63 @@ $(function(){
                 "sPrevious": "Ant."
             }
         },
+	});
+
+	$("#listado_todos").DataTable({
+		'pageLength': 25,
+		'responsive': true,
+		'processing': true,
+		'serverSide': true,
+		"paging": true,
+		"lengthChange": true,
+		"searching": true,
+		"ordering": true,
+		"info": true,
+		"autoWidth": true,
+		"language": {
+            "lengthMenu": "Ver _MENU_ filas por página",
+            "zeroRecords": "No hay registros",
+            "info": "Mostrando página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+            "sSearch": "Buscar:  ",
+            "oPaginate": {
+                "sFirst":'Primera',
+                "sLast":'Ultima',
+                "sNext": "Sig.",
+                "sPrevious": "Ant."
+            }
+        },
+		"pagingType": "full_numbers",
+		 "columnDefs": [    
+			{  className: "fcol", "targets": 0 } ,
+			{  className: "lcol", "targets": 3 }  
+		],
+		ajax: {
+            'dataType': 'json',
+              "type": "POST",
+            'url': 'services/ListadoPedidos.php',
+			'data':{
+				'accion':'TO',
+			},
+            'dataSrc': function(response) {
+				console.log("=====> RESPONSE: %o",response);
+				var Data_rows=[];
+				$.each(response.data, function(index, item) {
+					console.log("===> PEDIDO ITEM: %o",item);
+					var t1=t2=t3=t4='';
+					t1='<a onClick="Seguimiento(\''+item.npedido+'\', \''+item.codigo+'\')" style="cursor: pointer;">'+item.codigo+'</a>';;
+					t2=item.clienteNombre;
+					t3=item.Articulo;
+					t4='<td style="text-align: center;" width="50px;"><img src="assest/plugins/buttons/icons/zoom.png" onClick="ImprimirReporte(\''+item.npedido+'\')" style="cursor: pointer;" ></td>';
+					Data_rows.push([t1,t2,t3,t4]);
+				});
+				return Data_rows;
+			},
+            error: function(error) {
+                console.log(error);
+            }
+		}
 	});
 });
 
