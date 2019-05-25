@@ -283,6 +283,7 @@ class abm
 							}
 							switch($accion)
 								{
+								 case "CO": //ingresados o generados
 								 case "I": //ingresados o generados
 								 		if($esAdmin == 1)
 								 		echo "<th style=\"width: 20px;\">Emisión<th>Recibir</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
@@ -456,6 +457,29 @@ class abm
 									{
 										switch($accion)
 										{
+											case 'CO':{
+													$consulta3 = "Select
+															npedido, 
+															codigo,
+															clienteNombre,
+															descripcion as Articulo,
+															estado,
+															Date_format( femis, '%d-%m-%Y' ) as fecha,
+															prodHabitual,
+															poliNumero as polId,
+															caras,
+															hojaruta,
+
+															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
+														From
+															".$nombreTabla."
+														Where
+															(estado ='I') ".$search_by_txt." 
+														Order By
+															codigo ";
+													  
+												break;
+											}
 											case 'I':
 											case 'R':
 												$consulta3 = "Select
@@ -845,8 +869,37 @@ class abm
 												  where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."'";
 									}
 									else
+									
 									{	switch($accion)
 										{
+											case 'CO':{
+												$consulta3 = "Select
+														npedido, 
+														codigo,
+														clienteNombre,
+														descripcion as Articulo,
+														estado,
+														Date_format( femis, '%d-%m-%Y' ) as fecha,
+														prodHabitual,
+														poliNumero as polId,
+														caras,
+														hojaruta,
+														(Select Count(*) From tbl_log_pedidos Where pedidoEstado IN ('R','RR','RN','NO','PX','D','NC') and pedidoId = npedido) as devolucion
+													From
+														".$nombreTabla."
+													Where
+														(estado ='I') ".$search_by_txt." 
+													Order By
+														codigo ";
+													  
+												$consultaCantidad = "Select
+															Count(*)
+														     From ".$nombreTabla." 
+														     Where (".$accionConsulta." and pedidos.codigo REGEXP '^".$nombre."') ".$search_by_txt."";
+														     
+												break;
+
+											}
 											case 'I':
 											case 'R':
 												$consulta3 = "Select
@@ -1134,7 +1187,7 @@ class abm
 										}
 									}
 								}
-							echo($consulta3."<br>");
+							//echo($consulta3."<br>");
 							$resu3 = mysql_query($consulta3);
 							//die("fofdf");
 							echo"<tbody>";
@@ -1231,6 +1284,7 @@ class abm
 											 
 											switch($accion)
 												{
+												  case "CO": //ingresados
 												  case "I": //ingresados
 												  		if($esAdmin == 1)
 														{

@@ -54,7 +54,7 @@ require("header.php");
 		    <?php
 			if($accion != "I")
 			{
-			    echo '<input type="text" id="gpoNombre" name="gpoNombre" value="'.$row['descripcion'].'">';
+			    echo '<input type="text" id="gpoNombre" name="gpoNombre" value="'.utf8_encode($row['descripcion']).'">';
 			}
 			else
 			{
@@ -165,7 +165,7 @@ require("footer.php");
 	{
 	    if(document.getElementById('gpoNombre').value == "")
 	    {
-		alert("Ingrese un nombre v·lido para el grupo");
+		alert("Ingrese un nombre v√°lido para el grupo");
 		return;
 	    }
 	    else

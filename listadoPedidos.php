@@ -2,6 +2,11 @@
 session_start();
 
 $nombre = substr($_SESSION['Nombre'], 0, 2);
+if($_SESSION['permisos']=56){
+	$action='CO';
+}else{
+	$action=$_REQUEST['action'];
+}
 
 if(!$_SESSION['Nombre'])
 {
@@ -1136,7 +1141,7 @@ require("header.php");
 					<?php if($_GET['accion']!='TO'){
 							include("class_abm.php");					
 							$tabla = new abm();
-							$tabla->listadoPedido($_GET['accion'],$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);				
+							$tabla->listadoPedido($action,$nombre, $_GET['page'],(!isset($_GET['query'])) ? '' : $_GET['query']);				
 							
 					 }else{?>
 						<table id="listado_todos">

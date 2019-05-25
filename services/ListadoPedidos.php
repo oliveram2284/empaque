@@ -34,7 +34,6 @@
 
 
             if($_REQUEST['search']['value']!=''){
-               // var_dump($_REQUEST);
                 $fitered=true;
                 $keyword=$_REQUEST['search']['value'];
                 $sql.=" AND ( codigo like '%".$keyword."%' OR clienteNombre like '%".$keyword."%' OR descripcion like '%".$keyword."%')";
@@ -66,10 +65,7 @@
             }
 
             $sql.=" LIMIT ".$_REQUEST['start'].",".$_REQUEST['length']." ;";
-            // echo $sql."<br>";
             $result=R::getAll($sql);
-            //var_dump($result);
-        
             break;
         }
         default:{

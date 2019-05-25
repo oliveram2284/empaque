@@ -9,6 +9,22 @@ if (hostname == 'empaque.des') {
     host_url_ajax = 'http://58d70548161e.sn.mynetname.net:301/empaque_demo/';
 }
 $(function() {
+    console.log($("#solo_volumen").val());
+    if ($("#solo_volumen").val() !== undefined) {
+        //lert("asd");
+        $(".bs-docs-example").find("input").attr('disabled', true);
+        $(".bs-docs-article").find("input,select").attr('disabled', true);
+        $(".bs-docs-date").find("input,select").attr('disabled', true);
+        $(".bs-docs-product").find("input,select").attr('disabled', true);
+        $(".bs-docs-bobinado").find("input,select").attr('disabled', true);
+        $(".bs-docs-print").find("input,select").attr('disabled', true);
+        $(".bs-docs-observacio").find("input,select,textarea").attr('disabled', true);
+        $(".bs-docs-bobinado").find("input,select,textarea").attr('disabled', true);
+
+        $(".bs-docs-volumen").focus();
+
+
+    }
 
     var accionPedido = $("#accionPedido").val();
     if (accionPedido != 'I') {
@@ -553,15 +569,30 @@ function Seleccionado(valor) {
     ClosePop("ClientesPop");
 }
 
+/*
 function BuscarProductoN() {
+    console.log("====> chkH", $("#chkH").is(':checked'));
     if ($("#chkH").is(':checked')) {
         $("#buscadorP").val("");
         $("#resultado_Productos").html("");
         //$('#ProductosPop').modal('show');
-        $("#motivo").attr('disabled', false)
+        $("#motivo").attr('disabled', true)
         setTimeout(function() { $("#buscadorP").focus(); }, 1000);
     } else {
+        $("#motivo").attr('disabled', false)
+    }
+    //BuscarProductoN();
+}*/
+
+function BuscarProductoN() {
+    if ($("#chkH").is(':checked')) {
+        $("#buscadorP").val("");
+        $("#resultado_Productos").html("");
+        $('#ProductosPop').modal('show');
+        setTimeout(function() { $("#buscadorP").focus(); }, 1000);
         $("#motivo").attr('disabled', true)
+    } else {
+        $("#motivo").attr('disabled', false)
     }
 }
 
@@ -841,13 +872,12 @@ $("#chkH").change(function() {
     $(this).parents('.checkbox.inline').addClass('checked');
 
     $("#motivo").attr('disabled', true);
-    $("#precio_origen").attr('disabled', true);
+    // $("#precio_origen").attr('disabled', true);
     $("#reemplaza_si").attr('disabled', true);
     $("#reemplaza_no").attr('disabled', true);
-
     $("#polimero_cliente").attr('disabled', true).val(null);
-    $("#polimero_empaque").attr('disabled', true).val(null);
-
+    $("#polimero_empaque").val(null);
+    return true;
 });
 
 $("#chkN").change(function() {
@@ -855,12 +885,12 @@ $("#chkN").change(function() {
     $("#chkH,#chkN").parents('.checkbox.inline').removeClass('checked');
     $(this).parents('.checkbox.inline').addClass('checked');
     $("#motivo").attr('disabled', false);
-    $("#precio_origen").attr('disabled', false);
+    // $("#precio_origen").attr('disabled', false);
 
     $("#reemplaza_si").attr('disabled', false);
     $("#reemplaza_no").attr('disabled', false);
     $("#polimero_cliente").attr('disabled', false).val(null);
-    $("#polimero_empaque").attr('disabled', false).val(null);
+    $("#polimero_empaque").val(null);
 
 });
 
@@ -1499,6 +1529,7 @@ function ValidarConCI() {
 
         //Validar demas datos
         guardar_1();
+        return false;
     }
 }
 
@@ -1758,7 +1789,7 @@ function guardar_1() {
     }
 
 
-    if ($("#chkN").is(':checked') && $("#precio_origen").val() == '') {
+    if ($("#precio_origen").val() == '') {
         $('#msj_error_pop').html("<strong>Seleccione Precio Origen.</strong>");
         $('#MensajesPop').modal('show');
         $('#btn_save').removeAttr('disabled');
@@ -2274,7 +2305,10 @@ function guardar_1() {
         return;
     }
 
-
+    /*console.log("===> Accion: %o", Accion);
+    console.log("===> inputs: %o", input);
+    console.log("===> title: %o", title);
+    return false;*/
     var data_ajax = {
         type: 'POST',
         url: "insertPedido.php",

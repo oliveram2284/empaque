@@ -38,12 +38,23 @@ switch($accion)
 			</script>";
 		 break;
 		}
-	case "I":
-		{
-		 $consulta = "Select * From tbl_tablas where descripcion = '".$tabla."'";
-		 $resu = mysql_query($consulta);
-		 $row = mysql_fetch_array($resu);
-		 $idTabla = $row['id_tabla'];
+	case "I":{
+
+		if($_REQUEST['tablaNom']=='usuarios'){
+			$consulta = " Insert Into usuarios 
+			(nombre,nombre_real,creado_por,
+			id_tipo,id_sector,id_puesto,
+			contrasenia,id_grupo,catId)
+			Values ('".$_REQUEST['nombre']."','".$_REQUEST['nombre_real']."',0,0,0,0,'".$_REQUEST['contrasenia']."','".$_REQUEST['id_grupo']."','".$_REQUEST['catId']."')
+			";
+			
+			$resu = mysql_query($consulta);
+		}else{
+
+			$consulta = "Select * From tbl_tablas where descripcion = '".$tabla."'";
+			$resu = mysql_query($consulta);
+			$row = mysql_fetch_array($resu);
+			$idTabla = $row['id_tabla'];
 		
 			//buscamos los campos de la tabla
 			$consulta = "Select * from tbl_campostablas where id_tabla ='".$idTabla."'";
@@ -102,10 +113,10 @@ switch($accion)
 						}
 				}
 			 
-			 $consulta = "Insert Into ".$tabla." (".$campos.") Values (".$values.")";
-			 
-			 mysql_query($consulta);
-
+				$consulta = "Insert Into ".$tabla." (".$campos.") Values (".$values.")";
+				die($consulta);
+				mysql_query($consulta);
+			}
 			 echo"<script>alert('Los datos se guardaron correctamente');  window.opener.location.href = window.opener.location.href; window.opener.document.location.reload();self.close()
 			 if (window.opener.progressWindow) { window.opener.progressWindow.close() }
 			window.close();

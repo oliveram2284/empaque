@@ -15,6 +15,16 @@ if(isset($_REQUEST['valores'])){
 }
 
 
+/*var_dump($_SESSION['permisos']);
+var_dump($_POST);*/
+if($_SESSION['permisos']==56){
+    $accion ='CO';
+    
+}else{
+    $accion = $_POST['action'];
+}
+
+
 $nombre = substr($_SESSION['Nombre'], 0, 2);                //nombre del usuario logueado
 
 $codigo = "";                   //codigo del pedido
@@ -112,7 +122,6 @@ $costo_aprobado =0;
 //-------------------------------------------------------------------------------------
 //Parametros recibidos
 $idPedido = $_POST['id'];
-$accion = $_POST['action'];
 
 
 if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $accion != "TP" && $accion != "R" && $accion != "RR" && $accion != "RN" && $accion != "NO" && $accion != "CA" && $accion != "PO" && $accion != "PA" && $accion != "PX" && $accion != "PR" && $accion != "P1" && $accion != "D" && $accion != 'C' && $accion != 'NC' && $accion != 'RA' && $accion != "CE")
@@ -122,9 +131,11 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
     $titulos = $_POST['titulos'];
 
     $indice = 0;
+    
 }
 else
 {
+
 
     if($accion == "U" || $accion == "UA" || $accion == "EH")
     {
@@ -209,12 +220,16 @@ if($accion == "RA" || $accion == "CE")
 
 //-------------------------------------------------------------------------------------
 //Insertar un nuevo pedido
-if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $accion != "TP" && $accion != "R" && $accion != "RR" && $accion != "NO" && $accion != "RN" && $accion != "CA" && $accion != "PO" && $accion != "PA" && $accion != "PX" && $accion != "PR" && $accion != "P1")
-{
+$unallowedStatus=array('U','UA','EH','T','TP','R','RR','NO','RN','CA','PO','PA','PX','PR','P1');
+//$allowedStatus=array('U','UA','EH','T','TP','R','RR','NO','RN','CA','PO','PA','PX','PR','P1');
+//var_dump($unallowedStatus);
 
-    if($idPedido == 0 || ($accion == "E" && $idPedido != 0) || ($accion == "A" && $idPedido != 0) || ($accion == "P" && $idPedido != 0) || ($accion == "AC" && $idPedido != 0))
-        {
+//if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $accion != "TP" && $accion != "R" && $accion != "RR" && $accion != "NO" && $accion != "RN" && $accion != "CA" && $accion != "PO" && $accion != "PA" && $accion != "PX" && $accion != "PR" && $accion != "P1"){
+if(!in_array($accion,$unallowedStatus)){
 
+   
+    if($idPedido == 0 || ($accion == "E" && $idPedido != 0) || ($accion == "A" && $idPedido != 0) || ($accion == "P" && $idPedido != 0) || ($accion == "AC" && $idPedido != 0) || ($accion == "CO" && $idPedido != 0)){
+ 
             
             foreach($valores as $v)
             {
@@ -546,7 +561,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         
                     //precio origen
                     case "precio_origen":
-                        $precio_origen = $v;
+                        $precio_origen = (!is_null($v) && $v!='')?$v:0;
                         break;
                     case "polimero_cliente":
                         $polimero_cliente=$v;
@@ -559,7 +574,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         $reemplazar=$v;
                         break;
 
-                     case "costo_aprobado":
+                    case "costo_aprobado":
                         $costo_aprobado=$v;
                         break;
                 }
@@ -573,6 +588,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
             if($troquelado == -1){
                 $troquelado = 'null';
             }
+            //die($accion);
             switch($accion)
             {
                 case "I":
@@ -1016,11 +1032,12 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
                         reg_log($idPedido, $estado);
                          break;
                     }
-                   
+                case 'CO':   
                 case 'AC':{
-                    //APROBAR COSTO DE ARTICULO NUEVO
+                    //APROBAR COSTO DE ARTICULO NUEVO                   
                     if($costo_aprobado==1){
                         $consulta = "Update pedidos Set costo_aprobado =".$costo_aprobado." , estado ='AC' Where npedido=$idPedido";                         
+                        //die($consulta);
                         $resu = mysql_query($consulta);
                         reg_log($idPedido, 'AC');
                     }
@@ -1069,8 +1086,7 @@ if($accion != "U" && $accion != "UA" && $accion != "EH" && $accion != "T" && $ac
 
                 case "AC":
                     $consulta = "Update pedidos Set estado ='AP', fecestadoap = CURDATE() Where npedido=$idPedido";
-                    print_r($costo_aprobado);
-                    die($consulta);
+                  
                     $resu = mysql_query($consulta);
 
                     reg_log($idPedido, "AP");
