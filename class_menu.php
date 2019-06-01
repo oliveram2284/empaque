@@ -1,4 +1,6 @@
-	<?php
+<?php
+include 'config.php';
+
 
 class menu
 {
@@ -9,7 +11,7 @@ class menu
 
 
 		$sql  = "(SELECT tm.* FROM tbl_menu_emp as tm INNER JOIN tbl_grupos_permisos as tgp ON tm.id_menu=tgp.id_menu where tgp.id_grupo=".$idGpo." ORDER BY tm.orden asc, tm.id_menu asc) UNION (Select menu.* 			From tbl_menu_emp as menu			Where menu.link = '' order by orden asc, id_menu asc   )";
-		//echo $sql."<br>";
+		echo $sql."<br>";
 		$resultado = mysql_query($sql)or die(mysql_error());
 
 		$menu_items=array();
@@ -66,7 +68,7 @@ class menu
 			From tbl_menu_emp as menu
 			Where menu.link = \"\")
 		Order by ubicacion";
-
+	//die($sql);
 	 $res = mysql_query($sql);
 
 	 $encabezado_a_usar = "";
@@ -349,6 +351,62 @@ class menu
 			echo "Error en la asignacion de permisos";
 	       }
 
+	}
+
+
+	public function menu_ppal_v2($idGpo){
+				
+		$sql = "Select menu.* From tbl_menu_emp as menu Where menu.link = '' and parent_id=0 and menu.level=1 Order by orden";
+		$menu_items=R::getAll($sql);
+		
+		$menu_output='';
+		foreach($menu_items as $row=>$level_1){			
+			
+			$menu_level2=$this->get_child_items($_SESSION['permisos'],$level_1['id_menu'],2);
+
+			if(count($menu_level2)!=0){
+				$menu_output.='<li class="dropdown">';
+				$menu_output.='<a class="dropdown-toggle" data-toggle="dropdown" href="#">'.($level_1['descripcion']).'<b class="caret"></b></a>';
+				$menu_output.='<ul class="dropdown-menu">';
+				foreach($menu_level2 as $level_2){
+				
+
+					$menu_level3=$this->get_child_items($_SESSION['permisos'],$level_2['id_menu'],3);	
+					//	var_dump($menu_level3);
+					if(count($menu_level3)==0){
+						$menu_output.= '<li class="text-left"><a href="'.$level_2['link'].'">'.($level_2['descripcion']).'</a></li>';
+					}else{
+						$menu_output.='<li class="dropdown-submenu" class="text-left"><a class="dropdown-toggle" data-toggle="dropdown" href="#">'.($level_2['descripcion']).'</a>';
+						$menu_output.='<ul class="dropdown-menu">';
+							foreach($menu_level3 as $level_3){
+								$menu_output.= '<li class="text-left"><a href="'.$level_3['link'].'">'.($level_3['descripcion']).'</a></li>';
+							}
+						$menu_output.='</ul>';
+						$menu_output.='</li>';
+					}
+					
+
+				}
+				$menu_output.='</ul>';
+				$menu_output.='</li>';
+			}
+		
+			//$menu_output.='</ul>';
+		}
+		//die("fin");
+		//$result=$this->get_menu($menu_items);
+		//var_dump($result);
+		//die("fin");
+		echo $menu_output;
+	}
+
+	public function get_child_items($permiso,$parent_id,$level=2){
+		$sql='(SELECT menu. * FROM tbl_grupos_permisos AS gpo JOIN tbl_menu_emp AS menu ON menu.id_menu = gpo.id_menu 
+		WHERE gpo.id_grupo = '.$permiso.' and parent_id='.$parent_id.' and level='.$level.' order by orden asc )  ';
+		//echo $sql."<br>";
+		$menu_items=R::getAll($sql);
+		
+		return $menu_items;
 	}
 
 	function menu_permisos($id)

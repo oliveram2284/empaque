@@ -149,15 +149,15 @@ switch ($_REQUEST['action']) {
 
 		foreach ($temp as $key => $item) {
 			$sql  = "UPDATE tbl_menu_emp SET orden=".$item['orden'].", parent_id=".$item['parent_id'].",level=".$item['level']." WHERE id_menu=".$item['id_menu']." ;";
-			echo $sql."<br>";
+			//echo $sql."<br>";
 			$resultado = mysql_query($sql)or die(mysql_error());
-			var_dump($resultado);
+			//var_dump($resultado);
 		}
 		break;
 	}
 
 	case 3:{
-		var_dump($_POST);
+		//var_dump($_POST);
 	}
 
 	default:
