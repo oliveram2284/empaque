@@ -1203,7 +1203,7 @@ class abm
 							echo"<tbody>";
 							if(mysql_num_rows($resu3) <= 0)
 								{
-								 echo '<tr><td colspan="10"></td></tr>';
+								 echo '<tr ><td colspan="10"></td></tr>';
 								}else{
 
 										//revisar esto
@@ -1213,11 +1213,15 @@ class abm
 										
 										while($row_1 = mysql_fetch_array($resu3)){
 											//var_dump($row_1);
-											if($_SESSION['permisos']=='56' && $row_1['costo_aprobado']==1){
+											if($_SESSION['permisos']=='56' && $row_1['costo_aprobado']!=0){
 												//Si usuario es de tipo costo y pedido tiene el costo aprobado no mostrarlo
 												continue;
 											} 	
 											switch($row_1['estado']){
+												case 'I':{
+													echo '<tr '.(($row_1['costo_aprobado']==2)?'class="tr-costo"':'').'>';
+													break;
+												}
 												case "R":
 													echo '<tr class="error">';
 													break;
@@ -1307,8 +1311,6 @@ class abm
 																	$params[]= $name . '=' . $value . '';
 																}
 																$params[]='costo=1';
-																//var_dump($params);
-																//var_dump(implode('&',$params));
 																echo '<td><a href="IngresoPedidos.php?valor1='.$row_1[0].'&valor2=AC">Aprobar Costo</a></td>';
 																
 																
@@ -1316,7 +1318,7 @@ class abm
 															}else{
 																if($row_1['estado'] == 'R')
 																{
-																	echo '<td width=\"50px;\"></td><td width=\"50px;\"></td>';
+																	echo '<td width=\"50px;\"></td><td width=\"50px;\">assad</td>';
 																}
 																else
 																{
@@ -1332,17 +1334,22 @@ class abm
 															}
 															
 														}
-														else
-															{
-																echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','E')\" style=\"text-align: center\" width=\"50px;\">
-																	<img src=\"./assest/plugins/buttons/icons/pencil.png\" style=\"cursor: pointer;\" width=\"15\" heigth=\"15\" /></td>";
-																
-															}
-														if($row_1['devolucion'] > 0)
+														else{
+															echo "<td onClick=\"AbrirVentanaPedidoEditarPrecio('$row_1[0]','E')\" style=\"text-align: center\" width=\"50px;\">
+																<img src=\"./assest/plugins/buttons/icons/pencil.png\" style=\"cursor: pointer;\" width=\"15\" heigth=\"15\" /></td>";
+															
+														}
+														if($row_1['devolucion'] > 0){
 															echo "<td onClick=\"AbrirMotivos('$row_1[0]')\" style=\"text-align: center\" width=\"50px;\">
 																	<img src=\"./assest/plugins/buttons/icons/note.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-															else
-																echo "<td width=\"50px;\"></td>";
+														}else{
+															if($row_1['costo_aprobado']==2){
+																echo "<td width=\"50px;\"><span class='help-inline'> COSTO NO APROBADO</span></td>";	
+															}else{
+																echo "<td width=\"50px;\"></td>";	
+															}
+															
+														}
 														break;
 												
 												  case "P": //produccion
@@ -2462,20 +2469,26 @@ function ArmarPolimeroLog($polId,$nro,$cliente, $caras)
 }
 ?>
 <script>
-	function principalL()
-		{
+	function principalL(){
 		document.listado.action = "principal.php";
 		document.listado.submit();
-		}
-		
-	function AbrirVentanaPedido(id,accion)
-		{
+	}
+	
+	function AbrirVentanaPedidoEditarPrecio(id,accion){
+		//alert(accion+"  "+id);
+		document.listado.idPedido.value = id;
+		document.listado.accionPedido.value = accion;
+		document.listado.action = "IngresoPedidos.php?valor1="+id+"&valor2="+accion+"&costo=1";
+		document.listado.submit();
+	}
+	
+	function AbrirVentanaPedido(id,accion,){
 		//alert(accion+"  "+id);
 		document.listado.idPedido.value = id;
 		document.listado.accionPedido.value = accion;
 		document.listado.action = "IngresoPedidos.php?valor1="+id+"&valor2="+accion;
 		document.listado.submit();
-		}
+	}
 		
 	function AbrirVentana(tabla,accion,id)
 		{

@@ -76,7 +76,7 @@ function Readonly($accion)
 
 function IsEnabled($accion)
 {
-    if($accion != "I" && $accion != "A" && $accion != "E" && $accion != "P")
+    if($accion != "I" && $accion != "A" && $accion != "E" && $accion != "P" && $accion != "AC")
     {
         echo " disabled=\"disabled\"";
     }
@@ -113,7 +113,7 @@ require("header.php");
 <?php  
 
 //var_dump($_SESSION['permisos']);
-if($_SESSION['permisos']==561111){?>
+if($accionPedido=='AC'){?>
 	<input type="hidden" id="solo_volumen" value="1">
 <?php }?>
 <div class="modal hide fade" id="VencPop">
@@ -1427,26 +1427,42 @@ if($_SESSION['permisos']==561111){?>
 						<?php
 					}
 
-				if($_SESSION['permisos']==56){
-					?>
-					<div class="row">
-							<div class="span4 text-left" style="margin-left: 50;">
-							<table>
-								<tr>
-									<td style="padding-right: 20px;">
-										APROBAR COSTO:
-									</td>
-									<td>
-										<input type="checkbox" id="apCosto" name="costo_aprobado" value="1">
-									</td>
-								</tr>
-							</table>
+					if($_SESSION['permisos']==56){?>
+						<div class="row">
+							<div class="span5 text-left" style="margin-left: 50;">
+								<table class="">
+									<tr>
+										<td style="padding-right: 20px; ">										
+											APROBAR COSTO:
+										</td>
+										<td>
+											<label class="checkbox inline">
+											<input type="radio" id="apCostoSi" name="costo_aprobado" value="1"> SI
+											</label>
+											<label class="checkbox inline">
+											<input type="radio" id="apCostoNo" name="costo_aprobado" value="2"> NO
+											</label>										
+										</td>
+									</tr>								
+								</table>
+							</div>
+							<div class="span5 text-left" style="">
+								<table class="">
+									<tr>	
+										<td style="padding-right: 20px;vertical-align: top;padding-top: 13px;">
+											MOTIVO:
+										</td>
+										<td>
+											<textarea name="costo_motivo" id="costo_motivo" cols="30" rows="3" style="margin: 0px 0px 9px; width: 423px; height: 76px;"></textarea>
+										</td>
+									</tr>
+								</table>
 							</div>
 						</div>
-					<?php
-				}
-
-
+						<?php
+					}elseif(isset($_GET['costo'])){?>
+					<input type="radio" id="apCostoSi" name="costo_aprobado" value="0" checked style="display:none">
+					<?php }
 				}
 				?>
 				<input type="hidden" id="CI_values" value="">
@@ -1456,12 +1472,16 @@ if($_SESSION['permisos']==561111){?>
 	</div>
 	<input type="hidden" name="cant_pista" id="cant_pista" >
 	<div class="row">
-		<div class="span9" style="text-align: right">
+		<div class="span10" style="text-align: right">
 			<table style="margin-left: 700px">
 				<tr>
-					<td><input type="button" value="Cancelar" onClick="history.back(-1);">&nbsp;&nbsp;&nbsp;</td>
+					<td><input type="button" value="Cancelar" onClick="history.back(-1);">&nbsp;&nbsp;</td>
 					<td>
-						<input type="button" id="btn_save" value="Aceptar" onClick="guardar_1()" class="btn btn-primary">
+						<?php if ($_SESSION['permisos']==56):?>
+							<input type="button" id="btn_update" value="GUARDAR" class="btn btn-primary">
+						<?php else:?>
+							<input type="button" id="btn_save" value="Aceptar" class="btn btn-primary">
+						<?php endif;?>
 						<input type="button" id="btn_CI" value="CI" onClick="guardar_CI()" class="btn btn-warning" style="display: none">
 					</td>
 				</tr>
@@ -1598,6 +1618,62 @@ function invertirFecha($date)
 	$(function(){
 		$("#cantidad").maskMoney({allowNegative: true, decimal:"", thousands:'.', precision:0});
 		$('#input_cant_etiqueta_pop').maskMoney({allowNegative: true, decimal:"", thousands:'.', precision:0});
+		$("#btn_save").click(function(){
+			guardar_1();
+		});
+		$("#btn_update").click(function(){
+			var id = $("#idPedido").val();
+			var costo=$("input[name='costo_aprobado']:checked").val();
+			
+			console.log("===> COSTO: %o",costo);
+			if(costo===undefined){
+				swal({
+					title: "Error!",
+					text: "Para continuar debe seleccinar SI Aprueba o No el Costo.",
+					type: "error",
+					 html: true,
+					confirmButtonText: "Cerrar"
+				});
+				//return false;
+			}else if(costo=='2' && $("textarea[name='costo_motivo']").val().length==0){
+				swal({
+					title: "Error!",
+					text: "Para continuar debe seleccinar Ingresar <b>Motivo</b> para no aprobar costo.",
+					type: "error",
+					 html: true,
+					confirmButtonText: "Cerrar"
+				});
+				return false;
+			}
+			var motivo=(costo=='1')?'Costo Aprobado':$("textarea[name='costo_motivo']").val();
+			console.log("===> COSTO APROBADO: %o",costo);
+			var data_ajax = {
+				type: 'POST',
+				url: "services/log.php",
+				data: { action: 1, id: id, value:costo, msg: motivo},
+				success: function(data) {
+
+					guardar_1();
+					return true;
+
+				},
+				error: function() {
+					swal({
+						title: "Error!",
+						text: "No Se pudo Actualizar Pedido.",
+						type: "error",
+						confirmButtonText: "Cerrar"
+					});
+					$('#btn_save').removeAttr('disabled');
+					$('#btn_CI').removeAttr('disabled');
+				},
+				dataType: 'json'
+			};
+
+			$.ajax(data_ajax);	
+			return false;		
+			
+		});
 	});
 </script>
 <script type="text/javascript" src="Js/IngresoPedidos.js"></script>

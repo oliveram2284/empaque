@@ -2296,6 +2296,8 @@ function guardar_1() {
     }
 
 
+
+
     console.log("==> apCosto: %o", $("#apCosto").is(':checked'));
 
 

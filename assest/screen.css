@@ -2500,3 +2500,11 @@ hr.space {
 .text-error {
     color: #ff0000;
 }
+
+.help-inline {
+    color: #b94a48;
+}
+
+.tr-error1 {
+    color: #b94a48 !important;
+}

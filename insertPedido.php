@@ -14,9 +14,10 @@ if(isset($_REQUEST['valores'])){
     $_REQUEST['valores'][15]=0;
 }
 
-
-/*var_dump($_SESSION['permisos']);
-var_dump($_POST);*/
+/*
+var_dump($_SESSION['permisos']);
+var_dump($_POST);
+die("asd");*/
 if($_SESSION['permisos']==56){
     $accion ='CO';
     
@@ -716,7 +717,13 @@ if(!in_array($accion,$unallowedStatus)){
                         $consulta .=                 "reemplaza_anterior = ".$reemplazar.", ";
                         $consulta .=                 "polimero_porcentaje_cli = ".$polimero_cliente.", ";
                         $consulta .=                 "polimero_porcentaje_emp = ".$polimero_empaque.", ";
-                        $consulta .=                 "precio_nuevo_id = ".$precio_origen." ";
+                        $consulta .=                 "precio_nuevo_id = ".$precio_origen.", ";
+                        
+                        if(isset($costo_aprobado)){
+                           // var_dump($costo_aprobado);
+                            $consulta .=             "costo_aprobado = ".$costo_aprobado." ";
+                        }
+                       
                         $consulta .= "Where npedido=$idPedido";
                         
                         $resu = mysql_query($consulta);

@@ -1975,3 +1975,18 @@ body .ui-tooltip {
     width: 50px;
     text-align: center;
 }
+
+.help-inline {
+    color: #b94a48;
+}
+
+.tr-costo {
+    background-color: #e4d723 !important;
+    color: #ffffff !important;
+}
+
+.tr-costo:hover {
+    color: #ffffff !important;
+    background-color: #e4d723 !important;
+    font-weight: bold !important;
+}
