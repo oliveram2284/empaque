@@ -355,10 +355,10 @@ class menu
 
 
 	public function menu_ppal_v2($idGpo){
-				
+		//	var_dump(($idGpo));
 		$sql = "Select menu.* From tbl_menu_emp as menu Where menu.link = '' and parent_id=0 and menu.level=1 Order by orden";
 		$menu_items=R::getAll($sql);
-		
+		//var_dump(($menu_items));
 		$menu_output='';
 		foreach($menu_items as $row=>$level_1){			
 			
@@ -397,6 +397,7 @@ class menu
 		//$result=$this->get_menu($menu_items);
 		//var_dump($result);
 		//die("fin");
+		//var_dump($menu_output);
 		echo $menu_output;
 	}
 

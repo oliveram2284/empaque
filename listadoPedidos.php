@@ -2,11 +2,15 @@
 session_start();
 
 $nombre = substr($_SESSION['Nombre'], 0, 2);
+var_dump($_SESSION);
+/*
 if($_SESSION['permisos']=56){
 	$action='CO';
 }else{
 	$action=$_REQUEST['action'];
-}
+}*/
+
+$action=$_REQUEST['accion'];
 
 if(!$_SESSION['Nombre'])
 {

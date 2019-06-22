@@ -285,10 +285,14 @@ class abm
 								{
 								 case "CO": //ingresados o generados
 								 case "I": //ingresados o generados
-								 		if($esAdmin == 1)
-								 		echo "<th style=\"width: 20px;\">Emisión<th>Recibir</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
-										else
-										echo "<th style=\"width: 60px;\">Emisión<th>Editar</th><th>Motivos</th></tr></thead>";
+								 		if($esAdmin == 1){
+											if($_SESSION['permisos']=='56'){
+												echo "<th style=''>Emisión<th>APROBAR COSTO</th></thead>";
+											}else{
+								 				echo "<th style=\"width: 20px;\">Emisión<th>Recibir</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
+											 }										
+										}else
+											echo "<th style=\"width: 60px;\">Emisión<th>Editar</th><th>Motivos</th></tr></thead>";
 										break;	
 								 case "A": //Recibidos
 								 case "AC": //Recibidos
@@ -493,7 +497,7 @@ class abm
 															poliNumero as polId,
 															caras,
 															hojaruta,
-
+															costo_aprobado ,
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
 															".$nombreTabla."
@@ -501,11 +505,19 @@ class abm
 															(".$accionConsulta.") ".$search_by_txt." 
 														Order By
 															codigo ";
-													  
-												$consultaCantidad = "Select
+												if($_SESSION['permisos']=='56'){
+													
+													$consultaCantidad = "Select
+															Count(*)
+														     From ".$nombreTabla." 
+														     Where (".$accionConsulta.") and (costo_aprobado !=1) ".$search_by_txt."";	
+												}else{
+													$consultaCantidad = "Select
 															Count(*)
 														     From ".$nombreTabla." 
 														     Where (".$accionConsulta.") ".$search_by_txt."";	
+												}
+												
 												break;
 											
 											case 'A':
@@ -855,22 +867,19 @@ class abm
 								}
 								else
 								{											  
-									if($accion == 'V')
-									{
-									$consulta3 = "Select $campos, razon_soci, descripcion as Articulo,estado ,
-															poliNumero as polId, caras from ".$nombreTabla." 
-												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
-												   
-												  where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."' order by codigo ";
+									if($accion == 'V'){
+										$consulta3 = "Select $campos, razon_soci, descripcion as Articulo,estado ,
+																poliNumero as polId, caras from ".$nombreTabla." 
+													INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
+													
+													where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."' order by codigo ";
 												  
-									$consultaCantidad = "Select count(*) from ".$nombreTabla." 
-												  INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
-												   
-												  where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."'";
-									}
-									else
-									
-									{	switch($accion)
+										$consultaCantidad = "Select count(*) from ".$nombreTabla." 
+													INNER JOIN clientes ON pedidos.clientefact = clientes.cod_client 
+													
+													where (estado='$accion' or estado='TP') and pedidos.codigo REGEXP '^".$nombre."'";
+									}else{	
+										switch($accion)
 										{
 											case 'CO':{
 												$consulta3 = "Select
@@ -913,6 +922,7 @@ class abm
 															poliNumero as polId,
 															caras,
 															hojaruta,
+															costo_aprobado,
 															(Select Count(*) From tbl_log_pedidos Where (pedidoEstado = 'R' or pedidoEstado = 'RR' or pedidoEstado = 'RN' or pedidoEstado = 'NO' or pedidoEstado = 'PX' or pedidoEstado = 'D' or pedidoEstado = 'NC') and pedidoId = npedido) as devolucion
 														From
 															".$nombreTabla."
@@ -1194,17 +1204,20 @@ class abm
 							if(mysql_num_rows($resu3) <= 0)
 								{
 								 echo '<tr><td colspan="10"></td></tr>';
-								}else
-									{
-										$cant = mysql_query($consultaCantidad);
-										$fila = mysql_fetch_array($cant);
-										$cantidad = $fila[0];
+								}else{
+
+										//revisar esto
+									/*	$cant = (isset($consultaCantidad))?mysql_query($consultaCantidad):array();
+										$fila = mysql_fetch_array($cant);*/
+										$cantidad = 25;
 										
-										while($row_1 = mysql_fetch_array($resu3))
-											{
-											 
-											 switch($row_1['estado'])
-											 {
+										while($row_1 = mysql_fetch_array($resu3)){
+											//var_dump($row_1);
+											if($_SESSION['permisos']=='56' && $row_1['costo_aprobado']==1){
+												//Si usuario es de tipo costo y pedido tiene el costo aprobado no mostrarlo
+												continue;
+											} 	
+											switch($row_1['estado']){
 												case "R":
 													echo '<tr class="error">';
 													break;
@@ -1288,20 +1301,35 @@ class abm
 												  case "I": //ingresados
 												  		if($esAdmin == 1)
 														{
-															if($row_1['estado'] == 'R')
-															{
-																echo '<td width=\"50px;\"></td><td width=\"50px;\"></td>';
+															if($_SESSION['permisos']=='56'){
+																$params=[];
+																foreach ($_GET as $name => $value) {    
+																	$params[]= $name . '=' . $value . '';
+																}
+																$params[]='costo=1';
+																//var_dump($params);
+																//var_dump(implode('&',$params));
+																echo '<td><a href="IngresoPedidos.php?valor1='.$row_1[0].'&valor2=AC">Aprobar Costo</a></td>';
+																
+																
+																//var_dump($row_1);
+															}else{
+																if($row_1['estado'] == 'R')
+																{
+																	echo '<td width=\"50px;\"></td><td width=\"50px;\"></td>';
+																}
+																else
+																{
+																	echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','A')\" style=\"text-align: center\" width=\"50px;\">
+																		<img src=\"./assest/plugins/buttons/icons/add.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
+																	echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','".$accion."')\" style=\"text-align: center\" width=\"50px;\">
+																		<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
+																}
+																
+																echo "<td onClick=\"AbrirPopPedidosCancel('$row_1[0]','C')\" style=\"text-align: center\" width=\"50px;\">
+																	<img src=\"./assest/plugins/buttons/icons/cross.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
+																
 															}
-															else
-															{
-																echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','A')\" style=\"text-align: center\" width=\"50px;\">
-																	<img src=\"./assest/plugins/buttons/icons/add.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-																echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','".$accion."')\" style=\"text-align: center\" width=\"50px;\">
-																	<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-															}
-															
-															echo "<td onClick=\"AbrirPopPedidosCancel('$row_1[0]','C')\" style=\"text-align: center\" width=\"50px;\">
-																<img src=\"./assest/plugins/buttons/icons/cross.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
 															
 														}
 														else

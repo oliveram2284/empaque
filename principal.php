@@ -22,7 +22,7 @@ require("header.php");
 				<h2 id="titulo1">Sistema de Gestión Empaque S.A</h2>
 			</p>
 
-			<div class="row">
+			<div class="row ">
 				<div class="span10">
 					<div class="navbar">
 						<div class="navbar-inner">
