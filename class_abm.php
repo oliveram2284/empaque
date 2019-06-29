@@ -287,9 +287,10 @@ class abm
 								 case "I": //ingresados o generados
 								 		if($esAdmin == 1){
 											if($_SESSION['permisos']=='56'){
-												echo "<th style=''>Emisión<th>APROBAR COSTO</th></thead>";
+												echo "<th style=''>Emisión<th>APROBAR COSTO</th> <th></th></thead>";
 											}else{
-								 				echo "<th style=\"width: 20px;\">Emisión<th>Recibir</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
+								 				//echo "<th style=\"width: 20px;\">Emisión<th>Recibir</th><th>Rehacer</th><th>Cancelar</th><th>Motivos</th></tr></thead>";
+								 				echo "<th style=\"\">Emisión</th><th>-</th> <th></th></thead>";
 											 }										
 										}else
 											echo "<th style=\"width: 60px;\">Emisión<th>Editar</th><th>Motivos</th></tr></thead>";
@@ -1306,7 +1307,7 @@ class abm
 												  		if($esAdmin == 1)
 														{
 															if($_SESSION['permisos']=='56'){
-																$params=[];
+																$params=array();
 																foreach ($_GET as $name => $value) {    
 																	$params[]= $name . '=' . $value . '';
 																}
@@ -1322,15 +1323,27 @@ class abm
 																}
 																else
 																{
-																	echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','A')\" style=\"text-align: center\" width=\"50px;\">
+																	if($row_1['costo_aprobado']==0){
+																		echo "<td width=\"\"><span class='help-inline'> Pendiente Aprob. Costo</span></td>";	
+																	}elseif($row_1['costo_aprobado']==1){
+																		echo "<td width=\"50px;\"><span class='help-inline'> COSTO APROBADO</span></td>";	
+																		
+																	}elseif($row_1['costo_aprobado']==2){
+																		echo "<td width=\"50px;\"><span class='help-inline'> COSTO NO APROBADO</span></td>";	
+																		
+																	}/*else{
+																		echo "<td width=\"50px;\"></td>";	
+																	}*/
+																	/*echo "<td onClick=\"AbrirVentanaPedido('$row_1[0]','A')\" style=\"text-align: center\" width=\"50px;\">asdasdasd
 																		<img src=\"./assest/plugins/buttons/icons/add.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
 																	echo "<td onClick=\"AbrirPopPedidos('$row_1[0]','".$accion."')\" style=\"text-align: center\" width=\"50px;\">
 																		<img src=\"./assest/plugins/buttons/icons/stop.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-																}
+																	*/
+															}
 																
-																echo "<td onClick=\"AbrirPopPedidosCancel('$row_1[0]','C')\" style=\"text-align: center\" width=\"50px;\">
+																/*echo "<td onClick=\"AbrirPopPedidosCancel('$row_1[0]','C')\" style=\"text-align: center\" width=\"50px;\">
 																	<img src=\"./assest/plugins/buttons/icons/cross.png\" width=\"15\" heigth=\"15\" style=\"cursor: pointer;\" /></td>";
-																
+																*/
 															}
 															
 														}
