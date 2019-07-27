@@ -3,8 +3,10 @@
 /*Desde aqu� se definen los valores globales del entorno de la aplicaci�n*/
 
 // ** Configuracion de MySQL ** //
+var_dump($_SERVER['REQUEST_URI']);
 
 if(strrpos($_SERVER['REQUEST_URI'], 'empaque_demo')!==false){
+	
 	define('DB_NAME', 'mi000652_empaque_demo');     // el nombre de la base de datos
 	define('DB_USER', 'root');     // el nombre de usuario de MySQL
 	define('DB_PASSWORD', ''); // y la contrase�a

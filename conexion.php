@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+error_reporting(E_ALL);
 class conexion
 	{
 	  var $server = "localhost";
