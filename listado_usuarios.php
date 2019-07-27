@@ -89,7 +89,7 @@ require("header.php");
                         <i class="fa fa-pencil fa-1x label label-success" aria-hidden="true"></i>
                       </a>
                     
-                      <a href="#" class="bt_edit" data-id="<?php echo $value['id_usuario']?>">
+                      <a href="#" class="bt_view_pass" data-id="<?php echo $value['id_usuario']?>" data-password="<?php echo $value['contrasenia']?>">
                         <i class="fa fa-eye fa-1x label label-info" aria-hidden="true"></i>
                       </a>
                    
@@ -150,6 +150,7 @@ require("header.php");
     
     $("#btnAgregar").click(function(event){
         console.log("NEW USER");
+        $("#myModal").find("h3").text("Alta Usuario");
         $("#myModal").find(".modal-body").load('_modal_usuario_form.php');
         $("#myModal").modal("show");
         return false;       
@@ -158,13 +159,49 @@ require("header.php");
     $(document).on('click','.bt_edit',function(event){
         var id=$(this).data('id');
         console.log("===> id: %o",id);
+        $("#myModal").find("h3").text("Editar Usuario");
         $("#myModal").find(".modal-body").load('_modal_usuario_form.php?id='+id);
         $("#myModal").modal("show");
         return false;
     });
-    /*
-    $(".bt_edit").click(function(the_event){
-      var id=$(this).data('id');*/
+
+    $(document).on('click','.bt_delete',function(event){
+        var id=$(this).data('id');
+        console.log("===> id: %o",id);
+       
+        $.ajax({
+            type:'POST',
+            data:{action:2,id:id},
+            url: 'services/usuarios.php',
+            success: function(data){
+                window.location.href = "listado_usuarios.php";
+                return false;
+            },
+            error: function(result){
+            },
+            dataType: 'json'
+        });
+        return false;
+    });
+
+    $(document).on('click','.bt_view_pass',function(event){
+        var id=$(this).data('id');
+        var password=$(this).data('password');
+        console.log("===> id: %o",id);
+        console.log("===> password: %o",password);
+        var output='<div class="form-horizontal"> ';
+        output+='       <div class="control-group">';
+        output+='               <label class="control-label" for="inputEmail">Contraseña <i class="fa fa-eye fa-1x label label-info" aria-hidden="true"></i> </label>';
+        output+='                   <div class="controls">';
+        output+='                <input type="text" id="inputEmail" placeholder="Email" value="'+password+'" readonly>';
+        output+='       </div>';
+        output+='</div>';
+        output+='</div>';
+        $("#myModal").find("h3").text("VER CONTRASEÑA");
+        $("#myModal").find(".modal-body").html(output);
+        $("#myModal").modal("show");
+        return false;
+    });
 
 
     $(document).on('click','#myModal #form_submit',function(event){
@@ -202,6 +239,11 @@ require("header.php");
           dataType: 'json'
       });
         return false;
+    });
+    $("#btnCloseProductosPop").click(function(the_event){
+        $("#myModal").find("h3").text("");
+        $("#myModal").find(".modal-body").empty();
+        $("#myModal").modal("hide");
     });
     /*
     $("#btnAgregar").click(function(the_event){

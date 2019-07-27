@@ -34,11 +34,11 @@ include ("../config.php");
       if(!isset($_REQUEST['id'])){
         echo json_encode(array('result'=>false));
       }
-      $sql="SELECT * FROM bobinas WHERE id='".(int)$_REQUEST['id']."' ";
+      $sql="DELETE  FROM usuarios WHERE id_usuario='".(int)$_REQUEST['id']."' ";
+      
       $result= R::getRow($sql);
 
-
-      echo json_encode(array('result'=>true, 'bobina'=>$result));
+      echo json_encode(array('result'=>true, 'id'=>$_REQUEST['id']));
       break;
     }
     case '3':{
