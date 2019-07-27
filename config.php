@@ -3,7 +3,7 @@
 /*Desde aqu� se definen los valores globales del entorno de la aplicaci�n*/
 
 // ** Configuracion de MySQL ** //
-var_dump($_SERVER['REQUEST_URI']);
+//var_dump($_SERVER['REQUEST_URI']);
 
 if(strrpos($_SERVER['REQUEST_URI'], 'empaque_demo')!==false){
 	
